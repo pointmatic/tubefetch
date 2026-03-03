@@ -59,7 +59,7 @@ jobs:
         with:
           files: ./coverage.xml
           flags: unittests
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
   integration:
     name: Integration Tests

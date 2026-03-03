@@ -9,6 +9,7 @@ __pycache__
 .coverage
 htmlcov/
 .pytest_cache/
+/site/
 
 # removed and added with `pyve --init --force`
 .venv

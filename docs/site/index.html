@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tubefetch - Fetch AI-ready YouTube content</title>
+    <meta name="description" content="yt-fetch fetches and extracts metadata, transcripts, and media from YouTube videos in formats optimized for AI/LLM pipelines — with batch processing, caching, retries, and rate limiting.">
+    <meta name="keywords" content="youtube, transcript, metadata, yt-dlp, video, ai, llm, content-extraction, batch-processing, cli, python, async, rate-limiting, retry, gentlify">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #0a0f14;
+            color: #e6edf3;
+            line-height: 1.6;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(10, 15, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #30363d;
+            padding: 1rem 2rem;
+            z-index: 1000;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3ee8c8;
+            text-decoration: none;
+        }
+
+        nav .links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #e6edf3;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: #3ee8c8;
+        }
+
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-banner {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 2rem;
+            border-radius: 8px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .hero h1 .accent {
+            color: #3ee8c8;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #8b949e;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #3ee8c8;
+            color: #0a0f14;
+        }
+
+        .btn-primary:hover {
+            background: #2dd4b4;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #3ee8c8;
+            border: 2px solid #3ee8c8;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(62, 232, 200, 0.1);
+        }
+
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .quick-start {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-start h3 {
+            color: #3ee8c8;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .code-block {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: #e6edf3;
+            font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace;
+            font-size: 0.9rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: #3ee8c8;
+            transform: translateY(-4px);
+        }
+
+        .feature-card h3 {
+            color: #3ee8c8;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .feature-card p {
+            color: #8b949e;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #8b949e;
+            border-top: 1px solid #30363d;
+            margin-top: 4rem;
+        }
+
+        footer a {
+            color: #3ee8c8;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            nav .links {
+                gap: 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">tubefetch</a>
+            <div class="links">
+                <a href="#features">Features</a>
+                <a href="#quick-start">Quick Start</a>
+                <a href="getting-started.html">Docs</a>
+                <a href="https://github.com/pointmatic/tubefetch" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <img src="images/tubefetch_banner_wide.png" alt="tubefetch banner" class="hero-banner">
+        <h1>Fetch structured, <span class="accent">AI-ready</span> content from YouTube videos.</h1>
+        <p>yt-fetch fetches and extracts metadata, transcripts, and media from YouTube videos in formats optimized for AI/LLM pipelines — with batch processing, caching, retries, and rate limiting.</p>
+        <div class="cta-buttons">
+            <a href="https://github.com/pointmatic/tubefetch" class="btn btn-primary" target="_blank">View on GitHub</a>
+            <a href="getting-started.html" class="btn btn-secondary">Get Started</a>
+            <a href="api.html" class="btn btn-secondary">Documentation</a>
+        </div>
+    </section>
+
+    <section class="section" id="quick-start">
+        <h2>Quick Start</h2>
+        <div class="quick-start">
+            <h3>Installation</h3>
+            <div class="code-block">
+                <code>pip install tubefetch</code>
+            </div>
+        </div>
+        <div class="quick-start">
+            <h3>Basic Usage</h3>
+            <div class="code-block">
+                <code>yt_fetch fetch --id dQw4w9WgXcQ</code>
+            </div>
+            <p style="color: #8b949e; margin-top: 1rem;">Fetches metadata, transcript, and exports to JSON and plain text formats.</p>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <h2>Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Structured Metadata</h3>
+                <p>Extract title, channel, duration, tags, and upload date via yt-dlp or YouTube Data API v3.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Multi-Format Transcripts</h3>
+                <p>Fetch transcripts with language preference and fallback, export as JSON, plain text, WebVTT, or SubRip.</p>
+            </div>
+            <div class="feature-card">
+                <h3>LLM-Ready Output</h3>
+                <p>Produce plain text transcripts optimized for AI pipelines with content hashes and optional token counts.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Batch Processing</h3>
+                <p>Process multiple videos concurrently with per-video error isolation and progress tracking.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Intelligent Caching</h3>
+                <p>Skip already-fetched data automatically; use <code>--force</code> for selective re-fetching.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Resilient Retry Logic</h3>
+                <p>Powered by gentlify with exponential backoff, jitter, and smart classification of transient vs. permanent errors.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Rate Limiting</h3>
+                <p>Token bucket algorithm shared across workers prevents API throttling and service errors.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Dual Interface</h3>
+                <p>Use as a CLI tool for quick extraction or import as a Python library for programmatic workflows.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Built with ❤️ by <a href="https://github.com/pointmatic" target="_blank">Pointmatic</a></p>
+        <p>Licensed under <a href="https://github.com/pointmatic/tubefetch/blob/main/LICENSE" target="_blank">Apache-2.0</a></p>
+    </footer>
+</body>
+</html>

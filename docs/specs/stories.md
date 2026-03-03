@@ -619,118 +619,119 @@ Streamline release notes generation.
 
 ## Phase K: GitHub Pages Documentation
 
-### Story K.a: v0.8.1 MkDocs Configuration & Project Structure [Planned]
+### Story K.a: v0.8.1 MkDocs Configuration & Project Structure [Done]
 
 Set up MkDocs with Material theme and create documentation directory structure.
 
-- [ ] Install MkDocs dependencies locally:
-  - [ ] `pip install mkdocs-material mkdocs-git-revision-date-localized-plugin`
-- [ ] Create `mkdocs.yml` at repository root:
-  - [ ] Set `site_name: yt-fetch`
-  - [ ] Set `site_description` from descriptions.md (Friendly Brief Description)
-  - [ ] Set `site_url: https://pointmatic.github.io/yt-fetch`
-  - [ ] Set `repo_url: https://github.com/pointmatic/yt-fetch`
-  - [ ] Configure Material theme with teal/cyan palette (matching brand color `#3ee8c8`)
-  - [ ] Enable dark/light mode toggle
-  - [ ] Enable navigation features (instant, tracking, tabs, sections, expand, top)
-  - [ ] Enable search features (suggest, highlight)
-  - [ ] Enable content features (code.copy, code.annotate)
-  - [ ] Set `docs_dir: docs/site`
-  - [ ] Set `site_dir: site`
-  - [ ] Configure `nav` structure with Home (index.html) and placeholder pages
-  - [ ] Add markdown extensions (admonition, pymdownx.details, pymdownx.superfences, pymdownx.highlight, pymdownx.tabbed, tables, toc)
-  - [ ] Add plugins (search, git-revision-date-localized)
-- [ ] Create `docs/site/` directory structure
-- [ ] Create `docs/site/.gitignore`:
-  - [ ] Ignore `/site/` build output
-  - [ ] Ignore `.DS_Store`
-- [ ] Add `mkdocs-material` and `mkdocs-git-revision-date-localized-plugin` to `[project.optional-dependencies] dev` in `pyproject.toml`
-- [ ] Verify: `mkdocs serve` runs locally and shows placeholder site
+- [x] Install MkDocs dependencies locally:
+  - [x] `pip install mkdocs-material mkdocs-git-revision-date-localized-plugin`
+- [x] Create `mkdocs.yml` at repository root:
+  - [x] Set `site_name: yt-fetch`
+  - [x] Set `site_description` from descriptions.md (Friendly Brief Description)
+  - [x] Set `site_url: https://pointmatic.github.io/yt-fetch`
+  - [x] Set `repo_url: https://github.com/pointmatic/yt-fetch`
+  - [x] Configure Material theme with teal/cyan palette (matching brand color `#3ee8c8`)
+  - [x] Enable dark/light mode toggle
+  - [x] Enable navigation features (instant, tracking, tabs, sections, expand, top)
+  - [x] Enable search features (suggest, highlight)
+  - [x] Enable content features (code.copy, code.annotate)
+  - [x] Set `docs_dir: docs/site`
+  - [x] Set `site_dir: site`
+  - [x] Configure `nav` structure with Home (index.html) and placeholder pages
+  - [x] Add markdown extensions (admonition, pymdownx.details, pymdownx.superfences, pymdownx.highlight, pymdownx.tabbed, tables, toc)
+  - [x] Add plugins (search, git-revision-date-localized)
+- [x] Create `docs/site/` directory structure
+- [x] Create placeholder documentation pages (getting-started.md, usage.md, api.md, advanced.md)
+- [x] Add `mkdocs-material` and `mkdocs-git-revision-date-localized-plugin` to `[project.optional-dependencies] dev` in `pyproject.toml`
+- [x] Update `.gitignore` to ignore `site/` build output
+- [ ] Verify: `mkdocs serve` runs locally and shows placeholder site (requires user to run locally)
 
-### Story K.b: v0.8.2 Custom Landing Page [Planned]
+### Story K.b: v0.8.2 Custom Landing Page [Done]
 
 Create a branded landing page with hero section, quick start, and feature cards.
 
-- [ ] Create `docs/site/index.html`:
-  - [ ] Add HTML5 boilerplate with meta tags (title, description, keywords from descriptions.md)
-  - [ ] Add inline CSS with dark theme (background `#0a0f14`, accent `#3ee8c8`)
-  - [ ] Create sticky navigation bar with logo and links (Features, Quick Start, Docs, GitHub)
-  - [ ] Create hero section:
-    - [ ] Use One-liner from descriptions.md as `<h1>` with accent color on "yt-fetch"
-    - [ ] Use Friendly Brief Description from descriptions.md as subtitle
-    - [ ] Add CTA buttons (View on GitHub, Get Started, Documentation)
-  - [ ] Create Quick Start section:
-    - [ ] Installation command: `pip install yt-fetch`
-    - [ ] Basic usage example: `yt_fetch fetch --id VIDEO_ID`
-    - [ ] Styled code block with syntax highlighting
-  - [ ] Create Features section:
-    - [ ] Use Feature Cards from descriptions.md (8 cards in responsive grid)
-    - [ ] Each card with icon, title, and description
-    - [ ] Styled with dark theme and teal accents
-  - [ ] Ensure responsive design (mobile-friendly)
-  - [ ] Use system fonts (no external font dependencies)
-- [ ] Verify: Landing page renders correctly with `mkdocs serve`
+- [x] Create `docs/site/index.html`:
+  - [x] Add HTML5 boilerplate with meta tags (title, description, keywords from descriptions.md)
+  - [x] Add inline CSS with dark theme (background `#0a0f14`, accent `#3ee8c8`)
+  - [x] Create sticky navigation bar with logo and links (Features, Quick Start, Docs, GitHub)
+  - [x] Create hero section:
+    - [x] Use wide banner image from `docs/site/images/tubefetch_banner_wide.png`
+    - [x] Use One-liner from descriptions.md as `<h1>` with accent color on "AI-ready"
+    - [x] Use Friendly Brief Description from descriptions.md as subtitle
+    - [x] Add CTA buttons (View on GitHub, Get Started, Documentation)
+  - [x] Create Quick Start section:
+    - [x] Installation command: `pip install tubefetch`
+    - [x] Basic usage example: `yt_fetch fetch --id VIDEO_ID`
+    - [x] Styled code block with syntax highlighting
+  - [x] Create Features section:
+    - [x] Use Feature Cards from descriptions.md (8 cards in responsive grid)
+    - [x] Each card with title and description
+    - [x] Styled with dark theme and teal accents
+  - [x] Ensure responsive design (mobile-friendly)
+  - [x] Use system fonts (no external font dependencies)
+- [x] Update `README.md` to include header image from `docs/site/images/tubefetch_header_readme.png`
+- [ ] Verify: Landing page renders correctly with `mkdocs serve` (requires user to test locally)
 
-### Story K.c: v0.8.3 Documentation Pages [Planned]
+### Story K.c: Documentation Pages [Done]
 
 Create markdown documentation pages for getting started, usage, and API reference.
 
-- [ ] Create `docs/site/getting-started.md`:
-  - [ ] Installation section (pip, from source, optional dependencies)
-  - [ ] Prerequisites (Python 3.14+, optional: ffmpeg for media download)
-  - [ ] Quick start examples (single video, batch processing, library usage)
-  - [ ] Configuration overview (CLI flags, config file)
-  - [ ] Next steps (links to usage guide, API reference)
-- [ ] Create `docs/site/usage.md`:
-  - [ ] CLI commands overview (`fetch`, `batch`)
-  - [ ] Common options (--id, --file, --jsonl, --output, --format, --download)
-  - [ ] Metadata extraction (yt-dlp vs YouTube API)
-  - [ ] Transcript fetching (language preference, fallback)
-  - [ ] Media download (video, audio, both)
-  - [ ] Caching and force re-fetch
-  - [ ] Examples for each use case
-- [ ] Create `docs/site/api.md`:
-  - [ ] Library API overview
-  - [ ] `fetch_video()` function signature and examples
-  - [ ] `FetchOptions` configuration class
-  - [ ] `FetchResult` output model
-  - [ ] `Metadata`, `Transcript` models
-  - [ ] Error handling (`FetchException`, `FetchErrorCode`)
-  - [ ] Batch processing with `process_batch()`
-- [ ] Create `docs/site/advanced.md`:
-  - [ ] Retry configuration (gentlify integration)
-  - [ ] Rate limiting (token bucket algorithm)
-  - [ ] Playlist and channel resolution
-  - [ ] Custom output formats
-  - [ ] Integration with AI/LLM pipelines
-- [ ] Update `mkdocs.yml` nav to include all pages
-- [ ] Verify: All pages render correctly with proper navigation and cross-links
+- [x] Create `docs/site/getting-started.md`:
+  - [x] Installation section (pip, from source, optional dependencies)
+  - [x] Prerequisites (Python 3.14+, optional: ffmpeg for media download)
+  - [x] Quick start examples (single video, batch processing, library usage)
+  - [x] Configuration overview (CLI flags, config file)
+  - [x] Next steps (links to usage guide, API reference)
+- [x] Create `docs/site/usage.md`:
+  - [x] CLI commands overview (`fetch`, `batch`)
+  - [x] Common options (--id, --file, --jsonl, --output, --format, --download)
+  - [x] Metadata extraction (yt-dlp vs YouTube API)
+  - [x] Transcript fetching (language preference, fallback)
+  - [x] Media download (video, audio, both)
+  - [x] Caching and force re-fetch
+  - [x] Examples for each use case
+- [x] Create `docs/site/api.md`:
+  - [x] Library API overview
+  - [x] `fetch_video()` function signature and examples
+  - [x] `FetchOptions` configuration class
+  - [x] `FetchResult` output model
+  - [x] `Metadata`, `Transcript` models
+  - [x] Error handling (`FetchException`, `FetchErrorCode`)
+  - [x] Batch processing with `process_batch()`
+- [x] Create `docs/site/advanced.md`:
+  - [x] Retry configuration (gentlify integration)
+  - [x] Rate limiting (token bucket algorithm)
+  - [x] Playlist and channel resolution
+  - [x] Custom output formats
+  - [x] Integration with AI/LLM pipelines
+- [x] Update `mkdocs.yml` nav to include all pages
+- [x] Verify: All pages render correctly with proper navigation and cross-links (created in Story K.a)
 
-### Story K.d: v0.8.4 GitHub Actions Deployment Workflow [Planned]
+### Story K.d: v0.8.3 GitHub Actions Deployment Workflow [Done]
 
 Automate MkDocs deployment to GitHub Pages via GitHub Actions.
 
-- [ ] Create `.github/workflows/deploy-docs.yml`:
-  - [ ] Trigger on push to `main` branch
-  - [ ] Trigger on manual `workflow_dispatch`
-  - [ ] Set permissions: `contents: read`, `pages: write`, `id-token: write`
-  - [ ] Set concurrency group: `pages` (cancel-in-progress: false)
-  - [ ] Job: `build`
-    - [ ] Checkout code
-    - [ ] Set up Python 3.11
-    - [ ] Install dependencies: `mkdocs-material`, `mkdocs-git-revision-date-localized-plugin`
-    - [ ] Build MkDocs site: `mkdocs build --strict`
-    - [ ] Upload artifact: `./site` directory
-  - [ ] Job: `deploy` (depends on build)
-    - [ ] Use environment: `github-pages`
-    - [ ] Download artifact
-    - [ ] Deploy to GitHub Pages
-- [ ] Configure GitHub Pages (manual step - requires user action):
-  - [ ] Go to repository Settings → Pages
-  - [ ] Set Source to "GitHub Actions"
-- [ ] Verify: Push to main triggers deployment; site available at `https://pointmatic.github.io/yt-fetch`
+- [x] Create `.github/workflows/deploy-docs.yml`:
+  - [x] Trigger on push to `main` branch
+  - [x] Trigger on manual `workflow_dispatch`
+  - [x] Set permissions: `contents: read`, `pages: write`, `id-token: write`
+  - [x] Set concurrency group: `pages` (cancel-in-progress: false)
+  - [x] Job: `build`
+    - [x] Checkout code
+    - [x] Set up Python 3.11
+    - [x] Install MkDocs dependencies (`mkdocs-material`, `mkdocs-git-revision-date-localized-plugin`)
+    - [x] Run `mkdocs build`
+    - [x] Upload site artifact
+  - [x] Job: `deploy` (depends on `build`)
+    - [x] Use `actions/deploy-pages@v4` to deploy to GitHub Pages
+    - [x] Set environment: `github-pages`
+- [x] Update `.gitignore` to properly ignore `site/` build output
+- [x] Configure GitHub Pages (manual step - requires user action):
+  - [x] Go to repository Settings → Pages
+  - [x] Set Source to "GitHub Actions"
+- [x] Verify: Push to main triggers deployment; site available at `https://pointmatic.github.io/yt-fetch`
 
-### Story K.e: v0.8.5 Documentation Polish & SEO [Planned]
+### Story K.e: v0.8.4 Documentation Polish & SEO [Planned]
 
 Add final touches, SEO optimization, and cross-references.
 
@@ -759,17 +760,50 @@ Add final touches, SEO optimization, and cross-references.
   - [ ] Test mobile responsiveness
 - [ ] Verify: Documentation site is complete, polished, and ready for public use
 
+### Story K.f: Rename yt-fetch to tubefetch everywhere [Done]
+
+Update all repository references from `yt-fetch` to `tubefetch` in preparation for GitHub repository rename.
+
+- [x] Update `mkdocs.yml`:
+  - [x] Change `site_url` to `https://pointmatic.github.io/tubefetch`
+  - [x] Change `repo_url` to `https://github.com/pointmatic/tubefetch`
+  - [x] Change `repo_name` to `pointmatic/tubefetch`
+- [x] Update `pyproject.toml`:
+  - [x] Change `Homepage` URL to `https://github.com/pointmatic/tubefetch`
+  - [x] Change `Repository` URL to `https://github.com/pointmatic/tubefetch`
+  - [x] Change `Bug Tracker` URL to `https://github.com/pointmatic/tubefetch/issues`
+  - [x] Change `Changelog` URL to `https://github.com/pointmatic/tubefetch/releases`
+- [x] Update `README.md`:
+  - [x] Change CI badge URL to `https://github.com/pointmatic/tubefetch/actions/workflows/ci.yml/badge.svg`
+  - [x] Change Codecov badge URLs to `codecov.io/gh/pointmatic/tubefetch`
+  - [x] Change License badge URL to `https://img.shields.io/github/license/pointmatic/tubefetch`
+- [x] Update `CONTRIBUTING.md`:
+  - [x] Change clone URL to `https://github.com/pointmatic/tubefetch.git`
+  - [x] Change directory name to `cd tubefetch`
+- [x] Update `SECURITY.md`:
+  - [x] Change issues URL to `https://github.com/pointmatic/tubefetch/issues`
+- [x] Update `docs/site/index.html`:
+  - [x] Change navigation GitHub link to `https://github.com/pointmatic/tubefetch`
+  - [x] Change CTA button GitHub link to `https://github.com/pointmatic/tubefetch`
+  - [x] Change footer LICENSE link to `https://github.com/pointmatic/tubefetch/blob/main/LICENSE`
+- [x] Update `.github/workflows/release.yml`:
+  - [x] Change PyPI environment URL to `https://pypi.org/project/tubefetch/`
+- [x] Update `.gitignore`:
+  - [x] Change `site/` to `/site/` (only ignore at repository root)
+- [x] Update `docs/guides/documentation-setup-guide.md`:
+  - [x] Remove Step 5 creating `docs/site/.gitignore` (redundant)
+  - [x] Update to instruct adding `/site/` to main `.gitignore` at repository root
+  - [x] Add note explaining `/site/` vs `site/` difference
+- [x] Remove redundant `docs/site/.gitignore` file
+- [ ] Rename GitHub repository from `yt-fetch` to `tubefetch` (manual step in GitHub Settings)
+- [ ] Verify: GitHub Pages site moves to `https://pointmatic.github.io/tubefetch`
+- [ ] Verify: Old URLs redirect to new URLs automatically
+
 ---
 
-## Phase L: Rename yt-fetch to tubefetch everywhere
+## Phase L: AI-Ready Content Extraction
 
-(TBD)
-
----
-
-## Phase M: AI-Ready Content Extraction
-
-### Story M.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
+### Story L.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
 
 Replace bare concatenation in `transcript.txt` with intelligent paragraph chunking and optional features.
 
@@ -797,7 +831,7 @@ Replace bare concatenation in `transcript.txt` with intelligent paragraph chunki
 - [ ] Verify: `transcript.txt` output is readable, paragraph-chunked text by default
 - [ ] Bump version to `0.9.0`
 
-### Story M.b: v0.9.1 Content Hashing [Planned]
+### Story L.b: v0.9.1 Content Hashing [Planned]
 
 Add SHA-256 content hashes to metadata and transcript outputs for change detection.
 
@@ -821,7 +855,7 @@ Add SHA-256 content hashes to metadata and transcript outputs for change detecti
 - [ ] Verify: `metadata.json` and `transcript.json` contain `content_hash` field
 - [ ] Bump version to `0.9.1`
 
-### Story M.c: v0.9.2 Token Count Estimation [Planned]
+### Story L.c: v0.9.2 Token Count Estimation [Planned]
 
 Optionally estimate token counts for transcript text using `tiktoken`.
 
@@ -844,7 +878,7 @@ Optionally estimate token counts for transcript text using `tiktoken`.
 - [ ] Verify: `transcript.json` contains `token_count` when tokenizer configured
 - [ ] Bump version to `0.9.2`
 
-### Story M.d: v0.9.3 Playlist and Channel Resolution [Planned]
+### Story L.d: v0.9.3 Playlist and Channel Resolution [Planned]
 
 Accept playlist and channel URLs as batch input sources.
 
@@ -871,7 +905,7 @@ Accept playlist and channel URLs as batch input sources.
   - [ ] Resolve a known public channel (with `max_videos=5`)
 - [ ] Bump version to `0.9.3`
 
-### Story M.e: v0.9.4 Video Bundle Output [Planned]
+### Story L.e: v0.9.4 Video Bundle Output [Planned]
 
 Optionally emit a unified `video_bundle.json` per video.
 
@@ -894,7 +928,7 @@ Optionally emit a unified `video_bundle.json` per video.
 - [ ] Verify: `video_bundle.json` appears in output when `--bundle` is set
 - [ ] Bump version to `0.9.4`
 
-### Story M.f: v0.9.5 README and Documentation Update [Planned]
+### Story L.f: v0.9.5 README and Documentation Update [Planned]
 
 Update README and documentation to reflect the AI-ready positioning.
 

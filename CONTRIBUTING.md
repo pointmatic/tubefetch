@@ -13,8 +13,8 @@ Thank you for your interest in contributing to yt-fetch! This document provides 
 
 ```bash
 # Clone the repository
-git clone https://github.com/pointmatic/yt-fetch.git
-cd yt-fetch
+git clone https://github.com/pointmatic/tubefetch.git
+cd tubefetch
 
 # Install development dependencies
 pip install -e ".[dev,youtube-api]"

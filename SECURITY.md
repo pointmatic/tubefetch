@@ -93,6 +93,6 @@ We appreciate your efforts to responsibly disclose your findings and will make e
 ## Contact
 
 For security issues: security@pointmatic.com  
-For general issues: https://github.com/pointmatic/yt-fetch/issues
+For general issues: https://github.com/pointmatic/tubefetch/issues
 
 Thank you for helping keep yt-fetch and its users safe!
