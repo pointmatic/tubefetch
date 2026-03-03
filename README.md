@@ -1,5 +1,11 @@
 # yt-fetch
 
+![CI](https://github.com/pointmatic/yt-fetch/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/pointmatic/yt-fetch/graph/badge.svg)](https://codecov.io/gh/pointmatic/yt-fetch)
+[![PyPI](https://img.shields.io/pypi/v/yt-fetch)](https://pypi.org/project/yt-fetch/)
+![Python](https://img.shields.io/pypi/pyversions/yt-fetch)
+![License](https://img.shields.io/github/license/pointmatic/yt-fetch)
+
 AI-ready YouTube content extraction — metadata, transcripts, and media in structured formats.
 
 Given one or more YouTube video IDs, URLs, playlists, or channels, `yt-fetch` extracts structured metadata and transcripts optimized for downstream AI/LLM pipelines. It produces LLM-ready plain text, content hashes for change detection, optional token count estimates, and unified video bundles — plus batch processing, caching, retries, and rate limiting.

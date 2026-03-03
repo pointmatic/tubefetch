@@ -33,6 +33,7 @@ dev = [
     "pytest-asyncio",
     "pytest-cov",
     "ruff",
+    "build",
 ]
 
 [project.scripts]

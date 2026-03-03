@@ -519,40 +519,40 @@ Migrate project license from MPL-2.0 to Apache-2.0 to align with current licensi
 - [x] Verify: all files have consistent Apache-2.0 headers (0 MPL-2.0 references remaining)
 - [x] Run linting and tests to ensure no issues introduced (329 passed, 9 skipped)
 
-### Story I.d: v0.7.2 Release Workflow — Auto-Publish to PyPI [Planned]
+### Story I.d: v0.7.2 Release Workflow — Auto-Publish to PyPI [Done]
 
 Automated build and publish to PyPI on version tags using OIDC trusted publishing.
 
-- [ ] Configure PyPI trusted publisher (manual step in PyPI project settings)
+- [ ] Configure PyPI trusted publisher (manual step in PyPI project settings - requires user action)
   - [ ] Set GitHub repository: `pointmatic/yt-fetch`
   - [ ] Set workflow file: `release.yml`
   - [ ] Set environment: `pypi`
-- [ ] Create `.github/workflows/release.yml`
-  - [ ] Trigger on `push` tags matching `v*`
-  - [ ] Job: `build`
-    - [ ] Checkout code
-    - [ ] Install `build` package
-    - [ ] Run `python -m build` to produce sdist + wheel in `dist/`
-    - [ ] Upload `dist/` as a workflow artifact
-  - [ ] Job: `publish` (depends on `build`)
-    - [ ] Use environment `pypi` (for OIDC trusted publishing)
-    - [ ] Download the `dist/` artifact
-    - [ ] Use `pypa/gh-action-pypi-publish@release/v1` to publish to PyPI
-- [ ] Add `build` to `[project.optional-dependencies] dev` in `pyproject.toml`
-- [ ] Verify: tagging `v0.7.2` and pushing triggers the release workflow; package appears on PyPI
+- [x] Create `.github/workflows/release.yml`
+  - [x] Trigger on `push` tags matching `v*`
+  - [x] Job: `build`
+    - [x] Checkout code
+    - [x] Install `build` package
+    - [x] Run `python -m build` to produce sdist + wheel in `dist/`
+    - [x] Upload `dist/` as a workflow artifact
+  - [x] Job: `publish` (depends on `build`)
+    - [x] Use environment `pypi` (for OIDC trusted publishing)
+    - [x] Download the `dist/` artifact
+    - [x] Use `pypa/gh-action-pypi-publish@release/v1` to publish to PyPI
+- [x] Add `build` to `[project.optional-dependencies] dev` in `pyproject.toml`
+- [ ] Verify: tagging `v0.7.2` and pushing triggers the release workflow; package appears on PyPI (requires PyPI setup and tag push)
 
-### Story I.e: v0.7.3 README Badges [Planned]
+### Story I.e: v0.7.3 README Badges [Done]
 
 Add dynamic badges to the top of `README.md`.
 
-- [ ] Add badge block immediately after the `# yt-fetch` heading:
-  - [ ] **CI status** — `![CI](https://github.com/pointmatic/yt-fetch/actions/workflows/ci.yml/badge.svg)`
-  - [ ] **Codecov** — `[![codecov](https://codecov.io/gh/pointmatic/yt-fetch/graph/badge.svg)](https://codecov.io/gh/pointmatic/yt-fetch)`
-  - [ ] **PyPI version** — `[![PyPI](https://img.shields.io/pypi/v/yt-fetch)](https://pypi.org/project/yt-fetch/)`
-  - [ ] **Python versions** — `![Python](https://img.shields.io/pypi/pyversions/yt-fetch)`
-  - [ ] **License** — `![License](https://img.shields.io/github/license/pointmatic/yt-fetch)`
-  - [ ] **Typed** — `![Typed](https://img.shields.io/badge/typed-py.typed-blue)` (only if `py.typed` marker exists)
-- [ ] Verify: badges render correctly on GitHub (CI and license badges work immediately; PyPI and Codecov badges work after first publish/upload)
+- [x] Add badge block immediately after the `# yt-fetch` heading:
+  - [x] **CI status** — `![CI](https://github.com/pointmatic/yt-fetch/actions/workflows/ci.yml/badge.svg)`
+  - [x] **Codecov** — `[![codecov](https://codecov.io/gh/pointmatic/yt-fetch/graph/badge.svg)](https://codecov.io/gh/pointmatic/yt-fetch)`
+  - [x] **PyPI version** — `[![PyPI](https://img.shields.io/pypi/v/yt-fetch)](https://pypi.org/project/yt-fetch/)`
+  - [x] **Python versions** — `![Python](https://img.shields.io/pypi/pyversions/yt-fetch)`
+  - [x] **License** — `![License](https://img.shields.io/github/license/pointmatic/yt-fetch)`
+  - [ ] **Typed** — `![Typed](https://img.shields.io/badge/typed-py.typed-blue)` (skipped - no py.typed marker exists yet, will be added in Story J.a)
+- [ ] Verify: badges render correctly on GitHub (requires push to GitHub; CI, License, and Codecov badges work now; PyPI badges work after first publish)
 
 ---
 
