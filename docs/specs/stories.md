@@ -646,29 +646,31 @@ Set up MkDocs with Material theme and create documentation directory structure.
 - [x] Update `.gitignore` to ignore `site/` build output
 - [ ] Verify: `mkdocs serve` runs locally and shows placeholder site (requires user to run locally)
 
-### Story K.b: v0.8.2 Custom Landing Page [Planned]
+### Story K.b: v0.8.2 Custom Landing Page [Done]
 
 Create a branded landing page with hero section, quick start, and feature cards.
 
-- [ ] Create `docs/site/index.html`:
-  - [ ] Add HTML5 boilerplate with meta tags (title, description, keywords from descriptions.md)
-  - [ ] Add inline CSS with dark theme (background `#0a0f14`, accent `#3ee8c8`)
-  - [ ] Create sticky navigation bar with logo and links (Features, Quick Start, Docs, GitHub)
-  - [ ] Create hero section:
-    - [ ] Use One-liner from descriptions.md as `<h1>` with accent color on "yt-fetch"
-    - [ ] Use Friendly Brief Description from descriptions.md as subtitle
-    - [ ] Add CTA buttons (View on GitHub, Get Started, Documentation)
-  - [ ] Create Quick Start section:
-    - [ ] Installation command: `pip install yt-fetch`
-    - [ ] Basic usage example: `yt_fetch fetch --id VIDEO_ID`
-    - [ ] Styled code block with syntax highlighting
-  - [ ] Create Features section:
-    - [ ] Use Feature Cards from descriptions.md (8 cards in responsive grid)
-    - [ ] Each card with icon, title, and description
-    - [ ] Styled with dark theme and teal accents
-  - [ ] Ensure responsive design (mobile-friendly)
-  - [ ] Use system fonts (no external font dependencies)
-- [ ] Verify: Landing page renders correctly with `mkdocs serve`
+- [x] Create `docs/site/index.html`:
+  - [x] Add HTML5 boilerplate with meta tags (title, description, keywords from descriptions.md)
+  - [x] Add inline CSS with dark theme (background `#0a0f14`, accent `#3ee8c8`)
+  - [x] Create sticky navigation bar with logo and links (Features, Quick Start, Docs, GitHub)
+  - [x] Create hero section:
+    - [x] Use wide banner image from `docs/site/images/tubefetch_banner_wide.png`
+    - [x] Use One-liner from descriptions.md as `<h1>` with accent color on "AI-ready"
+    - [x] Use Friendly Brief Description from descriptions.md as subtitle
+    - [x] Add CTA buttons (View on GitHub, Get Started, Documentation)
+  - [x] Create Quick Start section:
+    - [x] Installation command: `pip install tubefetch`
+    - [x] Basic usage example: `yt_fetch fetch --id VIDEO_ID`
+    - [x] Styled code block with syntax highlighting
+  - [x] Create Features section:
+    - [x] Use Feature Cards from descriptions.md (8 cards in responsive grid)
+    - [x] Each card with title and description
+    - [x] Styled with dark theme and teal accents
+  - [x] Ensure responsive design (mobile-friendly)
+  - [x] Use system fonts (no external font dependencies)
+- [x] Update `README.md` to include header image from `docs/site/images/tubefetch_header_readme.png`
+- [ ] Verify: Landing page renders correctly with `mkdocs serve` (requires user to test locally)
 
 ### Story K.c: v0.8.3 Documentation Pages [Planned]
 

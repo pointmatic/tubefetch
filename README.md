@@ -1,3 +1,5 @@
+![tubefetch](docs/site/images/tubefetch_header_readme.png)
+
 # yt-fetch
 
 ![CI](https://github.com/pointmatic/yt-fetch/actions/workflows/ci.yml/badge.svg)
