@@ -8,9 +8,6 @@
 
 import threading
 import time
-from unittest.mock import patch
-
-import pytest
 
 from yt_fetch.utils.rate_limit import TokenBucket
 

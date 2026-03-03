@@ -12,8 +12,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
 from yt_fetch.core.options import FetchOptions
@@ -144,7 +142,7 @@ class TestProcessBatchSummary:
         mock_trans.side_effect = lambda vid, opts: _make_transcript(vid)
 
         opts = FetchOptions(out=tmp_path, workers=1)
-        result = process_batch(["vid_aaaaaaa", "vid_bbbbbbb"], opts)
+        process_batch(["vid_aaaaaaa", "vid_bbbbbbb"], opts)
 
         summary_path = tmp_path / "summary.json"
         assert summary_path.exists()

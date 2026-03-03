@@ -6,7 +6,7 @@
 
 """Tests for yt_fetch.services.metadata."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -15,12 +15,11 @@ from yt_fetch.core.models import Metadata
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.services.metadata import (
     MetadataError,
-    _map_yt_dlp_info,
     _map_youtube_api_item,
+    _map_yt_dlp_info,
     _parse_iso8601_duration,
     get_metadata,
 )
-
 
 SAMPLE_YT_DLP_INFO = {
     "id": "dQw4w9WgXcQ",
@@ -169,7 +168,7 @@ class TestGetMetadata:
         mock_api.return_value = _map_yt_dlp_info("dQw4w9WgXcQ", SAMPLE_YT_DLP_INFO)
         options = FetchOptions(yt_api_key="test-key")
 
-        result = get_metadata("dQw4w9WgXcQ", options)
+        get_metadata("dQw4w9WgXcQ", options)
         mock_api.assert_called_once_with("dQw4w9WgXcQ", "test-key")
         mock_ydl.assert_not_called()
 

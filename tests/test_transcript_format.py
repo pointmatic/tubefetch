@@ -6,7 +6,6 @@
 
 """Tests for yt_fetch.utils.time_fmt — timestamp edge cases."""
 
-import pytest
 
 from yt_fetch.utils.time_fmt import seconds_to_srt, seconds_to_vtt
 

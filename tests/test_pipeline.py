@@ -8,9 +8,7 @@
 
 from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 from yt_fetch.core.errors import FetchPhase
 from yt_fetch.core.models import FetchResult, Metadata, Transcript, TranscriptSegment
@@ -199,7 +197,7 @@ class TestProcessVideo:
         mock_meta.return_value = _make_metadata()
 
         opts = FetchOptions(out=tmp_path, force_metadata=True)
-        result = process_video("dQw4w9WgXcQ", opts)
+        process_video("dQw4w9WgXcQ", opts)
 
         mock_meta.assert_called_once()
         mock_trans.assert_not_called()

@@ -15,7 +15,6 @@ from pathlib import Path
 from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult
 from yt_fetch.core.options import FetchOptions
-from yt_fetch.utils.gentlify_config import create_throttle, execute_with_retry
 from yt_fetch.core.writer import (
     read_metadata,
     read_transcript_json,
@@ -29,6 +28,7 @@ from yt_fetch.core.writer import (
 from yt_fetch.services.media import download_media
 from yt_fetch.services.metadata import MetadataError, get_metadata
 from yt_fetch.services.transcript import TranscriptError, get_transcript
+from yt_fetch.utils.gentlify_config import create_throttle, execute_with_retry
 from yt_fetch.utils.rate_limit import TokenBucket
 
 logger = logging.getLogger("yt_fetch")

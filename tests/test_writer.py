@@ -9,8 +9,6 @@
 import json
 from datetime import datetime, timezone
 
-import pytest
-
 from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.models import (
     BatchResult,

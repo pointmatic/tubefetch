@@ -14,13 +14,11 @@ import pytest
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.services.media import (
     MediaError,
-    MediaResult,
     _build_audio_format,
     _build_video_format,
     download_media,
 )
 from yt_fetch.utils.ffmpeg import check_ffmpeg
-
 
 # --- check_ffmpeg ---
 
@@ -101,7 +99,9 @@ class TestDownloadMedia:
         assert len(result.paths) == 1
         mock_run.assert_called_once()
         call_args = mock_run.call_args
-        assert call_args[1]["media_type"] if "media_type" in (call_args[1] if call_args[1] else {}) else call_args[0][3] == "video"
+        kwargs = call_args[1] if call_args[1] else {}
+        media_type = kwargs.get("media_type", call_args[0][3])
+        assert media_type == "video"
 
     @patch("yt_fetch.services.media._run_yt_dlp")
     @patch("yt_fetch.services.media.check_ffmpeg", return_value=True)
@@ -147,7 +147,7 @@ class TestRunYtDlp:
 
         from yt_fetch.services.media import _run_yt_dlp
 
-        result = _run_yt_dlp("https://youtube.com/watch?v=abc", "abc", {}, "video")
+        _run_yt_dlp("https://youtube.com/watch?v=abc", "abc", {}, "video")
         mock_ydl.download.assert_called_once_with(["https://youtube.com/watch?v=abc"])
 
     @patch("yt_fetch.services.media.yt_dlp.YoutubeDL")

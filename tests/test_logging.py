@@ -9,11 +9,8 @@
 import json
 import logging
 
-import pytest
-
 from yt_fetch.core.logging import (
     JsonlFormatter,
-    JsonlFileHandler,
     get_logger,
     log_event,
     setup_logging,

@@ -13,15 +13,12 @@ Covers:
 - Retry integration with pipeline service calls
 """
 
-from datetime import datetime, timezone
-from pathlib import Path
-from unittest.mock import patch, call
 import json
-
-import pytest
+from datetime import datetime, timezone
+from unittest.mock import patch
 
 from yt_fetch.core.errors import FetchErrorCode, FetchPhase
-from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
+from yt_fetch.core.models import Metadata, Transcript, TranscriptSegment
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.core.pipeline import process_batch, process_video
 from yt_fetch.services.metadata import MetadataError

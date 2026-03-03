@@ -16,7 +16,6 @@ from pathlib import Path
 from rich.console import Console
 from rich.logging import RichHandler
 
-
 _console = Console(stderr=True)
 
 

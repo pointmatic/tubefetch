@@ -19,8 +19,8 @@ from yt_fetch.core.errors import (
     MetadataServiceError,
     TranscriptError,
     TranscriptNotFound,
-    TranscriptServiceError,
     TranscriptsDisabledError,
+    TranscriptServiceError,
     VideoNotFoundError,
     _classify_exception,
 )
@@ -105,7 +105,7 @@ class TestFetchError:
             video_id="test789",
             details={"available_languages": ["es", "fr"]},
         )
-        
+
         # Serialize to JSON
         json_data = error.model_dump()
         assert json_data["code"] == "transcript_not_found"
@@ -114,7 +114,7 @@ class TestFetchError:
         assert json_data["retryable"] is False
         assert json_data["video_id"] == "test789"
         assert json_data["details"] == {"available_languages": ["es", "fr"]}
-        
+
         # Deserialize from JSON
         restored = FetchError(**json_data)
         assert restored.code == error.code
@@ -260,7 +260,7 @@ class TestClassifyException:
         """Test HTTP 429 → RATE_LIMITED."""
         class MockHTTPError(Exception):
             status_code = 429
-        
+
         exc = MockHTTPError("Too many requests")
         assert _classify_exception(exc) == FetchErrorCode.RATE_LIMITED
 
@@ -268,7 +268,7 @@ class TestClassifyException:
         """Test HTTP 500 → SERVICE_ERROR."""
         class MockHTTPError(Exception):
             status_code = 500
-        
+
         exc = MockHTTPError("Internal server error")
         assert _classify_exception(exc) == FetchErrorCode.SERVICE_ERROR
 
@@ -276,7 +276,7 @@ class TestClassifyException:
         """Test HTTP 503 → SERVICE_ERROR."""
         class MockHTTPError(Exception):
             code = 503
-        
+
         exc = MockHTTPError("Service unavailable")
         assert _classify_exception(exc) == FetchErrorCode.SERVICE_ERROR
 
@@ -334,24 +334,24 @@ class TestClassifyException:
                 TranscriptsDisabled,
                 VideoUnavailable,
             )
-            
+
             # Test TranscriptsDisabled
             exc = TranscriptsDisabled("test_video_id")
             assert _classify_exception(exc) == FetchErrorCode.TRANSCRIPTS_DISABLED
-            
+
             # Test NoTranscriptFound
             exc = NoTranscriptFound(
                 "test_video_id", ["en"], {"transcript_list": []}
             )
             assert _classify_exception(exc) == FetchErrorCode.TRANSCRIPT_NOT_FOUND
-            
+
             # Test NoTranscriptAvailable
             exc = NoTranscriptAvailable("test_video_id")
             assert _classify_exception(exc) == FetchErrorCode.TRANSCRIPT_NOT_FOUND
-            
+
             # Test VideoUnavailable
             exc = VideoUnavailable("test_video_id")
             assert _classify_exception(exc) == FetchErrorCode.VIDEO_NOT_FOUND
-            
+
         except ImportError:
             pytest.skip("youtube-transcript-api not installed")

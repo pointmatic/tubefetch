@@ -7,16 +7,13 @@
 """Tests for yt_fetch.core.pipeline.process_batch."""
 
 from datetime import datetime, timezone
-from unittest.mock import patch, MagicMock
-
-import pytest
+from unittest.mock import patch
 
 from yt_fetch.core.errors import FetchErrorCode
-from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
+from yt_fetch.core.models import BatchResult, Metadata, Transcript, TranscriptSegment
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.core.pipeline import process_batch
 from yt_fetch.services.metadata import MetadataError
-from yt_fetch.services.transcript import TranscriptError
 
 
 def _make_metadata(video_id: str) -> Metadata:

@@ -6,9 +6,7 @@
 
 """Tests for yt_fetch.services.id_parser."""
 
-from pathlib import Path
 
-import pytest
 
 from yt_fetch.services.id_parser import load_ids_from_file, parse_many, parse_video_id
 

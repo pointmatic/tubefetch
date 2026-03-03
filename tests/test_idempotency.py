@@ -14,12 +14,9 @@ Verifies that:
 """
 
 from datetime import datetime, timezone
-from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
-from yt_fetch.core.models import FetchResult, Metadata, Transcript, TranscriptSegment
+from yt_fetch.core.models import Metadata, Transcript, TranscriptSegment
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.core.pipeline import process_video
 from yt_fetch.services.media import MediaResult
@@ -90,7 +87,7 @@ class TestIdempotencySkip:
         opts = FetchOptions(out=tmp_path, download="video")
 
         # First run
-        result1 = process_video("testVid12345", opts)
+        process_video("testVid12345", opts)
         assert mock_media.call_count == 1
 
         # Create a fake media file so cache check passes

@@ -8,9 +8,8 @@
 
 from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-import pytest
 from click.testing import CliRunner
 
 from yt_fetch.cli import (
@@ -24,7 +23,6 @@ from yt_fetch.cli import (
 )
 from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
-from yt_fetch.core.options import FetchOptions
 from yt_fetch.services.media import MediaResult
 
 
@@ -205,8 +203,8 @@ class TestCliMedia:
 
     @patch("yt_fetch.services.media.download_media")
     def test_media_error(self, mock_dl, tmp_path):
-        from yt_fetch.services.media import MediaError
         from yt_fetch.core.errors import FetchErrorCode
+        from yt_fetch.services.media import MediaError
         mock_dl.side_effect = MediaError("download failed", code=FetchErrorCode.SERVICE_ERROR)
 
         runner = CliRunner()
@@ -240,8 +238,8 @@ class TestCliMedia:
 class TestCliTranscriptError:
     @patch("yt_fetch.services.transcript.get_transcript")
     def test_transcript_error(self, mock_get, tmp_path):
-        from yt_fetch.services.transcript import TranscriptError
         from yt_fetch.core.errors import FetchErrorCode
+        from yt_fetch.services.transcript import TranscriptError
         mock_get.side_effect = TranscriptError("not found", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
         runner = CliRunner()
@@ -254,8 +252,8 @@ class TestCliTranscriptError:
 class TestCliMetadataError:
     @patch("yt_fetch.services.metadata.get_metadata")
     def test_metadata_error(self, mock_get, tmp_path):
-        from yt_fetch.services.metadata import MetadataError
         from yt_fetch.core.errors import FetchErrorCode
+        from yt_fetch.services.metadata import MetadataError
         mock_get.side_effect = MetadataError("not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
 
         runner = CliRunner()

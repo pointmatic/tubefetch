@@ -6,14 +6,11 @@
 
 """Tests for gentlify throttle configuration and retry logic."""
 
-import asyncio
-from unittest.mock import Mock, patch
 
 import pytest
 
 from yt_fetch.core.errors import (
     FetchErrorCode,
-    FetchException,
     MetadataError,
     MetadataServiceError,
     TranscriptError,

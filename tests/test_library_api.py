@@ -9,8 +9,6 @@
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-import pytest
-
 import yt_fetch
 from yt_fetch import (
     BatchResult,

@@ -21,7 +21,6 @@ from yt_fetch.services.transcript import (
     list_available_transcripts,
 )
 
-
 # --- Helpers for mocking youtube-transcript-api objects ---
 
 

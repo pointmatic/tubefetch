@@ -27,6 +27,14 @@ from yt_fetch.utils.ffmpeg import check_ffmpeg
 
 logger = logging.getLogger("yt_fetch")
 
+# Retryable error codes for transient failures
+RETRYABLE_CODES = (
+    FetchErrorCode.NETWORK_ERROR,
+    FetchErrorCode.TIMEOUT,
+    FetchErrorCode.SERVICE_ERROR,
+    FetchErrorCode.RATE_LIMITED,
+)
+
 
 @dataclass
 class MediaResult:
@@ -70,8 +78,8 @@ def download_media(
             )
         else:
             raise MediaError(
-                f"ffmpeg is required for media download but was not found. "
-                f"Install ffmpeg or set --ffmpeg-fallback=skip.",
+                "ffmpeg is required for media download but was not found. "
+                "Install ffmpeg or set --ffmpeg-fallback=skip.",
                 code=FetchErrorCode.MISSING_DEPENDENCY
             )
 
@@ -177,8 +185,12 @@ def _run_yt_dlp(url: str, video_id: str, ydl_opts: dict, media_type: str) -> lis
             ydl.download([url])
     except yt_dlp.utils.DownloadError as exc:
         code = _classify_exception(exc)
-        if code in (FetchErrorCode.NETWORK_ERROR, FetchErrorCode.TIMEOUT, FetchErrorCode.SERVICE_ERROR, FetchErrorCode.RATE_LIMITED):
-            raise MediaServiceError(f"Failed to download {media_type} for {video_id}: {exc}", code=code) from exc
-        raise MediaError(f"Failed to download {media_type} for {video_id}: {exc}", code=code) from exc
+        if code in RETRYABLE_CODES:
+            raise MediaServiceError(
+                f"Failed to download {media_type} for {video_id}: {exc}", code=code
+            ) from exc
+        raise MediaError(
+            f"Failed to download {media_type} for {video_id}: {exc}", code=code
+        ) from exc
 
     return downloaded
