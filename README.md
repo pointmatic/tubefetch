@@ -12,7 +12,7 @@ Given one or more YouTube video IDs, URLs, playlists, or channels, `yt-fetch` ex
 - **Export formats** — JSON, plain text, WebVTT (.vtt), SubRip (.srt)
 - **Batch processing** — concurrent workers with per-video error isolation
 - **Caching** — skip already-fetched data; selective `--force` overrides
-- **Retry** — exponential backoff with jitter on transient errors
+- **Retry** — powered by [gentlify](https://github.com/pointmatic/gentlify) with exponential backoff and jitter on transient errors
 - **Rate limiting** — token bucket algorithm, shared across workers
 - **CLI + Library** — use from the command line or import as a Python package
 
@@ -152,6 +152,43 @@ allow_generated: true
 retries: 3
 rate_limit: 2.0
 workers: 3
+```
+
+## Retry Configuration
+
+`yt-fetch` uses [gentlify](https://github.com/pointmatic/gentlify) for intelligent retry management with exponential backoff and jitter.
+
+### How Retries Work
+
+- **Transient errors** (rate limits, network errors, service errors) are automatically retried
+- **Permanent errors** (video not found, transcripts disabled) fail immediately without retry
+- **Configurable attempts**: Set `--retries N` to control max retry attempts (default: 3)
+- **Disable retries**: Set `--retries 0` for external retry management (e.g., with your own gentlify configuration)
+
+### Examples
+
+```python
+from yt_fetch import fetch_video, FetchOptions
+
+# Default: 3 retry attempts
+result = fetch_video("dQw4w9WgXcQ")
+
+# Custom retry count
+opts = FetchOptions(retries=5)
+result = fetch_video("dQw4w9WgXcQ", opts)
+
+# Disable internal retries (for external retry management)
+opts = FetchOptions(retries=0)
+result = fetch_video("dQw4w9WgXcQ", opts)
+```
+
+CLI:
+```bash
+# Custom retry count
+yt_fetch fetch --id dQw4w9WgXcQ --retries 5
+
+# Disable retries
+yt_fetch fetch --id dQw4w9WgXcQ --retries 0
 ```
 
 ## Exit Codes

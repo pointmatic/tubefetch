@@ -508,27 +508,27 @@ Remove `utils/retry.py` and replace all retry decorators with gentlify. Since ge
 - [x] Verify all existing tests pass with gentlify
 - [x] Bump version to `0.6.8`
 
-### Story H.c: v0.6.9 Gentlify Integration Testing and Documentation [Planned]
+### Story H.c: v0.6.9 Gentlify Integration Testing and Documentation [Done]
 
 Comprehensive testing and documentation for gentlify integration.
 
-- [ ] Write `tests/test_gentlify_config.py`:
-  - [ ] Test retryable errors are retried with exponential backoff
-  - [ ] Test non-retryable errors fail immediately
-  - [ ] Test retry exhaustion after max attempts
-  - [ ] Test `retries=0` disables all retries
-  - [ ] Test `retries=N` respects max retry count
-  - [ ] Test different error codes map to correct retry strategies
-- [ ] Update `README.md`:
-  - [ ] Document that yt-fetch uses gentlify for retry management
-  - [ ] Add examples showing retry configuration via `FetchOptions(retries=N)`
-  - [ ] Explain how `retries=0` disables retries for external retry management
-- [ ] Update `features.md` and `tech_spec.md`:
-  - [ ] Replace custom retry documentation with gentlify-based retry
-  - [ ] Document gentlify configuration and error code mapping
-  - [ ] Update retry strategy section to reference gentlify
-- [ ] Verify: all retry behavior works identically to previous custom implementation
-- [ ] Bump version to `0.6.9`
+- [x] Write `tests/test_gentlify_config.py`:
+  - [x] Test retryable errors are retried with exponential backoff
+  - [x] Test non-retryable errors fail immediately
+  - [x] Test retry exhaustion after max attempts
+  - [x] Test `retries=0` disables all retries
+  - [x] Test `retries=N` respects max retry count
+  - [x] Test different error codes map to correct retry strategies
+- [x] Update `README.md`:
+  - [x] Document that yt-fetch uses gentlify for retry management
+  - [x] Add examples showing retry configuration via `FetchOptions(retries=N)`
+  - [x] Explain how `retries=0` disables retries for external retry management
+- [x] Update `features.md` and `tech_spec.md`:
+  - [x] Replace custom retry documentation with gentlify-based retry
+  - [x] Document gentlify configuration and error code mapping
+  - [x] Update retry strategy section to reference gentlify
+- [x] Verify: all retry behavior works identically to previous custom implementation
+- [x] Bump version to `0.6.9`
 
 ---
 

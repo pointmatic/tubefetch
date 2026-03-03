@@ -81,7 +81,7 @@ yt_fetch/
         txt_formatter.py     # LLM-ready transcript.txt formatting (paragraph chunking, timestamps)
         hashing.py           # SHA-256 content hashing for change detection
         token_counter.py     # token count estimation via tiktoken (optional dep)
-        retry.py             # exponential backoff retry decorator
+        gentlify_config.py   # gentlify throttle configuration and retry logic
         rate_limit.py        # token bucket rate limiter
         ffmpeg.py            # ffmpeg detection and helpers
 tests/
@@ -502,16 +502,22 @@ ids: list[str] = resolve_channel("https://www.youtube.com/@handle", max_videos=1
 
 ## Cross-Cutting Concerns
 
-### Retry Strategy (`utils/retry.py`)
+### Retry Strategy (`utils/gentlify_config.py`)
 
-Exponential backoff with jitter:
-- Base delay: 1 second
-- Multiplier: 2x
-- Max retries: configurable (default 3); set `retries=0` to disable internal retries entirely
-- Jitter: ±25%
-- Applies to: **transient errors only** (`TranscriptServiceError`, `MetadataServiceError`, `MediaServiceError`)
-- Permanently unavailable content (`TranscriptNotFound`, `TranscriptsDisabledError`, `VideoNotFoundError`) is **never retried**
-- Library consumers that manage their own retry policy (e.g., via `gentlify`) should set `retries=0`
+Powered by [gentlify](https://github.com/pointmatic/gentlify) with exponential backoff and jitter:
+- **Backoff strategy**: `exponential_jitter` (exponential with random jitter)
+- **Base delay**: 1.0 second
+- **Max delay**: 60.0 seconds
+- **Max retries**: configurable via `FetchOptions.retries` (default 3); set `retries=0` to disable internal retries entirely
+- **Applies to**: **transient errors only** (`TranscriptServiceError`, `MetadataServiceError`, `MediaServiceError`)
+- **Never retried**: Permanently unavailable content (`TranscriptNotFound`, `TranscriptsDisabledError`, `VideoNotFoundError`)
+- **Retryability detection**: Uses `FetchException.retryable` attribute; falls back to checking for `ConnectionError`, `TimeoutError`, `OSError`
+- **External retry management**: Library consumers managing their own retry policy should set `retries=0`
+
+Implementation details:
+- `create_throttle(options)` creates a configured `Throttle` instance based on `FetchOptions`
+- `execute_with_retry(func, throttle, *args, **kwargs)` wraps synchronous service functions for gentlify execution
+- Maintains synchronous API (async execution is internal via `asyncio.run()`)
 
 ### Rate Limiting (`utils/rate_limit.py`)
 

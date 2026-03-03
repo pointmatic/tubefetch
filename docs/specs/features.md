@@ -229,8 +229,8 @@ Requirements:
 ### 6) Error handling + resilience
 - Per-video isolation: one failing ID should not stop the batch by default.
 - Provide `--fail-fast` to stop on first failure.
-- Retries with exponential backoff for transient errors only (not for permanently unavailable content).
-  - Retries are configurable (`--retries N`); setting `--retries 0` disables internal retries entirely, allowing library consumers to manage retries externally (e.g., via `gentlify`).
+- Retries powered by [gentlify](https://github.com/pointmatic/gentlify) with exponential backoff and jitter for transient errors only (not for permanently unavailable content).
+  - Retries are configurable (`--retries N`); setting `--retries 0` disables internal retries entirely, allowing library consumers to manage retries externally with their own gentlify configuration.
 - Respect rate limiting:
   - global requests per second (simple token bucket)
   - rate limiting is configurable; setting `--rate-limit 0` disables internal rate limiting for library consumers that manage throttling externally.

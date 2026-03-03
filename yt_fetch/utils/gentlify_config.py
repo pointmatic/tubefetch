@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import asyncio
+from functools import partial
 from typing import Callable, TypeVar
 
 from gentlify import RetryConfig, Throttle
@@ -97,7 +98,9 @@ async def async_execute_with_retry(
     async def _async_wrapper(slot):
         # Execute the synchronous function in the event loop's executor
         loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(None, func, *args, **kwargs)
+        # Use partial to handle both args and kwargs
+        func_with_args = partial(func, *args, **kwargs)
+        return await loop.run_in_executor(None, func_with_args)
 
     return await throttle.execute(_async_wrapper)
 
