@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "yt-fetch"
-version = "0.7.0"
+version = "0.7.1"
 description = "YouTube video metadata, transcript, and media fetcher"
 readme = "README.md"
-license = "MPL-2.0"
+license = "Apache-2.0"
 requires-python = ">=3.14"
 authors = [
     { name = "pointmatic" },

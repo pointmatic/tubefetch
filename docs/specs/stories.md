@@ -501,10 +501,25 @@ Configure Codecov for coverage thresholds and dynamic badge.
   - [x] Set project coverage target (90%)
   - [x] Set patch coverage target (80%)
   - [x] Exclude `tests/` and `docs/` from coverage reporting
-- [ ] Enable the Codecov GitHub App on the `pointmatic/yt-fetch` repository (manual step - requires user action)
-- [ ] Verify: Codecov receives coverage data after a CI run and the badge URL resolves (requires push to GitHub)
+- [x] Enable the Codecov GitHub App on the `pointmatic/yt-fetch` repository (manual step - requires user action)
+- [x] Verify: Codecov receives coverage data after a CI run and the badge URL resolves (94.15% coverage reported)
 
-### Story I.c: v0.7.1 Release Workflow — Auto-Publish to PyPI [Planned]
+### Story I.c: v0.7.1 License Migration to Apache-2.0 [Done]
+
+Migrate project license from MPL-2.0 to Apache-2.0 to align with current licensing preference.
+
+- [x] Replace `LICENSE` file with Apache-2.0 license text
+- [x] Update `pyproject.toml`:
+  - [x] Change `license = "MPL-2.0"` to `license = "Apache-2.0"`
+  - [x] Bump version to `0.7.1`
+- [x] Update all source file headers to use Apache-2.0 boilerplate:
+  - [x] Python files (`yt_fetch/**/*.py`, `tests/**/*.py`) - 42 files updated
+  - [x] Replace MPL-2.0 header with Apache-2.0 header
+  - [x] Keep copyright year and holder unchanged: `Copyright (c) 2026 Pointmatic`
+- [x] Verify: all files have consistent Apache-2.0 headers (0 MPL-2.0 references remaining)
+- [x] Run linting and tests to ensure no issues introduced (329 passed, 9 skipped)
+
+### Story I.d: v0.7.2 Release Workflow — Auto-Publish to PyPI [Planned]
 
 Automated build and publish to PyPI on version tags using OIDC trusted publishing.
 
@@ -524,9 +539,9 @@ Automated build and publish to PyPI on version tags using OIDC trusted publishin
     - [ ] Download the `dist/` artifact
     - [ ] Use `pypa/gh-action-pypi-publish@release/v1` to publish to PyPI
 - [ ] Add `build` to `[project.optional-dependencies] dev` in `pyproject.toml`
-- [ ] Verify: tagging `v0.7.1` and pushing triggers the release workflow; package appears on PyPI
+- [ ] Verify: tagging `v0.7.2` and pushing triggers the release workflow; package appears on PyPI
 
-### Story I.d: v0.7.2 README Badges [Planned]
+### Story I.e: v0.7.3 README Badges [Planned]
 
 Add dynamic badges to the top of `README.md`.
 
@@ -555,7 +570,7 @@ Polish `pyproject.toml` for discoverability and PEP 561 compliance.
 - [ ] Add `keywords` to `[project]`: `["youtube", "transcript", "metadata", "yt-dlp", "video"]`
 - [ ] Add Trove `classifiers` to `[project]`:
   - [ ] `"Development Status :: 4 - Beta"`
-  - [ ] `"License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)"`
+  - [ ] `"License :: OSI Approved :: Apache Software License"`
   - [ ] `"Programming Language :: Python :: 3"`
   - [ ] `"Programming Language :: Python :: 3.14"`
   - [ ] `"Topic :: Multimedia :: Video"`
