@@ -3,16 +3,23 @@ requires = ["setuptools>=75.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "yt-fetch"
-version = "0.7.1"
+name = "tubefetch"
+version = "0.8.0"
 description = "YouTube video metadata, transcript, and media fetcher"
 readme = "README.md"
-license = "Apache-2.0"
+license = {text = "Apache-2.0"}
 requires-python = ">=3.14"
 authors = [
     { name = "pointmatic" },
 ]
-
+keywords = ["youtube", "transcript", "metadata", "yt-dlp", "video", "ai", "llm", "content-extraction"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Multimedia :: Video",
+    "Typing :: Typed",
+]
 dependencies = [
     "yt-dlp",
     "youtube-transcript-api",
@@ -24,6 +31,12 @@ dependencies = [
     "gentlify",
 ]
 
+[project.urls]
+Homepage = "https://github.com/pointmatic/yt-fetch"
+Repository = "https://github.com/pointmatic/yt-fetch"
+"Bug Tracker" = "https://github.com/pointmatic/yt-fetch/issues"
+Changelog = "https://github.com/pointmatic/yt-fetch/releases"
+
 [project.optional-dependencies]
 youtube-api = [
     "google-api-python-client",
@@ -34,6 +47,8 @@ dev = [
     "pytest-cov",
     "ruff",
     "build",
+    "mkdocs-material",
+    "mkdocs-git-revision-date-localized-plugin",
 ]
 
 [project.scripts]

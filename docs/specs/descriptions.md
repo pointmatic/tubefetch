@@ -7,7 +7,7 @@ Canonical source of truth for all descriptive language used across the project. 
 ## Name
 
 - yt-fetch (GitHub)
-- yt-fetch (PyPI)
+- tubefetch (PyPI)
 
 ## Tagline
 

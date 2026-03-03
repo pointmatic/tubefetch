@@ -2,8 +2,8 @@
 
 ![CI](https://github.com/pointmatic/yt-fetch/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/pointmatic/yt-fetch/graph/badge.svg)](https://codecov.io/gh/pointmatic/yt-fetch)
-[![PyPI](https://img.shields.io/pypi/v/yt-fetch)](https://pypi.org/project/yt-fetch/)
-![Python](https://img.shields.io/pypi/pyversions/yt-fetch)
+[![PyPI](https://img.shields.io/pypi/v/tubefetch)](https://pypi.org/project/tubefetch/)
+![Python](https://img.shields.io/pypi/pyversions/tubefetch)
 ![License](https://img.shields.io/github/license/pointmatic/yt-fetch)
 
 A Python CLI and library that fetches and extracts structured metadata and transcripts from YouTube videos, producing LLM-ready plain text, content hashes for change detection, and unified video bundles with batch processing, caching, and retry logic.
@@ -27,13 +27,13 @@ yt-fetch is a Python tool that extracts structured, AI-ready content from YouTub
 Requires **Python 3.14+**.
 
 ```bash
-pip install -e .
+pip install tubefetch
 ```
 
 For YouTube Data API v3 support (optional):
 
 ```bash
-pip install -e ".[youtube-api]"
+pip install tubefetch[youtube-api]
 ```
 
 > **Note:** The CLI command can be invoked as either `yt_fetch` or `yt-fetch`.

@@ -14,7 +14,7 @@
 
 """yt-fetch — YouTube video metadata, transcript, and media fetcher."""
 
-__version__ = "0.7.1"
+__version__ = "0.8.0"
 
 from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchException, FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript

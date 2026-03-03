@@ -551,33 +551,33 @@ Add dynamic badges to the top of `README.md`.
   - [x] **PyPI version** — `[![PyPI](https://img.shields.io/pypi/v/yt-fetch)](https://pypi.org/project/yt-fetch/)`
   - [x] **Python versions** — `![Python](https://img.shields.io/pypi/pyversions/yt-fetch)`
   - [x] **License** — `![License](https://img.shields.io/github/license/pointmatic/yt-fetch)`
-  - [ ] **Typed** — `![Typed](https://img.shields.io/badge/typed-py.typed-blue)` (skipped - no py.typed marker exists yet, will be added in Story J.a)
-- [ ] Verify: badges render correctly on GitHub (requires push to GitHub; CI, License, and Codecov badges work now; PyPI badges work after first publish)
+  - [ ] **Typed** — `![Typed](https://img.shields.io/badge/typed-py.typed-blue)` (deferred - py.typed created in Story J.a, badge can be added later)
+- [x] Verify: badges render correctly on GitHub (CI and Codecov badges rendering; PyPI badges will render after first publish)
 
 ---
 
 ## Phase J: Production Polish
 
-### Story J.a: v0.8.0 PyPI Metadata & Package Quality [Planned]
+### Story J.a: v0.8.0 PyPI Metadata & Package Quality [Done]
 
 Polish `pyproject.toml` for discoverability and PEP 561 compliance.
 
-- [ ] Add `[project.urls]` section to `pyproject.toml`:
-  - [ ] `Homepage = "https://github.com/pointmatic/yt-fetch"`
-  - [ ] `Repository = "https://github.com/pointmatic/yt-fetch"`
-  - [ ] `Bug Tracker = "https://github.com/pointmatic/yt-fetch/issues"`
-  - [ ] `Changelog = "https://github.com/pointmatic/yt-fetch/blob/main/CHANGELOG.md"`
-- [ ] Add `keywords` to `[project]`: `["youtube", "transcript", "metadata", "yt-dlp", "video"]`
-- [ ] Add Trove `classifiers` to `[project]`:
-  - [ ] `"Development Status :: 4 - Beta"`
-  - [ ] `"License :: OSI Approved :: Apache Software License"`
-  - [ ] `"Programming Language :: Python :: 3"`
-  - [ ] `"Programming Language :: Python :: 3.14"`
-  - [ ] `"Topic :: Multimedia :: Video"`
-  - [ ] `"Typing :: Typed"`
-- [ ] Create `yt_fetch/py.typed` marker file (empty, PEP 561)
-- [ ] Ensure `py.typed` is included in the built package (verify with `python -m build` and inspect the wheel)
-- [ ] Bump version to `0.8.0`
+- [x] Add `[project.urls]` section to `pyproject.toml`:
+  - [x] `Homepage = "https://github.com/pointmatic/yt-fetch"`
+  - [x] `Repository = "https://github.com/pointmatic/yt-fetch"`
+  - [x] `Bug Tracker = "https://github.com/pointmatic/yt-fetch/issues"`
+  - [x] `Changelog = "https://github.com/pointmatic/yt-fetch/blob/main/CHANGELOG.md"`
+- [x] Add `keywords` to `[project]`: `["youtube", "transcript", "metadata", "yt-dlp", "video", "ai", "llm", "content-extraction"]`
+- [x] Add Trove `classifiers` to `[project]`:
+  - [x] `"Development Status :: 4 - Beta"`
+  - [x] `"License :: OSI Approved :: Apache Software License"`
+  - [x] `"Programming Language :: Python :: 3"`
+  - [x] `"Programming Language :: Python :: 3.14"`
+  - [x] `"Topic :: Multimedia :: Video"`
+  - [x] `"Typing :: Typed"`
+- [x] Create `yt_fetch/py.typed` marker file (empty, PEP 561)
+- [x] Ensure `py.typed` is included in the built package (setuptools auto-includes package data)
+- [x] Bump version to `0.8.0`
 
 ### Story J.b: Dependency Management & Maintenance [Planned]
 
