@@ -17,7 +17,6 @@ import yt_dlp
 from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.utils.ffmpeg import check_ffmpeg
-from yt_fetch.utils.retry import retry
 
 logger = logging.getLogger("yt_fetch")
 
@@ -157,7 +156,6 @@ def _download_audio(
     return _run_yt_dlp(url, video_id, ydl_opts, "audio")
 
 
-@retry(retryable=(MediaError,))
 def _run_yt_dlp(url: str, video_id: str, ydl_opts: dict, media_type: str) -> list[Path]:
     """Execute yt-dlp download and return list of downloaded file paths."""
     downloaded: list[Path] = []

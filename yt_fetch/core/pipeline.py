@@ -15,6 +15,7 @@ from pathlib import Path
 from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult
 from yt_fetch.core.options import FetchOptions
+from yt_fetch.utils.gentlify_config import create_throttle, execute_with_retry
 from yt_fetch.core.writer import (
     read_metadata,
     read_transcript_json,
@@ -51,6 +52,9 @@ def process_video(
     video_dir = out_dir / video_id
     video_dir.mkdir(parents=True, exist_ok=True)
 
+    # Create gentlify throttle for retry logic
+    throttle = create_throttle(options)
+
     errors: list[FetchError] = []
     metadata = None
     transcript = None
@@ -70,7 +74,8 @@ def process_video(
         try:
             if rate_limiter:
                 rate_limiter.acquire()
-            metadata = get_metadata(video_id, options)
+            # Use gentlify for retry logic
+            metadata = execute_with_retry(get_metadata, throttle, video_id, options)
             metadata_path = write_metadata(metadata, out_dir)
             logger.info("Wrote metadata for %s", video_id)
         except MetadataError as exc:
@@ -101,7 +106,8 @@ def process_video(
         try:
             if rate_limiter:
                 rate_limiter.acquire()
-            transcript = get_transcript(video_id, options)
+            # Use gentlify for retry logic
+            transcript = execute_with_retry(get_transcript, throttle, video_id, options)
             transcript_path = write_transcript_json(transcript, out_dir)
             write_transcript_txt(transcript, out_dir)
             write_transcript_vtt(transcript, out_dir)
@@ -137,7 +143,8 @@ def process_video(
             try:
                 if rate_limiter:
                     rate_limiter.acquire()
-                result = download_media(video_id, options, out_dir)
+                # Use gentlify for retry logic
+                result = execute_with_retry(download_media, throttle, video_id, options, out_dir)
                 media_paths = result.paths
                 if result.errors:
                     errors.extend(result.errors)

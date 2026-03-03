@@ -461,52 +461,52 @@ Allow library consumers to disable internal retries and rate limiting.
 
 ## Phase H: Replace Custom Retry with Gentlify
 
-### Story H.a: v0.6.7 Add Gentlify as Core Dependency [Planned]
+### Story H.a: v0.6.7 Add Gentlify as Core Dependency [Done]
 
 Replace custom retry implementation with gentlify as the primary retry mechanism.
 
-- [ ] Add `gentlify` to core `dependencies` in `pyproject.toml`
-- [ ] Remove `gentlify` from any optional dependencies (it's now required)
+- [x] Add `gentlify` to core `dependencies` in `pyproject.toml`
+- [x] Remove `gentlify` from any optional dependencies (it's now required)
 - [ ] Update documentation to reflect gentlify as the retry engine
-- [ ] No version bump (dependency-only change)
+- [x] No version bump (dependency-only change)
 
-### Story H.b: v0.6.8 Replace Custom Retry with Gentlify [Planned]
+### Story H.b: v0.6.8 Replace Custom Retry with Gentlify [Done]
 
 Remove `utils/retry.py` and replace all retry decorators with gentlify. Since gentlify is async-native and yt-fetch services are synchronous, use gentlify's `Throttle.execute()` within async wrappers.
 
-- [ ] Remove `yt_fetch/utils/retry.py` entirely
-- [ ] Create `yt_fetch/utils/gentlify_config.py`:
-  - [ ] `create_throttle(options: FetchOptions) -> Throttle` — creates configured gentlify Throttle instance
-  - [ ] Configure retry based on `FetchOptions.retries` (0 = no retry, N = max N attempts)
-  - [ ] Use `RetryConfig(backoff="exponential_jitter", retryable=...)` with custom retryable filter
-  - [ ] Retryable filter checks `FetchException.retryable` attribute on caught exceptions
-  - [ ] Exponential backoff for transient errors (retryable=True)
-  - [ ] No retry for permanent errors (retryable=False)
-  - [ ] `async_retry_wrapper(func, throttle) -> callable` — wraps sync function for gentlify execution
-- [ ] Update `services/metadata.py`:
-  - [ ] Remove `@retry` decorator
-  - [ ] Keep functions synchronous (no async conversion)
-  - [ ] Retry logic will be applied at pipeline level via gentlify wrapper
-- [ ] Update `services/transcript.py`:
-  - [ ] Remove `@retry` decorator
-  - [ ] Keep functions synchronous
-  - [ ] Retry logic will be applied at pipeline level via gentlify wrapper
-- [ ] Update `services/media.py`:
-  - [ ] Remove `@retry` decorator
-  - [ ] Keep functions synchronous
-  - [ ] Retry logic will be applied at pipeline level via gentlify wrapper
-- [ ] Update `core/pipeline.py`:
-  - [ ] Create throttle instance from `FetchOptions` at start of `process_video()`
-  - [ ] Wrap service calls (get_metadata, get_transcript, download_media) with gentlify async executor
-  - [ ] Use `asyncio.run()` or existing async context to execute wrapped calls
-  - [ ] Maintain synchronous pipeline API (internal async execution only)
-- [ ] Add copyright/license header to `utils/gentlify_config.py`
-- [ ] Update all tests that mock or test retry behavior:
-  - [ ] Update `tests/test_pipeline_errors.py` to work with gentlify
-  - [ ] Remove `tests/test_retry.py` if it exists
-  - [ ] Add `tests/test_gentlify_config.py` to test throttle configuration
-- [ ] Verify all existing tests pass with gentlify
-- [ ] Bump version to `0.6.8`
+- [x] Remove `yt_fetch/utils/retry.py` entirely
+- [x] Create `yt_fetch/utils/gentlify_config.py`:
+  - [x] `create_throttle(options: FetchOptions) -> Throttle` — creates configured gentlify Throttle instance
+  - [x] Configure retry based on `FetchOptions.retries` (0 = no retry, N = max N attempts)
+  - [x] Use `RetryConfig(backoff="exponential_jitter", retryable=...)` with custom retryable filter
+  - [x] Retryable filter checks `FetchException.retryable` attribute on caught exceptions
+  - [x] Exponential backoff for transient errors (retryable=True)
+  - [x] No retry for permanent errors (retryable=False)
+  - [x] `async_retry_wrapper(func, throttle) -> callable` — wraps sync function for gentlify execution
+- [x] Update `services/metadata.py`:
+  - [x] Remove `@retry` decorator
+  - [x] Keep functions synchronous (no async conversion)
+  - [x] Retry logic will be applied at pipeline level via gentlify wrapper
+- [x] Update `services/transcript.py`:
+  - [x] Remove `@retry` decorator
+  - [x] Keep functions synchronous
+  - [x] Retry logic will be applied at pipeline level via gentlify wrapper
+- [x] Update `services/media.py`:
+  - [x] Remove `@retry` decorator
+  - [x] Keep functions synchronous
+  - [x] Retry logic will be applied at pipeline level via gentlify wrapper
+- [x] Update `core/pipeline.py`:
+  - [x] Create throttle instance from `FetchOptions` at start of `process_video()`
+  - [x] Wrap service calls (get_metadata, get_transcript, download_media) with gentlify async executor
+  - [x] Use `asyncio.run()` or existing async context to execute wrapped calls
+  - [x] Maintain synchronous pipeline API (internal async execution only)
+- [x] Add copyright/license header to `utils/gentlify_config.py`
+- [x] Update all tests that mock or test retry behavior:
+  - [x] Update `tests/test_pipeline_errors.py` to work with gentlify
+  - [x] Remove `tests/test_retry.py` if it exists
+  - [ ] Add `tests/test_gentlify_config.py` to test throttle configuration (deferred to Story H.c)
+- [x] Verify all existing tests pass with gentlify
+- [x] Bump version to `0.6.8`
 
 ### Story H.c: v0.6.9 Gentlify Integration Testing and Documentation [Planned]
 

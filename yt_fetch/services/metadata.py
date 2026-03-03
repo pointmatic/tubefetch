@@ -15,7 +15,6 @@ import yt_dlp
 
 from yt_fetch.core.models import Metadata
 from yt_fetch.core.options import FetchOptions
-from yt_fetch.utils.retry import retry
 
 logger = logging.getLogger("yt_fetch")
 
@@ -43,7 +42,6 @@ def get_metadata(video_id: str, options: FetchOptions) -> Metadata:
     return _yt_dlp_backend(video_id)
 
 
-@retry(retryable=(MetadataError,))
 def _yt_dlp_backend(video_id: str) -> Metadata:
     """Extract metadata via yt-dlp. Default, no API key required."""
     url = f"https://www.youtube.com/watch?v={video_id}"
