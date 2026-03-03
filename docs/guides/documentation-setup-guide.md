@@ -384,17 +384,16 @@ your-tool command-name --option1 value
 - Use tables for structured data
 - Add tabbed content with `=== "Tab 1"` syntax
 
-## Step 5: Create .gitignore
+## Step 5: Update .gitignore
 
-Create `docs/site/.gitignore`:
+Add to your main `.gitignore` file at the repository root:
 
 ```
-# MkDocs build output
+# MkDocs build output (at repository root only)
 /site/
-
-# macOS
-.DS_Store
 ```
+
+**Note:** Use `/site/` (with leading slash) to only ignore the build output directory at the repository root, not the source files in `docs/site/`.
 
 ## Step 6: Create GitHub Actions Workflow
 

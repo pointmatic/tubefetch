@@ -760,17 +760,50 @@ Add final touches, SEO optimization, and cross-references.
   - [ ] Test mobile responsiveness
 - [ ] Verify: Documentation site is complete, polished, and ready for public use
 
+### Story K.f: Rename yt-fetch to tubefetch everywhere [Done]
+
+Update all repository references from `yt-fetch` to `tubefetch` in preparation for GitHub repository rename.
+
+- [x] Update `mkdocs.yml`:
+  - [x] Change `site_url` to `https://pointmatic.github.io/tubefetch`
+  - [x] Change `repo_url` to `https://github.com/pointmatic/tubefetch`
+  - [x] Change `repo_name` to `pointmatic/tubefetch`
+- [x] Update `pyproject.toml`:
+  - [x] Change `Homepage` URL to `https://github.com/pointmatic/tubefetch`
+  - [x] Change `Repository` URL to `https://github.com/pointmatic/tubefetch`
+  - [x] Change `Bug Tracker` URL to `https://github.com/pointmatic/tubefetch/issues`
+  - [x] Change `Changelog` URL to `https://github.com/pointmatic/tubefetch/releases`
+- [x] Update `README.md`:
+  - [x] Change CI badge URL to `https://github.com/pointmatic/tubefetch/actions/workflows/ci.yml/badge.svg`
+  - [x] Change Codecov badge URLs to `codecov.io/gh/pointmatic/tubefetch`
+  - [x] Change License badge URL to `https://img.shields.io/github/license/pointmatic/tubefetch`
+- [x] Update `CONTRIBUTING.md`:
+  - [x] Change clone URL to `https://github.com/pointmatic/tubefetch.git`
+  - [x] Change directory name to `cd tubefetch`
+- [x] Update `SECURITY.md`:
+  - [x] Change issues URL to `https://github.com/pointmatic/tubefetch/issues`
+- [x] Update `docs/site/index.html`:
+  - [x] Change navigation GitHub link to `https://github.com/pointmatic/tubefetch`
+  - [x] Change CTA button GitHub link to `https://github.com/pointmatic/tubefetch`
+  - [x] Change footer LICENSE link to `https://github.com/pointmatic/tubefetch/blob/main/LICENSE`
+- [x] Update `.github/workflows/release.yml`:
+  - [x] Change PyPI environment URL to `https://pypi.org/project/tubefetch/`
+- [x] Update `.gitignore`:
+  - [x] Change `site/` to `/site/` (only ignore at repository root)
+- [x] Update `docs/guides/documentation-setup-guide.md`:
+  - [x] Remove Step 5 creating `docs/site/.gitignore` (redundant)
+  - [x] Update to instruct adding `/site/` to main `.gitignore` at repository root
+  - [x] Add note explaining `/site/` vs `site/` difference
+- [x] Remove redundant `docs/site/.gitignore` file
+- [ ] Rename GitHub repository from `yt-fetch` to `tubefetch` (manual step in GitHub Settings)
+- [ ] Verify: GitHub Pages site moves to `https://pointmatic.github.io/tubefetch`
+- [ ] Verify: Old URLs redirect to new URLs automatically
+
 ---
 
-## Phase L: Rename yt-fetch to tubefetch everywhere
+## Phase L: AI-Ready Content Extraction
 
-(TBD)
-
----
-
-## Phase M: AI-Ready Content Extraction
-
-### Story M.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
+### Story L.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
 
 Replace bare concatenation in `transcript.txt` with intelligent paragraph chunking and optional features.
 
@@ -798,7 +831,7 @@ Replace bare concatenation in `transcript.txt` with intelligent paragraph chunki
 - [ ] Verify: `transcript.txt` output is readable, paragraph-chunked text by default
 - [ ] Bump version to `0.9.0`
 
-### Story M.b: v0.9.1 Content Hashing [Planned]
+### Story L.b: v0.9.1 Content Hashing [Planned]
 
 Add SHA-256 content hashes to metadata and transcript outputs for change detection.
 
@@ -822,7 +855,7 @@ Add SHA-256 content hashes to metadata and transcript outputs for change detecti
 - [ ] Verify: `metadata.json` and `transcript.json` contain `content_hash` field
 - [ ] Bump version to `0.9.1`
 
-### Story M.c: v0.9.2 Token Count Estimation [Planned]
+### Story L.c: v0.9.2 Token Count Estimation [Planned]
 
 Optionally estimate token counts for transcript text using `tiktoken`.
 
@@ -845,7 +878,7 @@ Optionally estimate token counts for transcript text using `tiktoken`.
 - [ ] Verify: `transcript.json` contains `token_count` when tokenizer configured
 - [ ] Bump version to `0.9.2`
 
-### Story M.d: v0.9.3 Playlist and Channel Resolution [Planned]
+### Story L.d: v0.9.3 Playlist and Channel Resolution [Planned]
 
 Accept playlist and channel URLs as batch input sources.
 
@@ -872,7 +905,7 @@ Accept playlist and channel URLs as batch input sources.
   - [ ] Resolve a known public channel (with `max_videos=5`)
 - [ ] Bump version to `0.9.3`
 
-### Story M.e: v0.9.4 Video Bundle Output [Planned]
+### Story L.e: v0.9.4 Video Bundle Output [Planned]
 
 Optionally emit a unified `video_bundle.json` per video.
 
@@ -895,7 +928,7 @@ Optionally emit a unified `video_bundle.json` per video.
 - [ ] Verify: `video_bundle.json` appears in output when `--bundle` is set
 - [ ] Bump version to `0.9.4`
 
-### Story M.f: v0.9.5 README and Documentation Update [Planned]
+### Story L.f: v0.9.5 README and Documentation Update [Planned]
 
 Update README and documentation to reflect the AI-ready positioning.
 

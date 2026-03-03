@@ -40,7 +40,7 @@ jobs:
     needs: build
     environment:
       name: pypi
-      url: https://pypi.org/project/yt-fetch/
+      url: https://pypi.org/project/tubefetch/
     permissions:
       id-token: write
 

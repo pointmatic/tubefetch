@@ -2,11 +2,11 @@
 
 # yt-fetch
 
-![CI](https://github.com/pointmatic/yt-fetch/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/pointmatic/yt-fetch/graph/badge.svg)](https://codecov.io/gh/pointmatic/yt-fetch)
+![CI](https://github.com/pointmatic/tubefetch/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/pointmatic/tubefetch/graph/badge.svg)](https://codecov.io/gh/pointmatic/tubefetch)
 [![PyPI](https://img.shields.io/pypi/v/tubefetch)](https://pypi.org/project/tubefetch/)
 ![Python](https://img.shields.io/pypi/pyversions/tubefetch)
-![License](https://img.shields.io/github/license/pointmatic/yt-fetch)
+![License](https://img.shields.io/github/license/pointmatic/tubefetch)
 
 A Python CLI and library that fetches and extracts structured metadata and transcripts from YouTube videos, producing LLM-ready plain text, content hashes for change detection, and unified video bundles with batch processing, caching, and retry logic.
 
