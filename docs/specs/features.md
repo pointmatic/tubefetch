@@ -1,4 +1,4 @@
-# features.md — yt-fetch: AI-Ready YouTube Content Extraction
+# features.md — yt-fetch: Fetch structured, AI-ready content from YouTube videos. Extract AI-ready YouTube content: metadata, transcripts, and media in structured formats.
 
 ## Overview
 This document defines the features and functionality (not technical or implementation details) for yt-fetch. For architecture, modules, and dependencies see `tech_spec.md`.

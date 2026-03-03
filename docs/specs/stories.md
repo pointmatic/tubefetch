@@ -617,9 +617,153 @@ Streamline release notes generation.
 
 ---
 
-## Phase K: AI-Ready Content Extraction
+## Phase K: GitHub Pages Documentation
 
-### Story K.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
+### Story K.a: v0.7.4 MkDocs Configuration & Project Structure [Planned]
+
+Set up MkDocs with Material theme and create documentation directory structure.
+
+- [ ] Install MkDocs dependencies locally:
+  - [ ] `pip install mkdocs-material mkdocs-git-revision-date-localized-plugin`
+- [ ] Create `mkdocs.yml` at repository root:
+  - [ ] Set `site_name: yt-fetch`
+  - [ ] Set `site_description` from descriptions.md (Friendly Brief Description)
+  - [ ] Set `site_url: https://pointmatic.github.io/yt-fetch`
+  - [ ] Set `repo_url: https://github.com/pointmatic/yt-fetch`
+  - [ ] Configure Material theme with teal/cyan palette (matching brand color `#3ee8c8`)
+  - [ ] Enable dark/light mode toggle
+  - [ ] Enable navigation features (instant, tracking, tabs, sections, expand, top)
+  - [ ] Enable search features (suggest, highlight)
+  - [ ] Enable content features (code.copy, code.annotate)
+  - [ ] Set `docs_dir: docs/site`
+  - [ ] Set `site_dir: site`
+  - [ ] Configure `nav` structure with Home (index.html) and placeholder pages
+  - [ ] Add markdown extensions (admonition, pymdownx.details, pymdownx.superfences, pymdownx.highlight, pymdownx.tabbed, tables, toc)
+  - [ ] Add plugins (search, git-revision-date-localized)
+- [ ] Create `docs/site/` directory structure
+- [ ] Create `docs/site/.gitignore`:
+  - [ ] Ignore `/site/` build output
+  - [ ] Ignore `.DS_Store`
+- [ ] Add `mkdocs-material` and `mkdocs-git-revision-date-localized-plugin` to `[project.optional-dependencies] dev` in `pyproject.toml`
+- [ ] Verify: `mkdocs serve` runs locally and shows placeholder site
+
+### Story K.b: v0.7.5 Custom Landing Page [Planned]
+
+Create a branded landing page with hero section, quick start, and feature cards.
+
+- [ ] Create `docs/site/index.html`:
+  - [ ] Add HTML5 boilerplate with meta tags (title, description, keywords from descriptions.md)
+  - [ ] Add inline CSS with dark theme (background `#0a0f14`, accent `#3ee8c8`)
+  - [ ] Create sticky navigation bar with logo and links (Features, Quick Start, Docs, GitHub)
+  - [ ] Create hero section:
+    - [ ] Use One-liner from descriptions.md as `<h1>` with accent color on "yt-fetch"
+    - [ ] Use Friendly Brief Description from descriptions.md as subtitle
+    - [ ] Add CTA buttons (View on GitHub, Get Started, Documentation)
+  - [ ] Create Quick Start section:
+    - [ ] Installation command: `pip install yt-fetch`
+    - [ ] Basic usage example: `yt_fetch fetch --id VIDEO_ID`
+    - [ ] Styled code block with syntax highlighting
+  - [ ] Create Features section:
+    - [ ] Use Feature Cards from descriptions.md (8 cards in responsive grid)
+    - [ ] Each card with icon, title, and description
+    - [ ] Styled with dark theme and teal accents
+  - [ ] Ensure responsive design (mobile-friendly)
+  - [ ] Use system fonts (no external font dependencies)
+- [ ] Verify: Landing page renders correctly with `mkdocs serve`
+
+### Story K.c: v0.7.6 Documentation Pages [Planned]
+
+Create markdown documentation pages for getting started, usage, and API reference.
+
+- [ ] Create `docs/site/getting-started.md`:
+  - [ ] Installation section (pip, from source, optional dependencies)
+  - [ ] Prerequisites (Python 3.14+, optional: ffmpeg for media download)
+  - [ ] Quick start examples (single video, batch processing, library usage)
+  - [ ] Configuration overview (CLI flags, config file)
+  - [ ] Next steps (links to usage guide, API reference)
+- [ ] Create `docs/site/usage.md`:
+  - [ ] CLI commands overview (`fetch`, `batch`)
+  - [ ] Common options (--id, --file, --jsonl, --output, --format, --download)
+  - [ ] Metadata extraction (yt-dlp vs YouTube API)
+  - [ ] Transcript fetching (language preference, fallback)
+  - [ ] Media download (video, audio, both)
+  - [ ] Caching and force re-fetch
+  - [ ] Examples for each use case
+- [ ] Create `docs/site/api.md`:
+  - [ ] Library API overview
+  - [ ] `fetch_video()` function signature and examples
+  - [ ] `FetchOptions` configuration class
+  - [ ] `FetchResult` output model
+  - [ ] `Metadata`, `Transcript` models
+  - [ ] Error handling (`FetchException`, `FetchErrorCode`)
+  - [ ] Batch processing with `process_batch()`
+- [ ] Create `docs/site/advanced.md`:
+  - [ ] Retry configuration (gentlify integration)
+  - [ ] Rate limiting (token bucket algorithm)
+  - [ ] Playlist and channel resolution
+  - [ ] Custom output formats
+  - [ ] Integration with AI/LLM pipelines
+- [ ] Update `mkdocs.yml` nav to include all pages
+- [ ] Verify: All pages render correctly with proper navigation and cross-links
+
+### Story K.d: v0.7.7 GitHub Actions Deployment Workflow [Planned]
+
+Automate MkDocs deployment to GitHub Pages via GitHub Actions.
+
+- [ ] Create `.github/workflows/deploy-docs.yml`:
+  - [ ] Trigger on push to `main` branch
+  - [ ] Trigger on manual `workflow_dispatch`
+  - [ ] Set permissions: `contents: read`, `pages: write`, `id-token: write`
+  - [ ] Set concurrency group: `pages` (cancel-in-progress: false)
+  - [ ] Job: `build`
+    - [ ] Checkout code
+    - [ ] Set up Python 3.11
+    - [ ] Install dependencies: `mkdocs-material`, `mkdocs-git-revision-date-localized-plugin`
+    - [ ] Build MkDocs site: `mkdocs build --strict`
+    - [ ] Upload artifact: `./site` directory
+  - [ ] Job: `deploy` (depends on build)
+    - [ ] Use environment: `github-pages`
+    - [ ] Download artifact
+    - [ ] Deploy to GitHub Pages
+- [ ] Configure GitHub Pages (manual step - requires user action):
+  - [ ] Go to repository Settings → Pages
+  - [ ] Set Source to "GitHub Actions"
+- [ ] Verify: Push to main triggers deployment; site available at `https://pointmatic.github.io/yt-fetch`
+
+### Story K.e: v0.7.8 Documentation Polish & SEO [Planned]
+
+Add final touches, SEO optimization, and cross-references.
+
+- [ ] Update `index.html`:
+  - [ ] Add Open Graph meta tags (og:title, og:description, og:image, og:url)
+  - [ ] Add Twitter Card meta tags
+  - [ ] Add favicon link (if available)
+  - [ ] Ensure all links are correct (internal and external)
+- [ ] Update all markdown pages:
+  - [ ] Add cross-references between related pages
+  - [ ] Use admonitions for notes, warnings, tips
+  - [ ] Add code examples with proper syntax highlighting
+  - [ ] Ensure consistent formatting and style
+- [ ] Create `docs/site/changelog.md`:
+  - [ ] Link to GitHub releases
+  - [ ] Summarize major version changes
+- [ ] Update `mkdocs.yml`:
+  - [ ] Add `extra` section with social links (GitHub)
+  - [ ] Add copyright notice
+  - [ ] Verify all nav links are correct
+- [ ] Test locally:
+  - [ ] Run `mkdocs serve` and verify all pages load
+  - [ ] Test navigation between pages
+  - [ ] Test search functionality
+  - [ ] Test dark/light mode toggle
+  - [ ] Test mobile responsiveness
+- [ ] Verify: Documentation site is complete, polished, and ready for public use
+
+---
+
+## Phase L: AI-Ready Content Extraction
+
+### Story L.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
 
 Replace bare concatenation in `transcript.txt` with intelligent paragraph chunking and optional features.
 
@@ -647,7 +791,7 @@ Replace bare concatenation in `transcript.txt` with intelligent paragraph chunki
 - [ ] Verify: `transcript.txt` output is readable, paragraph-chunked text by default
 - [ ] Bump version to `0.9.0`
 
-### Story K.b: v0.9.1 Content Hashing [Planned]
+### Story L.b: v0.9.1 Content Hashing [Planned]
 
 Add SHA-256 content hashes to metadata and transcript outputs for change detection.
 
@@ -671,7 +815,7 @@ Add SHA-256 content hashes to metadata and transcript outputs for change detecti
 - [ ] Verify: `metadata.json` and `transcript.json` contain `content_hash` field
 - [ ] Bump version to `0.9.1`
 
-### Story K.c: v0.9.2 Token Count Estimation [Planned]
+### Story L.c: v0.9.2 Token Count Estimation [Planned]
 
 Optionally estimate token counts for transcript text using `tiktoken`.
 
@@ -694,7 +838,7 @@ Optionally estimate token counts for transcript text using `tiktoken`.
 - [ ] Verify: `transcript.json` contains `token_count` when tokenizer configured
 - [ ] Bump version to `0.9.2`
 
-### Story K.d: v0.9.3 Playlist and Channel Resolution [Planned]
+### Story L.d: v0.9.3 Playlist and Channel Resolution [Planned]
 
 Accept playlist and channel URLs as batch input sources.
 

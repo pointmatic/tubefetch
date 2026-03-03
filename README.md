@@ -6,9 +6,9 @@
 ![Python](https://img.shields.io/pypi/pyversions/yt-fetch)
 ![License](https://img.shields.io/github/license/pointmatic/yt-fetch)
 
-AI-ready YouTube content extraction — metadata, transcripts, and media in structured formats.
+A Python CLI and library that fetches and extracts structured metadata and transcripts from YouTube videos, producing LLM-ready plain text, content hashes for change detection, and unified video bundles with batch processing, caching, and retry logic.
 
-Given one or more YouTube video IDs, URLs, playlists, or channels, `yt-fetch` extracts structured metadata and transcripts optimized for downstream AI/LLM pipelines. It produces LLM-ready plain text, content hashes for change detection, optional token count estimates, and unified video bundles — plus batch processing, caching, retries, and rate limiting.
+yt-fetch is a Python tool that extracts structured, AI-ready content from YouTube videos. Given one or more video IDs, URLs, playlists, or channels, it produces normalized metadata, transcripts, and optional media in formats optimized for downstream AI/LLM pipelines (summarization, fact-checking, RAG, search indexing, etc.). It provides content hashes for change detection, optional token count estimates, and unified video bundles. The tool supports both CLI and library usage with batch processing, intelligent caching, configurable retries via gentlify, and rate limiting.
 
 ## Features
 
@@ -18,7 +18,7 @@ Given one or more YouTube video IDs, URLs, playlists, or channels, `yt-fetch` ex
 - **Export formats** — JSON, plain text, WebVTT (.vtt), SubRip (.srt)
 - **Batch processing** — concurrent workers with per-video error isolation
 - **Caching** — skip already-fetched data; selective `--force` overrides
-- **Retry** — powered by [gentlify](https://github.com/pointmatic/gentlify) with exponential backoff and jitter on transient errors
+- **Retry** — powered by gentlify with exponential backoff and jitter on transient errors
 - **Rate limiting** — token bucket algorithm, shared across workers
 - **CLI + Library** — use from the command line or import as a Python package
 

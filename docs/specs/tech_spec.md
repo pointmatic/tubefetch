@@ -28,6 +28,7 @@ This document defines the technical architecture, dependencies, module design, a
 | `click` | CLI framework with subcommands |
 | `pyyaml` | Config file parsing (`yt_fetch.yaml`) |
 | `rich` | Console output, progress bars, and logging |
+| `gentlify` | Async retry and rate limiting library |
 
 ### Optional Runtime Dependencies
 
@@ -55,6 +56,8 @@ This document defines the technical architecture, dependencies, module design, a
 
 ## Package Structure
 
+**Note:** Modules marked with `*` are planned for Phase L (v0.9.x) and not yet implemented as of v0.7.1.
+
 ```
 yt_fetch/
     __init__.py              # version, public API exports
@@ -71,16 +74,16 @@ yt_fetch/
     services/
         __init__.py
         id_parser.py         # URL/ID parsing and validation
-        resolver.py          # playlist/channel URL → video ID list resolution
+        resolver.py *        # playlist/channel URL → video ID list resolution (Phase L)
         metadata.py          # metadata retrieval (yt-dlp + YouTube API backends)
         transcript.py        # transcript fetching with language selection
         media.py             # media download via yt-dlp
     utils/
         __init__.py
         time_fmt.py          # VTT/SRT timestamp formatting
-        txt_formatter.py     # LLM-ready transcript.txt formatting (paragraph chunking, timestamps)
-        hashing.py           # SHA-256 content hashing for change detection
-        token_counter.py     # token count estimation via tiktoken (optional dep)
+        txt_formatter.py *   # LLM-ready transcript.txt formatting (Phase L)
+        hashing.py *         # SHA-256 content hashing for change detection (Phase L)
+        token_counter.py *   # token count estimation via tiktoken (Phase L)
         gentlify_config.py   # gentlify throttle configuration and retry logic
         rate_limit.py        # token bucket rate limiter
         ffmpeg.py            # ffmpeg detection and helpers
@@ -93,11 +96,11 @@ tests/
     test_writer.py           # output file generation
     test_pipeline.py         # pipeline idempotency, error handling
     test_errors.py           # error classification, exception hierarchy
-    test_resolver.py         # playlist/channel URL resolution
-    test_txt_formatter.py    # LLM-ready transcript formatting
-    test_hashing.py          # content hash computation
-    test_token_counter.py    # token count estimation
-    test_bundle.py           # video bundle output
+    test_resolver.py *       # playlist/channel URL resolution (Phase L)
+    test_txt_formatter.py *  # LLM-ready transcript formatting (Phase L)
+    test_hashing.py *        # content hash computation (Phase L)
+    test_token_counter.py *  # token count estimation (Phase L)
+    test_bundle.py *         # video bundle output (Phase L)
     test_cli.py              # CLI smoke tests
     integration/
         __init__.py
