@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 
 import pytest
 
+from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.models import (
     BatchResult,
     FetchResult,
@@ -271,7 +272,19 @@ class TestWriteSummary:
             failed=1,
             results=[
                 FetchResult(video_id="a", success=True),
-                FetchResult(video_id="b", success=False, errors=["fail"]),
+                FetchResult(
+                    video_id="b",
+                    success=False,
+                    errors=[
+                        FetchError(
+                            code=FetchErrorCode.UNKNOWN,
+                            message="fail",
+                            phase=FetchPhase.METADATA,
+                            retryable=False,
+                            video_id="b",
+                        )
+                    ],
+                ),
             ],
         )
         path = write_summary(batch, tmp_path)

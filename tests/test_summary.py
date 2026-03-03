@@ -14,6 +14,7 @@ from unittest.mock import patch
 
 import pytest
 
+from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.core.pipeline import print_summary, process_batch
@@ -51,7 +52,19 @@ class TestPrintSummary:
             results=[
                 FetchResult(video_id="a", success=True, transcript_path=Path("/a/t.json")),
                 FetchResult(video_id="b", success=True, transcript_path=Path("/b/t.json")),
-                FetchResult(video_id="c", success=False, errors=["transcript: fail"]),
+                FetchResult(
+                    video_id="c",
+                    success=False,
+                    errors=[
+                        FetchError(
+                            code=FetchErrorCode.TRANSCRIPT_NOT_FOUND,
+                            message="transcript: fail",
+                            phase=FetchPhase.TRANSCRIPT,
+                            retryable=False,
+                            video_id="c",
+                        )
+                    ],
+                ),
             ],
         )
         with caplog.at_level(logging.INFO, logger="yt_fetch"):
@@ -69,7 +82,19 @@ class TestPrintSummary:
             failed=1,
             results=[
                 FetchResult(video_id="a", success=True, transcript_path=Path("/a/t.json")),
-                FetchResult(video_id="b", success=False, errors=["transcript: not found"]),
+                FetchResult(
+                    video_id="b",
+                    success=False,
+                    errors=[
+                        FetchError(
+                            code=FetchErrorCode.TRANSCRIPT_NOT_FOUND,
+                            message="transcript: not found",
+                            phase=FetchPhase.TRANSCRIPT,
+                            retryable=False,
+                            video_id="b",
+                        )
+                    ],
+                ),
             ],
         )
         with caplog.at_level(logging.INFO, logger="yt_fetch"):

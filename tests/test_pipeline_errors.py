@@ -20,6 +20,7 @@ import json
 
 import pytest
 
+from yt_fetch.core.errors import FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.core.pipeline import process_batch, process_video
@@ -129,7 +130,7 @@ class TestBatchTranscriptErrors:
         bad = [r for r in result.results if r.video_id == "bad_trans_aaa"]
         assert len(bad) == 1
         assert bad[0].success is True
-        assert any("transcript" in e for e in bad[0].errors)
+        assert any(e.phase == FetchPhase.TRANSCRIPT for e in bad[0].errors)
 
         # All videos should succeed (transcript failure is a warning)
         good = [r for r in result.results if r.success]
@@ -147,8 +148,8 @@ class TestBatchTranscriptErrors:
 
         assert result.success is False
         assert len(result.errors) == 2
-        assert any("metadata" in e for e in result.errors)
-        assert any("transcript" in e for e in result.errors)
+        assert any(e.phase == FetchPhase.METADATA for e in result.errors)
+        assert any(e.phase == FetchPhase.TRANSCRIPT for e in result.errors)
 
 
 # --- Fail-fast with transcript errors ---
@@ -249,4 +250,4 @@ class TestRetryIntegration:
         result = process_video("testVid12345", opts)
 
         assert result.success is False
-        assert any("metadata" in e for e in result.errors)
+        assert any(e.phase == FetchPhase.METADATA for e in result.errors)

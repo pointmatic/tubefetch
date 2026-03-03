@@ -12,6 +12,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from yt_fetch.core.errors import FetchPhase
 from yt_fetch.core.models import FetchResult, Metadata, Transcript, TranscriptSegment
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.core.pipeline import process_video
@@ -90,7 +91,7 @@ class TestProcessVideo:
         assert result.metadata_path is None
         assert result.transcript_path is not None
         assert len(result.errors) == 1
-        assert "metadata" in result.errors[0]
+        assert result.errors[0].phase == FetchPhase.METADATA
 
     @patch("yt_fetch.core.pipeline.get_transcript")
     @patch("yt_fetch.core.pipeline.get_metadata")
@@ -105,7 +106,7 @@ class TestProcessVideo:
         assert result.metadata_path is not None
         assert result.transcript_path is None
         assert len(result.errors) == 1
-        assert "transcript" in result.errors[0]
+        assert result.errors[0].phase == FetchPhase.TRANSCRIPT
 
     @patch("yt_fetch.core.pipeline.get_transcript")
     @patch("yt_fetch.core.pipeline.get_metadata")
@@ -257,7 +258,7 @@ class TestProcessVideo:
         assert result.metadata is not None
         assert result.transcript is None
         assert len(result.errors) == 1
-        assert "transcript" in result.errors[0]
+        assert result.errors[0].phase == FetchPhase.TRANSCRIPT
 
     @patch("yt_fetch.core.pipeline.get_transcript")
     @patch("yt_fetch.core.pipeline.get_metadata")
@@ -271,7 +272,7 @@ class TestProcessVideo:
         assert result.success is False
         assert result.metadata is None
         assert result.transcript is not None
-        assert any("metadata" in e for e in result.errors)
+        assert any(e.phase == FetchPhase.METADATA for e in result.errors)
 
     @patch("yt_fetch.core.pipeline.get_transcript")
     @patch("yt_fetch.core.pipeline.get_metadata")

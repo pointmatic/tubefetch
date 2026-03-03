@@ -22,7 +22,9 @@ from yt_fetch.cli import (
     _exit_code,
     cli,
 )
+from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
+from yt_fetch.core.options import FetchOptions
 from yt_fetch.services.media import MediaResult
 
 
@@ -124,7 +126,19 @@ class TestCliFetch:
             total=2, succeeded=1, failed=1,
             results=[
                 FetchResult(video_id="a", success=True),
-                FetchResult(video_id="b", success=False, errors=["fail"]),
+                FetchResult(
+                    video_id="b",
+                    success=False,
+                    errors=[
+                        FetchError(
+                            code=FetchErrorCode.UNKNOWN,
+                            message="fail",
+                            phase=FetchPhase.METADATA,
+                            retryable=False,
+                            video_id="b",
+                        )
+                    ],
+                ),
             ],
         )
         runner = CliRunner()
@@ -203,7 +217,17 @@ class TestCliMedia:
     @patch("yt_fetch.services.media.download_media")
     def test_media_skipped(self, mock_dl, tmp_path):
         mock_dl.return_value = MediaResult(
-            video_id="dQw4w9WgXcQ", skipped=True, errors=["no ffmpeg"],
+            video_id="dQw4w9WgXcQ",
+            skipped=True,
+            errors=[
+                FetchError(
+                    code=FetchErrorCode.MISSING_DEPENDENCY,
+                    message="no ffmpeg",
+                    phase=FetchPhase.MEDIA,
+                    retryable=False,
+                    video_id="dQw4w9WgXcQ",
+                )
+            ],
         )
         runner = CliRunner()
         result = runner.invoke(cli, [

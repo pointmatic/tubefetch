@@ -12,6 +12,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
+from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.models import (
     BatchResult,
     FetchResult,
@@ -165,7 +166,15 @@ class TestFetchResult:
         r = FetchResult(
             video_id="abc",
             success=False,
-            errors=["Video not found"],
+            errors=[
+                FetchError(
+                    code=FetchErrorCode.VIDEO_NOT_FOUND,
+                    message="Video not found",
+                    phase=FetchPhase.METADATA,
+                    retryable=False,
+                    video_id="abc",
+                )
+            ],
         )
         assert r.success is False
         assert len(r.errors) == 1
@@ -189,7 +198,19 @@ class TestBatchResult:
             results=[
                 FetchResult(video_id="a", success=True),
                 FetchResult(video_id="b", success=True),
-                FetchResult(video_id="c", success=False, errors=["fail"]),
+                FetchResult(
+                    video_id="c",
+                    success=False,
+                    errors=[
+                        FetchError(
+                            code=FetchErrorCode.UNKNOWN,
+                            message="fail",
+                            phase=FetchPhase.METADATA,
+                            retryable=False,
+                            video_id="c",
+                        )
+                    ],
+                ),
             ],
         )
         assert b.total == 3

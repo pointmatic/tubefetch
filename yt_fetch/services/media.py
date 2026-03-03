@@ -14,6 +14,7 @@ from pathlib import Path
 
 import yt_dlp
 
+from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.utils.ffmpeg import check_ffmpeg
 from yt_fetch.utils.retry import retry
@@ -32,7 +33,7 @@ class MediaResult:
     video_id: str
     paths: list[Path] = field(default_factory=list)
     skipped: bool = False
-    errors: list[str] = field(default_factory=list)
+    errors: list[FetchError] = field(default_factory=list)
 
 
 def download_media(
@@ -55,7 +56,15 @@ def download_media(
             return MediaResult(
                 video_id=video_id,
                 skipped=True,
-                errors=["ffmpeg not found, skipped media download"],
+                errors=[
+                    FetchError(
+                        code=FetchErrorCode.MISSING_DEPENDENCY,
+                        message="ffmpeg not found, skipped media download",
+                        phase=FetchPhase.MEDIA,
+                        retryable=False,
+                        video_id=video_id,
+                    )
+                ],
             )
         else:
             raise MediaError(

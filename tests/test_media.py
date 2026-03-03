@@ -88,7 +88,8 @@ class TestDownloadMedia:
         opts = FetchOptions(download="video", ffmpeg_fallback="skip")
         result = download_media("dQw4w9WgXcQ", opts, tmp_path)
         assert result.skipped is True
-        assert "ffmpeg not found" in result.errors[0]
+        assert len(result.errors) == 1
+        assert "ffmpeg not found" in result.errors[0].message
 
     @patch("yt_fetch.services.media._run_yt_dlp")
     @patch("yt_fetch.services.media.check_ffmpeg", return_value=True)

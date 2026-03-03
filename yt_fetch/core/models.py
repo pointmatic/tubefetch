@@ -13,6 +13,8 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+from yt_fetch.core.errors import FetchError
+
 
 class Metadata(BaseModel):
     video_id: str
@@ -56,7 +58,7 @@ class FetchResult(BaseModel):
     media_paths: list[Path] = []
     metadata: Metadata | None = None
     transcript: Transcript | None = None
-    errors: list[str] = []
+    errors: list[FetchError] = []
 
 
 class BatchResult(BaseModel):

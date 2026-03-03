@@ -12,6 +12,7 @@ import asyncio
 import logging
 from pathlib import Path
 
+from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.core.writer import (
@@ -50,7 +51,7 @@ def process_video(
     video_dir = out_dir / video_id
     video_dir.mkdir(parents=True, exist_ok=True)
 
-    errors: list[str] = []
+    errors: list[FetchError] = []
     metadata = None
     transcript = None
     metadata_path: Path | None = None
@@ -74,7 +75,15 @@ def process_video(
             logger.info("Wrote metadata for %s", video_id)
         except MetadataError as exc:
             logger.error("Metadata error for %s: %s", video_id, exc)
-            errors.append(f"metadata: {exc}")
+            errors.append(
+                FetchError(
+                    code=getattr(exc, "code", FetchErrorCode.UNKNOWN),
+                    message=str(exc),
+                    phase=FetchPhase.METADATA,
+                    retryable=getattr(exc, "retryable", False),
+                    video_id=video_id,
+                )
+            )
     else:
         metadata_path = metadata_path_candidate
         metadata = read_metadata(out_dir, video_id)
@@ -100,7 +109,15 @@ def process_video(
             logger.info("Wrote transcript for %s", video_id)
         except TranscriptError as exc:
             logger.error("Transcript error for %s: %s", video_id, exc)
-            errors.append(f"transcript: {exc}")
+            errors.append(
+                FetchError(
+                    code=getattr(exc, "code", FetchErrorCode.UNKNOWN),
+                    message=str(exc),
+                    phase=FetchPhase.TRANSCRIPT,
+                    retryable=getattr(exc, "retryable", False),
+                    video_id=video_id,
+                )
+            )
     else:
         transcript_path = transcript_path_candidate
         transcript = read_transcript_json(out_dir, video_id)
@@ -128,12 +145,22 @@ def process_video(
                     logger.info("Downloaded media for %s", video_id)
             except Exception as exc:
                 logger.error("Media error for %s: %s", video_id, exc)
-                errors.append(f"media: {exc}")
+                errors.append(
+                    FetchError(
+                        code=FetchErrorCode.UNKNOWN,
+                        message=str(exc),
+                        phase=FetchPhase.MEDIA,
+                        retryable=False,
+                        video_id=video_id,
+                    )
+                )
         else:
             media_paths = list(media_dir.iterdir()) if media_dir.exists() else []
             logger.debug("Skipping media for %s (cached)", video_id)
 
-    metadata_failed = any(e.startswith("metadata:") for e in errors)
+    metadata_failed = any(
+        e.phase == FetchPhase.METADATA and not e.retryable for e in errors
+    )
     success = not metadata_failed
     return FetchResult(
         video_id=video_id,
@@ -173,7 +200,7 @@ def print_summary(batch: BatchResult, out_dir: Path) -> None:
     )
     transcript_fail = sum(
         1 for r in batch.results
-        if any("transcript" in e for e in r.errors)
+        if any(e.phase == FetchPhase.TRANSCRIPT for e in r.errors)
     )
     media_count = sum(len(r.media_paths) for r in batch.results)
 

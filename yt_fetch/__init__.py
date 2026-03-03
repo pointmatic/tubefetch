@@ -6,8 +6,9 @@
 
 """yt-fetch — YouTube video metadata, transcript, and media fetcher."""
 
-__version__ = "0.5.2"
+__version__ = "0.6.0"
 
+from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchException, FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript
 from yt_fetch.core.options import FetchOptions
 
@@ -35,7 +36,15 @@ def fetch_video(video_id: str, options: FetchOptions | None = None) -> FetchResu
         return FetchResult(
             video_id=video_id,
             success=False,
-            errors=[f"Invalid video ID or URL: {video_id}"],
+            errors=[
+                FetchError(
+                    code=FetchErrorCode.INVALID_VIDEO_ID,
+                    message=f"Invalid video ID or URL: {video_id}",
+                    phase=FetchPhase.METADATA,
+                    retryable=False,
+                    video_id=video_id,
+                )
+            ],
         )
 
     return process_video(parsed, options)
@@ -72,4 +81,8 @@ __all__ = [
     "BatchResult",
     "Metadata",
     "Transcript",
+    "FetchError",
+    "FetchErrorCode",
+    "FetchPhase",
+    "FetchException",
 ]

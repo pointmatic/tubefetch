@@ -340,31 +340,31 @@ Feature Requests: Report available languages on transcript failure.
 
 ## Phase G: Structured Error Handling
 
-### Story G.a: v0.6.0 Error Models and Exception Hierarchy [Planned]
+### Story G.a: v0.6.0 Error Models and Exception Hierarchy [Done]
 
 Create `core/errors.py` with all error enums, the `FetchError` model, and the full exception hierarchy.
 
-- [ ] Create `yt_fetch/core/errors.py`:
-  - [ ] `FetchErrorCode(StrEnum)` with all codes per `error_handling_features.md`
-  - [ ] `FetchPhase(StrEnum)` — `METADATA`, `TRANSCRIPT`, `MEDIA`
-  - [ ] `FetchError(BaseModel)` — `code`, `message`, `phase`, `retryable`, `video_id`, `details: dict[str, Any] | None`
-  - [ ] `FetchException(Exception)` base class with `code: FetchErrorCode` and `retryable: bool`
-  - [ ] Transcript exceptions: `TranscriptError`, `TranscriptNotFound`, `TranscriptsDisabledError`, `TranscriptServiceError`
-  - [ ] Metadata exceptions: `MetadataError`, `VideoNotFoundError`, `MetadataServiceError`
-  - [ ] Media exceptions: `MediaError`, `MediaServiceError`
-- [ ] Add copyright/license header to `core/errors.py`
-- [ ] Export public types from `yt_fetch/__init__.py`: `FetchErrorCode`, `FetchPhase`, `FetchError`, `FetchException`
-- [ ] Update `FetchResult.errors` in `core/models.py` from `list[str]` to `list[FetchError]`
-- [ ] Write `tests/test_errors.py`:
-  - [ ] Test `FetchErrorCode` enum values and serialization
-  - [ ] Test `FetchPhase` enum values
-  - [ ] Test `FetchError` model creation and JSON round-trip
-  - [ ] Test exception hierarchy: `TranscriptNotFound` is a `TranscriptError` is a `FetchException`
-  - [ ] Test each exception subclass carries the correct default `code` and `retryable`
-- [ ] Verify: all existing tests still pass (no regressions from model type change)
-- [ ] Bump version to `0.6.0` in `__init__.py` and `pyproject.toml`
+- [x] Create `yt_fetch/core/errors.py`:
+  - [x] `FetchErrorCode(StrEnum)` with all codes per `error_handling_features.md`
+  - [x] `FetchPhase(StrEnum)` — `METADATA`, `TRANSCRIPT`, `MEDIA`
+  - [x] `FetchError(BaseModel)` — `code`, `message`, `phase`, `retryable`, `video_id`, `details: dict[str, Any] | None`
+  - [x] `FetchException(Exception)` base class with `code: FetchErrorCode` and `retryable: bool`
+  - [x] Transcript exceptions: `TranscriptError`, `TranscriptNotFound`, `TranscriptsDisabledError`, `TranscriptServiceError`
+  - [x] Metadata exceptions: `MetadataError`, `VideoNotFoundError`, `MetadataServiceError`
+  - [x] Media exceptions: `MediaError`, `MediaServiceError`
+- [x] Add copyright/license header to `core/errors.py`
+- [x] Export public types from `yt_fetch/__init__.py`: `FetchErrorCode`, `FetchPhase`, `FetchError`, `FetchException`
+- [x] Update `FetchResult.errors` in `core/models.py` from `list[str]` to `list[FetchError]`
+- [x] Write `tests/test_errors.py`:
+  - [x] Test `FetchErrorCode` enum values and serialization
+  - [x] Test `FetchPhase` enum values
+  - [x] Test `FetchError` model creation and JSON round-trip
+  - [x] Test exception hierarchy: `TranscriptNotFound` is a `TranscriptError` is a `FetchException`
+  - [x] Test each exception subclass carries the correct default `code` and `retryable`
+- [x] Verify: all existing tests still pass (no regressions from model type change)
+- [x] Bump version to `0.6.0` in `__init__.py` and `pyproject.toml`
 
-### Story G.b: v0.6.1 Error Classification Helper [Planned]
+### Story G.b: v0.6.1 Error Classification Helper [Superseded by Phase H]
 
 Implement `_classify_exception()` with exception-type-first classification.
 
@@ -380,7 +380,7 @@ Implement `_classify_exception()` with exception-type-first classification.
   - [ ] Test unknown exception → `UNKNOWN`
 - [ ] Bump version to `0.6.1`
 
-### Story G.c: v0.6.2 Transcript Service Error Classification [Planned]
+### Story G.c: v0.6.2 Transcript Service Error Classification [Superseded by Phase H]
 
 Update `services/transcript.py` to use the new exception hierarchy and classify errors.
 
@@ -396,7 +396,7 @@ Update `services/transcript.py` to use the new exception hierarchy and classify 
 - [ ] Update existing transcript tests to use new exception types
 - [ ] Bump version to `0.6.2`
 
-### Story G.d: v0.6.3 Metadata Service Error Classification [Planned]
+### Story G.d: v0.6.3 Metadata Service Error Classification [Superseded by Phase H]
 
 Update `services/metadata.py` to use the new exception hierarchy.
 
@@ -409,7 +409,7 @@ Update `services/metadata.py` to use the new exception hierarchy.
 - [ ] Update existing metadata tests to use new exception types
 - [ ] Bump version to `0.6.3`
 
-### Story G.e: v0.6.4 Media Service Error Classification [Planned]
+### Story G.e: v0.6.4 Media Service Error Classification [Superseded by Phase H]
 
 Update `services/media.py` to use the new exception hierarchy.
 
@@ -422,7 +422,7 @@ Update `services/media.py` to use the new exception hierarchy.
 - [ ] Update existing media tests to use new exception types
 - [ ] Bump version to `0.6.4`
 
-### Story G.f: v0.6.5 Pipeline Structured Error Integration [Planned]
+### Story G.f: v0.6.5 Pipeline Structured Error Integration [Superseded by Phase H]
 
 Update `core/pipeline.py` to produce `FetchError` objects instead of strings.
 
@@ -442,7 +442,7 @@ Update `core/pipeline.py` to produce `FetchError` objects instead of strings.
   - [ ] Test that `VideoNotFoundError` produces `success=False`
 - [ ] Bump version to `0.6.5`
 
-### Story G.g: v0.6.6 Configurable Retries and Rate Limiting [Planned]
+### Story G.g: v0.6.6 Configurable Retries and Rate Limiting [Superseded by Phase H]
 
 Allow library consumers to disable internal retries and rate limiting.
 
@@ -459,9 +459,82 @@ Allow library consumers to disable internal retries and rate limiting.
 
 ---
 
-## Phase H: CI/CD & Automation
+## Phase H: Replace Custom Retry with Gentlify
 
-### Story H.a: v0.7.0 CI Workflow [Planned]
+### Story H.a: v0.6.7 Add Gentlify as Core Dependency [Planned]
+
+Replace custom retry implementation with gentlify as the primary retry mechanism.
+
+- [ ] Add `gentlify` to core `dependencies` in `pyproject.toml`
+- [ ] Remove `gentlify` from any optional dependencies (it's now required)
+- [ ] Update documentation to reflect gentlify as the retry engine
+- [ ] No version bump (dependency-only change)
+
+### Story H.b: v0.6.8 Replace Custom Retry with Gentlify [Planned]
+
+Remove `utils/retry.py` and replace all retry decorators with gentlify. Since gentlify is async-native and yt-fetch services are synchronous, use gentlify's `Throttle.execute()` within async wrappers.
+
+- [ ] Remove `yt_fetch/utils/retry.py` entirely
+- [ ] Create `yt_fetch/utils/gentlify_config.py`:
+  - [ ] `create_throttle(options: FetchOptions) -> Throttle` — creates configured gentlify Throttle instance
+  - [ ] Configure retry based on `FetchOptions.retries` (0 = no retry, N = max N attempts)
+  - [ ] Use `RetryConfig(backoff="exponential_jitter", retryable=...)` with custom retryable filter
+  - [ ] Retryable filter checks `FetchException.retryable` attribute on caught exceptions
+  - [ ] Exponential backoff for transient errors (retryable=True)
+  - [ ] No retry for permanent errors (retryable=False)
+  - [ ] `async_retry_wrapper(func, throttle) -> callable` — wraps sync function for gentlify execution
+- [ ] Update `services/metadata.py`:
+  - [ ] Remove `@retry` decorator
+  - [ ] Keep functions synchronous (no async conversion)
+  - [ ] Retry logic will be applied at pipeline level via gentlify wrapper
+- [ ] Update `services/transcript.py`:
+  - [ ] Remove `@retry` decorator
+  - [ ] Keep functions synchronous
+  - [ ] Retry logic will be applied at pipeline level via gentlify wrapper
+- [ ] Update `services/media.py`:
+  - [ ] Remove `@retry` decorator
+  - [ ] Keep functions synchronous
+  - [ ] Retry logic will be applied at pipeline level via gentlify wrapper
+- [ ] Update `core/pipeline.py`:
+  - [ ] Create throttle instance from `FetchOptions` at start of `process_video()`
+  - [ ] Wrap service calls (get_metadata, get_transcript, download_media) with gentlify async executor
+  - [ ] Use `asyncio.run()` or existing async context to execute wrapped calls
+  - [ ] Maintain synchronous pipeline API (internal async execution only)
+- [ ] Add copyright/license header to `utils/gentlify_config.py`
+- [ ] Update all tests that mock or test retry behavior:
+  - [ ] Update `tests/test_pipeline_errors.py` to work with gentlify
+  - [ ] Remove `tests/test_retry.py` if it exists
+  - [ ] Add `tests/test_gentlify_config.py` to test throttle configuration
+- [ ] Verify all existing tests pass with gentlify
+- [ ] Bump version to `0.6.8`
+
+### Story H.c: v0.6.9 Gentlify Integration Testing and Documentation [Planned]
+
+Comprehensive testing and documentation for gentlify integration.
+
+- [ ] Write `tests/test_gentlify_config.py`:
+  - [ ] Test retryable errors are retried with exponential backoff
+  - [ ] Test non-retryable errors fail immediately
+  - [ ] Test retry exhaustion after max attempts
+  - [ ] Test `retries=0` disables all retries
+  - [ ] Test `retries=N` respects max retry count
+  - [ ] Test different error codes map to correct retry strategies
+- [ ] Update `README.md`:
+  - [ ] Document that yt-fetch uses gentlify for retry management
+  - [ ] Add examples showing retry configuration via `FetchOptions(retries=N)`
+  - [ ] Explain how `retries=0` disables retries for external retry management
+- [ ] Update `features.md` and `tech_spec.md`:
+  - [ ] Replace custom retry documentation with gentlify-based retry
+  - [ ] Document gentlify configuration and error code mapping
+  - [ ] Update retry strategy section to reference gentlify
+- [ ] Verify: all retry behavior works identically to previous custom implementation
+- [ ] Bump version to `0.6.9`
+
+---
+
+## Phase I: CI/CD & Automation
+
+### Story I.a: v0.7.0 CI Workflow [Planned]
 
 GitHub Actions workflow for linting, testing, and coverage on every push and PR.
 
@@ -478,7 +551,7 @@ GitHub Actions workflow for linting, testing, and coverage on every push and PR.
 - [ ] Add `pytest-cov` to `[project.optional-dependencies] dev` in `pyproject.toml`
 - [ ] Verify: push to a branch triggers CI; lint, test, and coverage upload all pass
 
-### Story H.b: Codecov Configuration [Planned]
+### Story I.b: Codecov Configuration [Planned]
 
 Configure Codecov for coverage thresholds and dynamic badge.
 
@@ -489,7 +562,7 @@ Configure Codecov for coverage thresholds and dynamic badge.
 - [ ] Enable the Codecov GitHub App on the `pointmatic/yt-fetch` repository (manual step)
 - [ ] Verify: Codecov receives coverage data after a CI run and the badge URL resolves
 
-### Story H.c: v0.7.1 Release Workflow — Auto-Publish to PyPI [Planned]
+### Story I.c: v0.7.1 Release Workflow — Auto-Publish to PyPI [Planned]
 
 Automated build and publish to PyPI on version tags using OIDC trusted publishing.
 
@@ -511,7 +584,7 @@ Automated build and publish to PyPI on version tags using OIDC trusted publishin
 - [ ] Add `build` to `[project.optional-dependencies] dev` in `pyproject.toml`
 - [ ] Verify: tagging `v0.7.1` and pushing triggers the release workflow; package appears on PyPI
 
-### Story H.d: v0.7.2 README Badges [Planned]
+### Story I.d: v0.7.2 README Badges [Planned]
 
 Add dynamic badges to the top of `README.md`.
 
@@ -526,9 +599,9 @@ Add dynamic badges to the top of `README.md`.
 
 ---
 
-## Phase I: Production Polish
+## Phase J: Production Polish
 
-### Story I.a: v0.8.0 PyPI Metadata & Package Quality [Planned]
+### Story J.a: v0.8.0 PyPI Metadata & Package Quality [Planned]
 
 Polish `pyproject.toml` for discoverability and PEP 561 compliance.
 
@@ -549,7 +622,7 @@ Polish `pyproject.toml` for discoverability and PEP 561 compliance.
 - [ ] Ensure `py.typed` is included in the built package (verify with `python -m build` and inspect the wheel)
 - [ ] Bump version to `0.8.0`
 
-### Story I.b: Dependency Management & Maintenance [Planned]
+### Story J.b: Dependency Management & Maintenance [Planned]
 
 Automated dependency updates and contribution guidelines.
 
@@ -562,7 +635,7 @@ Automated dependency updates and contribution guidelines.
   - [ ] PR process (branch, test, review)
 - [ ] Create `SECURITY.md` with vulnerability reporting instructions
 
-### Story I.c: Branch Protection & Repo Settings [Planned]
+### Story J.c: Branch Protection & Repo Settings [Planned]
 
 Manual configuration steps for repository hardening.
 
@@ -572,7 +645,7 @@ Manual configuration steps for repository hardening.
   - [ ] Require branches to be up to date before merge
 - [ ] Verify: PRs to `main` cannot be merged without passing CI
 
-### Story I.d: Changelog Automation [Planned]
+### Story J.d: Changelog Automation [Planned]
 
 Streamline release notes generation.
 
@@ -587,9 +660,9 @@ Streamline release notes generation.
 
 ---
 
-## Phase J: AI-Ready Content Extraction
+## Phase K: AI-Ready Content Extraction
 
-### Story J.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
+### Story K.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
 
 Replace bare concatenation in `transcript.txt` with intelligent paragraph chunking and optional features.
 
@@ -617,7 +690,7 @@ Replace bare concatenation in `transcript.txt` with intelligent paragraph chunki
 - [ ] Verify: `transcript.txt` output is readable, paragraph-chunked text by default
 - [ ] Bump version to `0.9.0`
 
-### Story J.b: v0.9.1 Content Hashing [Planned]
+### Story K.b: v0.9.1 Content Hashing [Planned]
 
 Add SHA-256 content hashes to metadata and transcript outputs for change detection.
 
@@ -641,7 +714,7 @@ Add SHA-256 content hashes to metadata and transcript outputs for change detecti
 - [ ] Verify: `metadata.json` and `transcript.json` contain `content_hash` field
 - [ ] Bump version to `0.9.1`
 
-### Story J.c: v0.9.2 Token Count Estimation [Planned]
+### Story K.c: v0.9.2 Token Count Estimation [Planned]
 
 Optionally estimate token counts for transcript text using `tiktoken`.
 
@@ -664,7 +737,7 @@ Optionally estimate token counts for transcript text using `tiktoken`.
 - [ ] Verify: `transcript.json` contains `token_count` when tokenizer configured
 - [ ] Bump version to `0.9.2`
 
-### Story J.d: v0.9.3 Playlist and Channel Resolution [Planned]
+### Story K.d: v0.9.3 Playlist and Channel Resolution [Planned]
 
 Accept playlist and channel URLs as batch input sources.
 
@@ -691,7 +764,7 @@ Accept playlist and channel URLs as batch input sources.
   - [ ] Resolve a known public channel (with `max_videos=5`)
 - [ ] Bump version to `0.9.3`
 
-### Story J.e: v0.9.4 Video Bundle Output [Planned]
+### Story K.e: v0.9.4 Video Bundle Output [Planned]
 
 Optionally emit a unified `video_bundle.json` per video.
 
@@ -714,7 +787,7 @@ Optionally emit a unified `video_bundle.json` per video.
 - [ ] Verify: `video_bundle.json` appears in output when `--bundle` is set
 - [ ] Bump version to `0.9.4`
 
-### Story J.f: v0.9.5 README and Documentation Update [Planned]
+### Story K.f: v0.9.5 README and Documentation Update [Planned]
 
 Update README and documentation to reflect the AI-ready positioning.
 

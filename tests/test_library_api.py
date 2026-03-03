@@ -103,7 +103,8 @@ class TestFetchVideo:
     def test_with_invalid_id(self):
         result = fetch_video("not-valid")
         assert result.success is False
-        assert "Invalid video ID" in result.errors[0]
+        assert len(result.errors) == 1
+        assert "Invalid video ID" in result.errors[0].message
 
     @patch("yt_fetch.core.pipeline.get_transcript")
     @patch("yt_fetch.core.pipeline.get_metadata")
