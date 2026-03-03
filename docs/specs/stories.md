@@ -579,47 +579,47 @@ Polish `pyproject.toml` for discoverability and PEP 561 compliance.
 - [x] Ensure `py.typed` is included in the built package (setuptools auto-includes package data)
 - [x] Bump version to `0.8.0`
 
-### Story J.b: Dependency Management & Maintenance [Planned]
+### Story J.b: Dependency Management & Maintenance [Done]
 
 Automated dependency updates and contribution guidelines.
 
-- [ ] Create `.github/dependabot.yml`
-  - [ ] Enable `pip` ecosystem updates (weekly schedule)
-  - [ ] Enable `github-actions` ecosystem updates (weekly schedule)
-- [ ] Create `CONTRIBUTING.md` with:
-  - [ ] Development setup instructions (clone, install dev deps, run tests)
-  - [ ] Code style expectations (ruff, license headers)
-  - [ ] PR process (branch, test, review)
-- [ ] Create `SECURITY.md` with vulnerability reporting instructions
+- [x] Create `.github/dependabot.yml`
+  - [x] Enable `pip` ecosystem updates (weekly schedule)
+  - [x] Enable `github-actions` ecosystem updates (weekly schedule)
+- [x] Create `CONTRIBUTING.md` with:
+  - [x] Development setup instructions (clone, install dev deps, run tests)
+  - [x] Code style expectations (ruff, license headers)
+  - [x] PR process (branch, test, review)
+- [x] Create `SECURITY.md` with vulnerability reporting instructions
 
-### Story J.c: Branch Protection & Repo Settings [Planned]
+### Story J.c: Branch Protection & Repo Settings [Done]
 
 Manual configuration steps for repository hardening.
 
-- [ ] Enable branch protection on `main`:
-  - [ ] Require CI status checks to pass before merge
-  - [ ] Require at least one review (if collaborators exist)
-  - [ ] Require branches to be up to date before merge
-- [ ] Verify: PRs to `main` cannot be merged without passing CI
+- [x] Enable branch protection on `main`:
+  - [x] Require CI status checks to pass before merge
+  - [x] Require at least one review (if collaborators exist)
+  - [x] Require branches to be up to date before merge
+- [x] Verify: PRs to `main` cannot be merged without passing CI
 
-### Story J.d: Changelog Automation [Planned]
+### Story J.d: Changelog Automation [Done]
 
 Streamline release notes generation.
 
-- [ ] Add a `release` section to the release workflow (`.github/workflows/release.yml`):
-  - [ ] After successful PyPI publish, create a GitHub Release from the tag
-  - [ ] Auto-generate release notes from merged PR titles since the last tag
-- [ ] Document the release process in `CONTRIBUTING.md`:
-  - [ ] Bump version in `pyproject.toml` and `yt_fetch/__init__.py`
-  - [ ] Update `CHANGELOG.md`
-  - [ ] Commit, tag `vX.Y.Z`, push tag
-  - [ ] CI builds and publishes automatically
+- [x] Add a `release` section to the release workflow (`.github/workflows/release.yml`):
+  - [x] After successful PyPI publish, create a GitHub Release from the tag
+  - [x] Auto-generate release notes from merged PR titles since the last tag
+- [x] Document the release process in `CONTRIBUTING.md`:
+  - [x] Bump version in `pyproject.toml` and `yt_fetch/__init__.py`
+  - [x] Update `CHANGELOG.md`
+  - [x] Commit, tag `vX.Y.Z`, push tag
+  - [x] CI builds and publishes automatically
 
 ---
 
 ## Phase K: GitHub Pages Documentation
 
-### Story K.a: v0.7.4 MkDocs Configuration & Project Structure [Planned]
+### Story K.a: v0.8.1 MkDocs Configuration & Project Structure [Planned]
 
 Set up MkDocs with Material theme and create documentation directory structure.
 
@@ -647,7 +647,7 @@ Set up MkDocs with Material theme and create documentation directory structure.
 - [ ] Add `mkdocs-material` and `mkdocs-git-revision-date-localized-plugin` to `[project.optional-dependencies] dev` in `pyproject.toml`
 - [ ] Verify: `mkdocs serve` runs locally and shows placeholder site
 
-### Story K.b: v0.7.5 Custom Landing Page [Planned]
+### Story K.b: v0.8.2 Custom Landing Page [Planned]
 
 Create a branded landing page with hero section, quick start, and feature cards.
 
@@ -671,7 +671,7 @@ Create a branded landing page with hero section, quick start, and feature cards.
   - [ ] Use system fonts (no external font dependencies)
 - [ ] Verify: Landing page renders correctly with `mkdocs serve`
 
-### Story K.c: v0.7.6 Documentation Pages [Planned]
+### Story K.c: v0.8.3 Documentation Pages [Planned]
 
 Create markdown documentation pages for getting started, usage, and API reference.
 
@@ -706,7 +706,7 @@ Create markdown documentation pages for getting started, usage, and API referenc
 - [ ] Update `mkdocs.yml` nav to include all pages
 - [ ] Verify: All pages render correctly with proper navigation and cross-links
 
-### Story K.d: v0.7.7 GitHub Actions Deployment Workflow [Planned]
+### Story K.d: v0.8.4 GitHub Actions Deployment Workflow [Planned]
 
 Automate MkDocs deployment to GitHub Pages via GitHub Actions.
 
@@ -730,7 +730,7 @@ Automate MkDocs deployment to GitHub Pages via GitHub Actions.
   - [ ] Set Source to "GitHub Actions"
 - [ ] Verify: Push to main triggers deployment; site available at `https://pointmatic.github.io/yt-fetch`
 
-### Story K.e: v0.7.8 Documentation Polish & SEO [Planned]
+### Story K.e: v0.8.5 Documentation Polish & SEO [Planned]
 
 Add final touches, SEO optimization, and cross-references.
 
@@ -761,9 +761,15 @@ Add final touches, SEO optimization, and cross-references.
 
 ---
 
-## Phase L: AI-Ready Content Extraction
+## Phase L: Rename yt-fetch to tubefetch everywhere
 
-### Story L.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
+(TBD)
+
+---
+
+## Phase M: AI-Ready Content Extraction
+
+### Story M.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
 
 Replace bare concatenation in `transcript.txt` with intelligent paragraph chunking and optional features.
 
@@ -791,7 +797,7 @@ Replace bare concatenation in `transcript.txt` with intelligent paragraph chunki
 - [ ] Verify: `transcript.txt` output is readable, paragraph-chunked text by default
 - [ ] Bump version to `0.9.0`
 
-### Story L.b: v0.9.1 Content Hashing [Planned]
+### Story M.b: v0.9.1 Content Hashing [Planned]
 
 Add SHA-256 content hashes to metadata and transcript outputs for change detection.
 
@@ -815,7 +821,7 @@ Add SHA-256 content hashes to metadata and transcript outputs for change detecti
 - [ ] Verify: `metadata.json` and `transcript.json` contain `content_hash` field
 - [ ] Bump version to `0.9.1`
 
-### Story L.c: v0.9.2 Token Count Estimation [Planned]
+### Story M.c: v0.9.2 Token Count Estimation [Planned]
 
 Optionally estimate token counts for transcript text using `tiktoken`.
 
@@ -838,7 +844,7 @@ Optionally estimate token counts for transcript text using `tiktoken`.
 - [ ] Verify: `transcript.json` contains `token_count` when tokenizer configured
 - [ ] Bump version to `0.9.2`
 
-### Story L.d: v0.9.3 Playlist and Channel Resolution [Planned]
+### Story M.d: v0.9.3 Playlist and Channel Resolution [Planned]
 
 Accept playlist and channel URLs as batch input sources.
 
@@ -865,7 +871,7 @@ Accept playlist and channel URLs as batch input sources.
   - [ ] Resolve a known public channel (with `max_videos=5`)
 - [ ] Bump version to `0.9.3`
 
-### Story K.e: v0.9.4 Video Bundle Output [Planned]
+### Story M.e: v0.9.4 Video Bundle Output [Planned]
 
 Optionally emit a unified `video_bundle.json` per video.
 
@@ -888,7 +894,7 @@ Optionally emit a unified `video_bundle.json` per video.
 - [ ] Verify: `video_bundle.json` appears in output when `--bundle` is set
 - [ ] Bump version to `0.9.4`
 
-### Story K.f: v0.9.5 README and Documentation Update [Planned]
+### Story M.f: v0.9.5 README and Documentation Update [Planned]
 
 Update README and documentation to reflect the AI-ready positioning.
 
