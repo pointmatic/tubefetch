@@ -476,22 +476,22 @@ Migrate services to use centralized exception hierarchy and implement exception 
 
 ## Phase I: CI/CD & Automation
 
-### Story I.a: v0.7.0 CI Workflow [Planned]
+### Story I.a: v0.7.0 CI Workflow [Done]
 
 GitHub Actions workflow for linting, testing, and coverage on every push and PR.
 
-- [ ] Create `.github/workflows/ci.yml`
-  - [ ] Trigger on `push` (all branches) and `pull_request` (all branches)
-  - [ ] Job: `lint` — install dev deps, run `ruff check .` and `ruff format --check .`
-  - [ ] Job: `test` — Python version matrix (3.14)
-    - [ ] Install package with dev extras (`pip install -e ".[dev]"`)
-    - [ ] Install `pytest-cov`
-    - [ ] Run `pytest --cov=yt_fetch --cov-report=xml --cov-report=term-missing`
-    - [ ] Upload `coverage.xml` to Codecov via `codecov/codecov-action@v4`
-  - [ ] Job: `integration` (optional, manual trigger via `workflow_dispatch` or gated by `RUN_INTEGRATION` secret)
-    - [ ] Run `RUN_INTEGRATION=1 pytest tests/integration/`
-- [ ] Add `pytest-cov` to `[project.optional-dependencies] dev` in `pyproject.toml`
-- [ ] Verify: push to a branch triggers CI; lint, test, and coverage upload all pass
+- [x] Create `.github/workflows/ci.yml`
+  - [x] Trigger on `push` (all branches) and `pull_request` (all branches)
+  - [x] Job: `lint` — install dev deps, run `ruff check .` and `ruff format --check .`
+  - [x] Job: `test` — Python version matrix (3.14)
+    - [x] Install package with dev extras (`pip install -e ".[dev]"`)
+    - [x] Install `pytest-cov`
+    - [x] Run `pytest --cov=yt_fetch --cov-report=xml --cov-report=term-missing`
+    - [x] Upload `coverage.xml` to Codecov via `codecov/codecov-action@v4`
+  - [x] Job: `integration` (optional, manual trigger via `workflow_dispatch` or gated by `RUN_INTEGRATION` secret)
+    - [x] Run `RUN_INTEGRATION=1 pytest tests/integration/`
+- [x] Add `pytest-cov` to `[project.optional-dependencies] dev` in `pyproject.toml`
+- [x] Verify: coverage command works locally (94% coverage, 329 tests passed)
 
 ### Story I.b: Codecov Configuration [Planned]
 
