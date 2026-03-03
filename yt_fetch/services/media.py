@@ -14,15 +14,18 @@ from pathlib import Path
 
 import yt_dlp
 
-from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
+from yt_fetch.core.errors import (
+    FetchError,
+    FetchErrorCode,
+    FetchPhase,
+    MediaError,
+    MediaServiceError,
+    _classify_exception,
+)
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.utils.ffmpeg import check_ffmpeg
 
 logger = logging.getLogger("yt_fetch")
-
-
-class MediaError(Exception):
-    """Raised when media download fails."""
 
 
 @dataclass
@@ -68,7 +71,8 @@ def download_media(
         else:
             raise MediaError(
                 f"ffmpeg is required for media download but was not found. "
-                f"Install ffmpeg or set --ffmpeg-fallback=skip."
+                f"Install ffmpeg or set --ffmpeg-fallback=skip.",
+                code=FetchErrorCode.MISSING_DEPENDENCY
             )
 
     media_dir = Path(out_dir) / video_id / "media"
@@ -172,8 +176,9 @@ def _run_yt_dlp(url: str, video_id: str, ydl_opts: dict, media_type: str) -> lis
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
     except yt_dlp.utils.DownloadError as exc:
-        raise MediaError(
-            f"Failed to download {media_type} for {video_id}: {exc}"
-        ) from exc
+        code = _classify_exception(exc)
+        if code in (FetchErrorCode.NETWORK_ERROR, FetchErrorCode.TIMEOUT, FetchErrorCode.SERVICE_ERROR, FetchErrorCode.RATE_LIMITED):
+            raise MediaServiceError(f"Failed to download {media_type} for {video_id}: {exc}", code=code) from exc
+        raise MediaError(f"Failed to download {media_type} for {video_id}: {exc}", code=code) from exc
 
     return downloaded

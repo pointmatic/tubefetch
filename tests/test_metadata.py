@@ -176,7 +176,8 @@ class TestGetMetadata:
     @patch("yt_fetch.services.metadata._yt_dlp_backend")
     @patch("yt_fetch.services.metadata._youtube_api_backend")
     def test_api_failure_falls_back_to_yt_dlp(self, mock_api, mock_ydl):
-        mock_api.side_effect = MetadataError("API quota exceeded")
+        from yt_fetch.core.errors import FetchErrorCode
+        mock_api.side_effect = MetadataError("API quota exceeded", code=FetchErrorCode.SERVICE_ERROR)
         mock_ydl.return_value = _map_yt_dlp_info("dQw4w9WgXcQ", SAMPLE_YT_DLP_INFO)
         options = FetchOptions(yt_api_key="test-key")
 

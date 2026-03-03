@@ -11,6 +11,7 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
+from yt_fetch.core.errors import FetchErrorCode
 from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.core.pipeline import process_batch
@@ -62,7 +63,7 @@ class TestProcessBatch:
     def test_mixed_success_and_failure(self, mock_meta, mock_trans, tmp_path):
         def meta_side_effect(vid, opts):
             if vid == "bad_vid_aaaaa":
-                raise MetadataError("not found")
+                raise MetadataError("not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
             return _make_metadata(vid)
 
         mock_meta.side_effect = meta_side_effect
@@ -89,7 +90,7 @@ class TestProcessBatch:
         def meta_side_effect(vid, opts):
             call_order.append(vid)
             if vid == "bad_vid_aaaaa":
-                raise MetadataError("fail")
+                raise MetadataError("fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
             return _make_metadata(vid)
 
         mock_meta.side_effect = meta_side_effect
@@ -139,7 +140,7 @@ class TestProcessBatchFailFast:
         def meta_side_effect(vid, opts):
             processed.append(vid)
             if vid == "bad_vid_aaaaa":
-                raise MetadataError("fail")
+                raise MetadataError("fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
             return _make_metadata(vid)
 
         mock_meta.side_effect = meta_side_effect
@@ -160,7 +161,7 @@ class TestProcessBatchFailFast:
     def test_no_fail_fast_processes_all(self, mock_meta, mock_trans, tmp_path):
         def meta_side_effect(vid, opts):
             if vid == "bad_vid_aaaaa":
-                raise MetadataError("fail")
+                raise MetadataError("fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
             return _make_metadata(vid)
 
         mock_meta.side_effect = meta_side_effect

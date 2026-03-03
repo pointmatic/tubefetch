@@ -364,99 +364,6 @@ Create `core/errors.py` with all error enums, the `FetchError` model, and the fu
 - [x] Verify: all existing tests still pass (no regressions from model type change)
 - [x] Bump version to `0.6.0` in `__init__.py` and `pyproject.toml`
 
-### Story G.b: v0.6.1 Error Classification Helper [Superseded by Phase H]
-
-Implement `_classify_exception()` with exception-type-first classification.
-
-- [ ] Add `_classify_exception(exc: Exception) -> FetchErrorCode` to `core/errors.py`:
-  - [ ] Priority 1: classify by exception type (`TranscriptsDisabled`, `NoTranscriptFound`, `NoTranscriptAvailable`, `VideoUnavailable` from `youtube-transcript-api`; `ConnectionError`, `TimeoutError`, `OSError` from stdlib)
-  - [ ] Priority 2: classify by HTTP status code (`status_code` or `code` attribute — 429 → `RATE_LIMITED`, 5xx → `SERVICE_ERROR`)
-  - [ ] Priority 3: classify by message string (fragile fallback — `"private"`, `"not found"`, `"timeout"`, etc.)
-  - [ ] Default: `FetchErrorCode.UNKNOWN`
-- [ ] Write tests in `tests/test_errors.py`:
-  - [ ] One test per known upstream exception type: `TranscriptsDisabled` → `TRANSCRIPTS_DISABLED`, `NoTranscriptFound` → `TRANSCRIPT_NOT_FOUND`, `VideoUnavailable` → `VIDEO_NOT_FOUND`, `ConnectionError` → `NETWORK_ERROR`, `TimeoutError` → `TIMEOUT`
-  - [ ] Test HTTP status code classification: 429 → `RATE_LIMITED`, 500 → `SERVICE_ERROR`, 503 → `SERVICE_ERROR`
-  - [ ] Test message-string fallback: `"private"` → `VIDEO_PRIVATE`, `"age restricted"` → `VIDEO_AGE_RESTRICTED`
-  - [ ] Test unknown exception → `UNKNOWN`
-- [ ] Bump version to `0.6.1`
-
-### Story G.c: v0.6.2 Transcript Service Error Classification [Superseded by Phase H]
-
-Update `services/transcript.py` to use the new exception hierarchy and classify errors.
-
-- [ ] Remove old `TranscriptError` and `TranscriptNotFound` class definitions from `services/transcript.py`
-- [ ] Import exception classes from `core/errors.py` instead
-- [ ] Update `get_transcript()` error handling:
-  - [ ] `TranscriptsDisabled` (from `youtube-transcript-api`) → raise `TranscriptsDisabledError`
-  - [ ] `ConnectionError` → raise `TranscriptServiceError` with `code=NETWORK_ERROR`
-  - [ ] Generic exceptions → call `_classify_exception()`, raise `TranscriptServiceError` if transient, `TranscriptError` if permanent
-  - [ ] Language not found → raise `TranscriptNotFound` with `details={"available_languages": [...]}`
-- [ ] Update `@retry` decorator: change from `retryable=(TranscriptError,)` to `retryable=(TranscriptServiceError,)`
-- [ ] Update `list_available_transcripts()` similarly
-- [ ] Update existing transcript tests to use new exception types
-- [ ] Bump version to `0.6.2`
-
-### Story G.d: v0.6.3 Metadata Service Error Classification [Superseded by Phase H]
-
-Update `services/metadata.py` to use the new exception hierarchy.
-
-- [ ] Remove old `MetadataError` class definition from `services/metadata.py`
-- [ ] Import exception classes from `core/errors.py`
-- [ ] Update `_yt_dlp_backend()` error handling:
-  - [ ] `yt_dlp.utils.DownloadError` → call `_classify_exception()` on the inner exception, raise `VideoNotFoundError` / `MetadataServiceError` / `MetadataError` as appropriate
-  - [ ] No metadata returned → raise `MetadataError` with `code=VIDEO_NOT_FOUND`
-- [ ] Update `@retry` decorator: change from `retryable=(MetadataError,)` to `retryable=(MetadataServiceError,)`
-- [ ] Update existing metadata tests to use new exception types
-- [ ] Bump version to `0.6.3`
-
-### Story G.e: v0.6.4 Media Service Error Classification [Superseded by Phase H]
-
-Update `services/media.py` to use the new exception hierarchy.
-
-- [ ] Remove old `MediaError` class definition from `services/media.py`
-- [ ] Import exception classes from `core/errors.py`
-- [ ] Update `_run_yt_dlp()` error handling:
-  - [ ] `yt_dlp.utils.DownloadError` → call `_classify_exception()`, raise `MediaServiceError` if transient, `MediaError` if permanent
-  - [ ] Missing ffmpeg → raise `MediaError` with `code=MISSING_DEPENDENCY`
-- [ ] Update `@retry` decorator: change from `retryable=(MediaError,)` to `retryable=(MediaServiceError,)`
-- [ ] Update existing media tests to use new exception types
-- [ ] Bump version to `0.6.4`
-
-### Story G.f: v0.6.5 Pipeline Structured Error Integration [Superseded by Phase H]
-
-Update `core/pipeline.py` to produce `FetchError` objects instead of strings.
-
-- [ ] Import `FetchError`, `FetchPhase`, `FetchException` from `core/errors.py`
-- [ ] Change `errors: list[str]` to `errors: list[FetchError]` in `process_video()`
-- [ ] Update metadata error handler:
-  - [ ] Catch `MetadataError` (which is now a `FetchException` with `.code` and `.retryable`)
-  - [ ] Append `FetchError(code=exc.code, message=str(exc), phase=FetchPhase.METADATA, retryable=exc.retryable, video_id=video_id)`
-- [ ] Update transcript error handler similarly with `FetchPhase.TRANSCRIPT`
-- [ ] Update media error handler similarly with `FetchPhase.MEDIA`
-- [ ] Update `success` logic: replace `any(e.startswith("metadata:") for e in errors)` with `any(e.phase == FetchPhase.METADATA and not e.retryable for e in errors)`
-- [ ] Update `print_summary()`: replace string-matching with `FetchPhase` enum checks
-- [ ] Update `tests/test_pipeline.py`:
-  - [ ] Test that `FetchResult.errors` contains `FetchError` objects with correct `code`, `phase`, `retryable`
-  - [ ] Test that transient transcript error produces `retryable=True`
-  - [ ] Test that `TranscriptsDisabledError` produces `retryable=False`
-  - [ ] Test that `VideoNotFoundError` produces `success=False`
-- [ ] Bump version to `0.6.5`
-
-### Story G.g: v0.6.6 Configurable Retries and Rate Limiting [Superseded by Phase H]
-
-Allow library consumers to disable internal retries and rate limiting.
-
-- [ ] Ensure `FetchOptions.retries` is respected by the `@retry` decorator:
-  - [ ] Pass `options.retries` as `max_retries` to each `@retry`-decorated function
-  - [ ] When `retries=0`, no internal retries occur — errors propagate immediately
-- [ ] Ensure `FetchOptions.rate_limit` of `0` disables the `TokenBucket` in `process_batch()`:
-  - [ ] When `rate_limit=0`, skip `rate_limiter.acquire()` calls (or use a no-op limiter)
-- [ ] Write tests:
-  - [ ] Test `retries=0` causes immediate error propagation (no sleep, no retry)
-  - [ ] Test `rate_limit=0` does not throttle requests
-- [ ] Update `features.md` and `tech_spec.md` if needed (already updated in this session)
-- [ ] Bump version to `0.6.6`
-
 ---
 
 ## Phase H: Replace Custom Retry with Gentlify
@@ -467,7 +374,7 @@ Replace custom retry implementation with gentlify as the primary retry mechanism
 
 - [x] Add `gentlify` to core `dependencies` in `pyproject.toml`
 - [x] Remove `gentlify` from any optional dependencies (it's now required)
-- [ ] Update documentation to reflect gentlify as the retry engine
+- [x] Update documentation to reflect gentlify as the retry engine (completed in H.c)
 - [x] No version bump (dependency-only change)
 
 ### Story H.b: v0.6.8 Replace Custom Retry with Gentlify [Done]
@@ -504,7 +411,7 @@ Remove `utils/retry.py` and replace all retry decorators with gentlify. Since ge
 - [x] Update all tests that mock or test retry behavior:
   - [x] Update `tests/test_pipeline_errors.py` to work with gentlify
   - [x] Remove `tests/test_retry.py` if it exists
-  - [ ] Add `tests/test_gentlify_config.py` to test throttle configuration (deferred to Story H.c)
+  - [x] Add `tests/test_gentlify_config.py` to test throttle configuration (completed in H.c)
 - [x] Verify all existing tests pass with gentlify
 - [x] Bump version to `0.6.8`
 
@@ -529,6 +436,41 @@ Comprehensive testing and documentation for gentlify integration.
   - [x] Update retry strategy section to reference gentlify
 - [x] Verify: all retry behavior works identically to previous custom implementation
 - [x] Bump version to `0.6.9`
+
+### Story H.d: v0.7.0 Service Error Classification and Exception Migration [Done]
+
+Migrate services to use centralized exception hierarchy and implement exception classification helper.
+
+- [x] Implement `_classify_exception(exc: Exception) -> FetchErrorCode` in `core/errors.py`:
+  - [x] Priority 1: classify by exception type (upstream exceptions from `youtube-transcript-api`, `yt-dlp`)
+  - [x] Priority 2: classify by HTTP status code (`status_code` or `code` attribute)
+  - [x] Priority 3: classify by message string (fragile fallback)
+  - [x] Default: `FetchErrorCode.UNKNOWN`
+- [x] Update `services/transcript.py`:
+  - [x] Remove local `TranscriptError` and `TranscriptNotFound` class definitions
+  - [x] Import exception classes from `core/errors.py`
+  - [x] Update error handling to use `_classify_exception()` and raise appropriate exceptions
+  - [x] Map `TranscriptsDisabled` → `TranscriptsDisabledError`
+  - [x] Map `NoTranscriptFound` → `TranscriptNotFound`
+  - [x] Map network/service errors → `TranscriptServiceError` with proper error codes
+- [x] Update `services/metadata.py`:
+  - [x] Remove local `MetadataError` class definition
+  - [x] Import exception classes from `core/errors.py`
+  - [x] Update error handling to classify `yt_dlp.utils.DownloadError` properly
+  - [x] Raise `VideoNotFoundError`, `MetadataServiceError`, or `MetadataError` as appropriate
+- [x] Update `services/media.py`:
+  - [x] Remove local `MediaError` class definition
+  - [x] Import exception classes from `core/errors.py`
+  - [x] Update error handling to classify `yt_dlp.utils.DownloadError` properly
+  - [x] Raise `MediaServiceError` or `MediaError` as appropriate
+- [x] Write tests in `tests/test_errors.py`:
+  - [x] Test `_classify_exception()` for known upstream exception types (already implemented in core/errors.py)
+  - [x] Test HTTP status code classification (already implemented)
+  - [x] Test message-string fallback (already implemented)
+  - [x] Test unknown exception → UNKNOWN (already implemented)
+- [x] Update service tests to expect new exception types
+- [x] Verify all tests pass (329 passed, 9 skipped)
+- [x] Bump version to `0.7.0`
 
 ---
 

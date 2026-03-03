@@ -81,7 +81,8 @@ class TestProcessVideo:
     @patch("yt_fetch.core.pipeline.get_transcript")
     @patch("yt_fetch.core.pipeline.get_metadata")
     def test_metadata_error_continues(self, mock_meta, mock_trans, tmp_path):
-        mock_meta.side_effect = MetadataError("Video not found")
+        from yt_fetch.core.errors import FetchErrorCode
+        mock_meta.side_effect = MetadataError("Video not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
         mock_trans.return_value = _make_transcript()
 
         opts = FetchOptions(out=tmp_path)
@@ -111,8 +112,9 @@ class TestProcessVideo:
     @patch("yt_fetch.core.pipeline.get_transcript")
     @patch("yt_fetch.core.pipeline.get_metadata")
     def test_both_errors(self, mock_meta, mock_trans, tmp_path):
-        mock_meta.side_effect = MetadataError("fail")
-        mock_trans.side_effect = TranscriptError("fail")
+        from yt_fetch.core.errors import FetchErrorCode
+        mock_meta.side_effect = MetadataError("fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
+        mock_trans.side_effect = TranscriptError("fail", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
         opts = FetchOptions(out=tmp_path)
         result = process_video("dQw4w9WgXcQ", opts)
@@ -249,7 +251,8 @@ class TestProcessVideo:
     @patch("yt_fetch.core.pipeline.get_metadata")
     def test_success_true_when_only_transcript_fails(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata()
-        mock_trans.side_effect = TranscriptError("No captions")
+        from yt_fetch.core.errors import FetchErrorCode
+        mock_trans.side_effect = TranscriptError("No captions", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
         opts = FetchOptions(out=tmp_path)
         result = process_video("dQw4w9WgXcQ", opts)
@@ -263,7 +266,8 @@ class TestProcessVideo:
     @patch("yt_fetch.core.pipeline.get_transcript")
     @patch("yt_fetch.core.pipeline.get_metadata")
     def test_success_false_when_metadata_fails(self, mock_meta, mock_trans, tmp_path):
-        mock_meta.side_effect = MetadataError("Video not found")
+        from yt_fetch.core.errors import FetchErrorCode
+        mock_meta.side_effect = MetadataError("Video not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
         mock_trans.return_value = _make_transcript()
 
         opts = FetchOptions(out=tmp_path)

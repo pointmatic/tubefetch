@@ -14,18 +14,18 @@ from datetime import datetime, timezone
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api import TranscriptsDisabled
 
+from yt_fetch.core.errors import (
+    TranscriptError,
+    TranscriptNotFound,
+    TranscriptsDisabledError,
+    TranscriptServiceError,
+    _classify_exception,
+    FetchErrorCode,
+)
 from yt_fetch.core.models import Transcript, TranscriptSegment
 from yt_fetch.core.options import FetchOptions
 
 logger = logging.getLogger("yt_fetch")
-
-
-class TranscriptError(Exception):
-    """Raised when transcript fetching fails."""
-
-
-class TranscriptNotFound(TranscriptError):
-    """No transcript available for the requested languages."""
 
 
 def get_transcript(video_id: str, options: FetchOptions) -> Transcript:
@@ -42,13 +42,14 @@ def get_transcript(video_id: str, options: FetchOptions) -> Transcript:
     try:
         transcript_list = api.list(video_id)
     except TranscriptsDisabled as exc:
-        raise TranscriptError(
+        raise TranscriptsDisabledError(
             f"Transcripts are disabled for {video_id}"
         ) from exc
     except Exception as exc:
-        raise TranscriptError(
-            f"Failed to list transcripts for {video_id}: {exc}"
-        ) from exc
+        code = _classify_exception(exc)
+        if code in (FetchErrorCode.NETWORK_ERROR, FetchErrorCode.TIMEOUT, FetchErrorCode.SERVICE_ERROR, FetchErrorCode.RATE_LIMITED):
+            raise TranscriptServiceError(f"Failed to list transcripts for {video_id}: {exc}", code=code) from exc
+        raise TranscriptError(f"Failed to list transcripts for {video_id}: {exc}", code=code) from exc
 
     available = list(transcript_list)
     available_languages = [t.language_code for t in available]
@@ -70,9 +71,10 @@ def get_transcript(video_id: str, options: FetchOptions) -> Transcript:
     try:
         fetched = selected.fetch()
     except Exception as exc:
-        raise TranscriptError(
-            f"Failed to fetch transcript for {video_id}: {exc}"
-        ) from exc
+        code = _classify_exception(exc)
+        if code in (FetchErrorCode.NETWORK_ERROR, FetchErrorCode.TIMEOUT, FetchErrorCode.SERVICE_ERROR, FetchErrorCode.RATE_LIMITED):
+            raise TranscriptServiceError(f"Failed to fetch transcript for {video_id}: {exc}", code=code) from exc
+        raise TranscriptError(f"Failed to fetch transcript for {video_id}: {exc}", code=code) from exc
 
     segments = [
         TranscriptSegment(
@@ -104,13 +106,14 @@ def list_available_transcripts(video_id: str) -> list[dict]:
     try:
         transcript_list = api.list(video_id)
     except TranscriptsDisabled as exc:
-        raise TranscriptError(
+        raise TranscriptsDisabledError(
             f"Transcripts are disabled for {video_id}"
         ) from exc
     except Exception as exc:
-        raise TranscriptError(
-            f"Failed to list transcripts for {video_id}: {exc}"
-        ) from exc
+        code = _classify_exception(exc)
+        if code in (FetchErrorCode.NETWORK_ERROR, FetchErrorCode.TIMEOUT, FetchErrorCode.SERVICE_ERROR, FetchErrorCode.RATE_LIMITED):
+            raise TranscriptServiceError(f"Failed to list transcripts for {video_id}: {exc}", code=code) from exc
+        raise TranscriptError(f"Failed to list transcripts for {video_id}: {exc}", code=code) from exc
 
     return [
         {

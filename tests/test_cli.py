@@ -206,7 +206,8 @@ class TestCliMedia:
     @patch("yt_fetch.services.media.download_media")
     def test_media_error(self, mock_dl, tmp_path):
         from yt_fetch.services.media import MediaError
-        mock_dl.side_effect = MediaError("download failed")
+        from yt_fetch.core.errors import FetchErrorCode
+        mock_dl.side_effect = MediaError("download failed", code=FetchErrorCode.SERVICE_ERROR)
 
         runner = CliRunner()
         result = runner.invoke(cli, [
@@ -240,7 +241,8 @@ class TestCliTranscriptError:
     @patch("yt_fetch.services.transcript.get_transcript")
     def test_transcript_error(self, mock_get, tmp_path):
         from yt_fetch.services.transcript import TranscriptError
-        mock_get.side_effect = TranscriptError("not found")
+        from yt_fetch.core.errors import FetchErrorCode
+        mock_get.side_effect = TranscriptError("not found", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
         runner = CliRunner()
         result = runner.invoke(cli, [
@@ -253,7 +255,8 @@ class TestCliMetadataError:
     @patch("yt_fetch.services.metadata.get_metadata")
     def test_metadata_error(self, mock_get, tmp_path):
         from yt_fetch.services.metadata import MetadataError
-        mock_get.side_effect = MetadataError("not found")
+        from yt_fetch.core.errors import FetchErrorCode
+        mock_get.side_effect = MetadataError("not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
 
         runner = CliRunner()
         result = runner.invoke(cli, [

@@ -20,7 +20,7 @@ import json
 
 import pytest
 
-from yt_fetch.core.errors import FetchPhase
+from yt_fetch.core.errors import FetchErrorCode, FetchPhase
 from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
 from yt_fetch.core.options import FetchOptions
 from yt_fetch.core.pipeline import process_batch, process_video
@@ -117,7 +117,7 @@ class TestBatchTranscriptErrors:
 
         def trans_side(vid, opts):
             if vid == "bad_trans_aaa":
-                raise TranscriptError("no transcript")
+                raise TranscriptError("no transcript", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
             return _make_transcript(vid)
 
         mock_trans.side_effect = trans_side
@@ -140,8 +140,9 @@ class TestBatchTranscriptErrors:
     @patch("yt_fetch.core.pipeline.get_metadata")
     def test_both_metadata_and_transcript_error(self, mock_meta, mock_trans, tmp_path):
         """Both metadata and transcript errors should be collected."""
-        mock_meta.side_effect = MetadataError("meta fail")
-        mock_trans.side_effect = TranscriptError("trans fail")
+        from yt_fetch.core.errors import FetchErrorCode
+        mock_meta.side_effect = MetadataError("meta fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
+        mock_trans.side_effect = TranscriptError("trans fail", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
         opts = FetchOptions(out=tmp_path)
         result = process_video("testVid12345", opts)
@@ -166,7 +167,7 @@ class TestFailFastTranscript:
         """
         def meta_side(vid, opts):
             if vid == "bad_meta_aaa":
-                raise MetadataError("fail")
+                raise MetadataError("fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
             return _make_metadata(vid)
 
         mock_meta.side_effect = meta_side

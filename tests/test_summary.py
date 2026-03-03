@@ -162,7 +162,7 @@ class TestProcessBatchSummary:
 
         def meta_side(vid, opts):
             if vid == "bad_vid_aaaaa":
-                raise MetadataError("not found")
+                raise MetadataError("not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
             return _make_metadata(vid)
 
         mock_meta.side_effect = meta_side

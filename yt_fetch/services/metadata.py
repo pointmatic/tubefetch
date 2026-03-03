@@ -13,14 +13,17 @@ from datetime import datetime, timezone
 
 import yt_dlp
 
+from yt_fetch.core.errors import (
+    MetadataError,
+    VideoNotFoundError,
+    MetadataServiceError,
+    _classify_exception,
+    FetchErrorCode,
+)
 from yt_fetch.core.models import Metadata
 from yt_fetch.core.options import FetchOptions
 
 logger = logging.getLogger("yt_fetch")
-
-
-class MetadataError(Exception):
-    """Raised when metadata extraction fails."""
 
 
 def get_metadata(video_id: str, options: FetchOptions) -> Metadata:
@@ -56,10 +59,15 @@ def _yt_dlp_backend(video_id: str) -> Metadata:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
     except yt_dlp.utils.DownloadError as exc:
-        raise MetadataError(f"Failed to extract metadata for {video_id}: {exc}") from exc
+        code = _classify_exception(exc)
+        if code == FetchErrorCode.VIDEO_NOT_FOUND:
+            raise VideoNotFoundError(f"Failed to extract metadata for {video_id}: {exc}", code=code) from exc
+        if code in (FetchErrorCode.NETWORK_ERROR, FetchErrorCode.TIMEOUT, FetchErrorCode.SERVICE_ERROR, FetchErrorCode.RATE_LIMITED):
+            raise MetadataServiceError(f"Failed to extract metadata for {video_id}: {exc}", code=code) from exc
+        raise MetadataError(f"Failed to extract metadata for {video_id}: {exc}", code=code) from exc
 
     if info is None:
-        raise MetadataError(f"No metadata returned for {video_id}")
+        raise VideoNotFoundError(f"No metadata returned for {video_id}")
 
     return _map_yt_dlp_info(video_id, info)
 
@@ -103,7 +111,8 @@ def _youtube_api_backend(video_id: str, api_key: str) -> Metadata:
     except ImportError as exc:
         raise MetadataError(
             "google-api-python-client is required for YouTube API backend. "
-            "Install with: pip install yt-fetch[youtube-api]"
+            "Install with: pip install yt-fetch[youtube-api]",
+            code=FetchErrorCode.MISSING_DEPENDENCY
         ) from exc
 
     try:
@@ -114,17 +123,19 @@ def _youtube_api_backend(video_id: str, api_key: str) -> Metadata:
         )
         response = request.execute()
     except HttpError as exc:
-        raise MetadataError(
-            f"YouTube API request failed for {video_id}: {exc}"
-        ) from exc
+        code = _classify_exception(exc)
+        if code in (FetchErrorCode.NETWORK_ERROR, FetchErrorCode.TIMEOUT, FetchErrorCode.SERVICE_ERROR, FetchErrorCode.RATE_LIMITED):
+            raise MetadataServiceError(f"YouTube API request failed for {video_id}: {exc}", code=code) from exc
+        raise MetadataError(f"YouTube API request failed for {video_id}: {exc}", code=code) from exc
     except Exception as exc:
-        raise MetadataError(
-            f"YouTube API error for {video_id}: {exc}"
-        ) from exc
+        code = _classify_exception(exc)
+        if code in (FetchErrorCode.NETWORK_ERROR, FetchErrorCode.TIMEOUT, FetchErrorCode.SERVICE_ERROR, FetchErrorCode.RATE_LIMITED):
+            raise MetadataServiceError(f"YouTube API error for {video_id}: {exc}", code=code) from exc
+        raise MetadataError(f"YouTube API error for {video_id}: {exc}", code=code) from exc
 
     items = response.get("items", [])
     if not items:
-        raise MetadataError(f"Video not found via YouTube API: {video_id}")
+        raise VideoNotFoundError(f"Video not found via YouTube API: {video_id}")
 
     return _map_youtube_api_item(video_id, items[0], response)
 
