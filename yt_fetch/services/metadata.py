@@ -69,16 +69,10 @@ def _yt_dlp_backend(video_id: str) -> Metadata:
     except yt_dlp.utils.DownloadError as exc:
         code = _classify_exception(exc)
         if code == FetchErrorCode.VIDEO_NOT_FOUND:
-            raise VideoNotFoundError(
-                f"Failed to extract metadata for {video_id}: {exc}", code=code
-            ) from exc
+            raise VideoNotFoundError(f"Failed to extract metadata for {video_id}: {exc}", code=code) from exc
         if code in RETRYABLE_CODES:
-            raise MetadataServiceError(
-                f"Failed to extract metadata for {video_id}: {exc}", code=code
-            ) from exc
-        raise MetadataError(
-            f"Failed to extract metadata for {video_id}: {exc}", code=code
-        ) from exc
+            raise MetadataServiceError(f"Failed to extract metadata for {video_id}: {exc}", code=code) from exc
+        raise MetadataError(f"Failed to extract metadata for {video_id}: {exc}", code=code) from exc
 
     if info is None:
         raise VideoNotFoundError(f"No metadata returned for {video_id}")
@@ -126,7 +120,7 @@ def _youtube_api_backend(video_id: str, api_key: str) -> Metadata:
         raise MetadataError(
             "google-api-python-client is required for YouTube API backend. "
             "Install with: pip install yt-fetch[youtube-api]",
-            code=FetchErrorCode.MISSING_DEPENDENCY
+            code=FetchErrorCode.MISSING_DEPENDENCY,
         ) from exc
 
     try:
@@ -139,21 +133,13 @@ def _youtube_api_backend(video_id: str, api_key: str) -> Metadata:
     except HttpError as exc:
         code = _classify_exception(exc)
         if code in RETRYABLE_CODES:
-            raise MetadataServiceError(
-                f"YouTube API request failed for {video_id}: {exc}", code=code
-            ) from exc
-        raise MetadataError(
-            f"YouTube API request failed for {video_id}: {exc}", code=code
-        ) from exc
+            raise MetadataServiceError(f"YouTube API request failed for {video_id}: {exc}", code=code) from exc
+        raise MetadataError(f"YouTube API request failed for {video_id}: {exc}", code=code) from exc
     except Exception as exc:
         code = _classify_exception(exc)
         if code in RETRYABLE_CODES:
-            raise MetadataServiceError(
-                f"YouTube API error for {video_id}: {exc}", code=code
-            ) from exc
-        raise MetadataError(
-            f"YouTube API error for {video_id}: {exc}", code=code
-        ) from exc
+            raise MetadataServiceError(f"YouTube API error for {video_id}: {exc}", code=code) from exc
+        raise MetadataError(f"YouTube API error for {video_id}: {exc}", code=code) from exc
 
     items = response.get("items", [])
     if not items:

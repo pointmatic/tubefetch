@@ -129,9 +129,7 @@ def write_summary(results: BatchResult, out_dir: Path) -> Path:
 def _atomic_write_json(dest: Path, data: dict) -> None:
     """Write JSON atomically: write to temp file, then rename."""
     dest.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(
-        dir=dest.parent, suffix=".tmp", prefix=".yt_fetch_"
-    )
+    fd, tmp_path = tempfile.mkstemp(dir=dest.parent, suffix=".tmp", prefix=".yt_fetch_")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, default=str, ensure_ascii=False)
@@ -145,9 +143,7 @@ def _atomic_write_json(dest: Path, data: dict) -> None:
 def _atomic_write_text(dest: Path, content: str) -> None:
     """Write text atomically: write to temp file, then rename."""
     dest.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(
-        dir=dest.parent, suffix=".tmp", prefix=".yt_fetch_"
-    )
+    fd, tmp_path = tempfile.mkstemp(dir=dest.parent, suffix=".tmp", prefix=".yt_fetch_")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             f.write(content)

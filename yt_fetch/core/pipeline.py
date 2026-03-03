@@ -64,11 +64,7 @@ def process_video(
 
     # --- Metadata ---
     metadata_path_candidate = video_dir / "metadata.json"
-    should_fetch_metadata = (
-        options.force
-        or options.force_metadata
-        or not metadata_path_candidate.exists()
-    )
+    should_fetch_metadata = options.force or options.force_metadata or not metadata_path_candidate.exists()
 
     if should_fetch_metadata:
         try:
@@ -96,11 +92,7 @@ def process_video(
 
     # --- Transcript ---
     transcript_path_candidate = video_dir / "transcript.json"
-    should_fetch_transcript = (
-        options.force
-        or options.force_transcript
-        or not transcript_path_candidate.exists()
-    )
+    should_fetch_transcript = options.force or options.force_transcript or not transcript_path_candidate.exists()
 
     if should_fetch_transcript:
         try:
@@ -165,9 +157,7 @@ def process_video(
             media_paths = list(media_dir.iterdir()) if media_dir.exists() else []
             logger.debug("Skipping media for %s (cached)", video_id)
 
-    metadata_failed = any(
-        e.phase == FetchPhase.METADATA and not e.retryable for e in errors
-    )
+    metadata_failed = any(e.phase == FetchPhase.METADATA and not e.retryable for e in errors)
     success = not metadata_failed
     return FetchResult(
         video_id=video_id,
@@ -202,13 +192,8 @@ def process_batch(video_ids: list[str], options: FetchOptions) -> BatchResult:
 
 def print_summary(batch: BatchResult, out_dir: Path) -> None:
     """Print a human-readable batch summary to the console."""
-    transcript_ok = sum(
-        1 for r in batch.results if r.transcript_path is not None
-    )
-    transcript_fail = sum(
-        1 for r in batch.results
-        if any(e.phase == FetchPhase.TRANSCRIPT for e in r.errors)
-    )
+    transcript_ok = sum(1 for r in batch.results if r.transcript_path is not None)
+    transcript_fail = sum(1 for r in batch.results if any(e.phase == FetchPhase.TRANSCRIPT for e in r.errors))
     media_count = sum(len(r.media_paths) for r in batch.results)
 
     lines = [
@@ -228,9 +213,7 @@ def print_summary(batch: BatchResult, out_dir: Path) -> None:
     logger.info("\n".join(lines))
 
 
-async def _async_process_batch(
-    video_ids: list[str], options: FetchOptions, rate_limiter: TokenBucket
-) -> BatchResult:
+async def _async_process_batch(video_ids: list[str], options: FetchOptions, rate_limiter: TokenBucket) -> BatchResult:
     """Async batch processor with semaphore-based concurrency."""
     semaphore = asyncio.Semaphore(options.workers)
     results: list[FetchResult] = []
@@ -245,7 +228,11 @@ async def _async_process_batch(
                 return None
             loop = asyncio.get_event_loop()
             result = await loop.run_in_executor(
-                None, process_video, vid, options, rate_limiter,
+                None,
+                process_video,
+                vid,
+                options,
+                rate_limiter,
             )
             if not result.success and options.fail_fast:
                 fail_fast_triggered = True

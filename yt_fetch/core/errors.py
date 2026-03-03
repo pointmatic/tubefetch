@@ -78,26 +78,20 @@ class TranscriptNotFound(TranscriptError):
     """No transcript available for the requested languages."""
 
     def __init__(self, message: str):
-        super().__init__(
-            message, code=FetchErrorCode.TRANSCRIPT_NOT_FOUND, retryable=False
-        )
+        super().__init__(message, code=FetchErrorCode.TRANSCRIPT_NOT_FOUND, retryable=False)
 
 
 class TranscriptsDisabledError(TranscriptError):
     """Transcripts are disabled for this video."""
 
     def __init__(self, message: str):
-        super().__init__(
-            message, code=FetchErrorCode.TRANSCRIPTS_DISABLED, retryable=False
-        )
+        super().__init__(message, code=FetchErrorCode.TRANSCRIPTS_DISABLED, retryable=False)
 
 
 class TranscriptServiceError(TranscriptError):
     """Transient service error during transcript fetch."""
 
-    def __init__(
-        self, message: str, code: FetchErrorCode = FetchErrorCode.SERVICE_ERROR
-    ):
+    def __init__(self, message: str, code: FetchErrorCode = FetchErrorCode.SERVICE_ERROR):
         super().__init__(message, code=code, retryable=True)
 
 
@@ -111,18 +105,14 @@ class MetadataError(FetchException):
 class VideoNotFoundError(MetadataError):
     """Video does not exist or is inaccessible."""
 
-    def __init__(
-        self, message: str, code: FetchErrorCode = FetchErrorCode.VIDEO_NOT_FOUND
-    ):
+    def __init__(self, message: str, code: FetchErrorCode = FetchErrorCode.VIDEO_NOT_FOUND):
         super().__init__(message, code=code, retryable=False)
 
 
 class MetadataServiceError(MetadataError):
     """Transient service error during metadata fetch."""
 
-    def __init__(
-        self, message: str, code: FetchErrorCode = FetchErrorCode.SERVICE_ERROR
-    ):
+    def __init__(self, message: str, code: FetchErrorCode = FetchErrorCode.SERVICE_ERROR):
         super().__init__(message, code=code, retryable=True)
 
 
@@ -136,9 +126,7 @@ class MediaError(FetchException):
 class MediaServiceError(MediaError):
     """Transient service error during media download."""
 
-    def __init__(
-        self, message: str, code: FetchErrorCode = FetchErrorCode.SERVICE_ERROR
-    ):
+    def __init__(self, message: str, code: FetchErrorCode = FetchErrorCode.SERVICE_ERROR):
         super().__init__(message, code=code, retryable=True)
 
 

@@ -29,8 +29,20 @@ def _input_options(fn):
     """Shared input source options."""
     decorators = [
         click.option("--id", "ids", multiple=True, help="YouTube video ID or URL (repeatable)."),
-        click.option("--file", "file_path", type=click.Path(exists=True, path_type=Path), default=None, help="Text/CSV file with IDs."),  # noqa: E501
-        click.option("--jsonl", "jsonl_path", type=click.Path(exists=True, path_type=Path), default=None, help="JSONL file with video IDs."),  # noqa: E501
+        click.option(
+            "--file",
+            "file_path",
+            type=click.Path(exists=True, path_type=Path),
+            default=None,
+            help="Text/CSV file with IDs.",
+        ),  # noqa: E501
+        click.option(
+            "--jsonl",
+            "jsonl_path",
+            type=click.Path(exists=True, path_type=Path),
+            default=None,
+            help="JSONL file with video IDs.",
+        ),  # noqa: E501
         click.option("--id-field", default="id", help="Field name for video ID in CSV/JSONL input."),
     ]
     for decorator in reversed(decorators):
@@ -45,7 +57,12 @@ def _common_options(fn):
         click.option("--languages", type=str, default=None, help="Comma-separated language codes."),
         click.option("--allow-generated/--no-allow-generated", default=None, help="Allow auto-generated transcripts."),
         click.option("--allow-any-language/--no-allow-any-language", default=None, help="Fall back to any language."),
-        click.option("--download", type=click.Choice(["none", "video", "audio", "both"]), default=None, help="Media download mode."),  # noqa: E501
+        click.option(
+            "--download",
+            type=click.Choice(["none", "video", "audio", "both"]),
+            default=None,
+            help="Media download mode.",
+        ),  # noqa: E501
         click.option("--max-height", type=int, default=None, help="Max video height (e.g. 720)."),
         click.option("--format", "format_", type=str, default=None, help="Video format."),
         click.option("--audio-format", type=str, default=None, help="Audio format."),

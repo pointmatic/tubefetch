@@ -6,8 +6,6 @@
 
 """Tests for yt_fetch.services.id_parser."""
 
-
-
 from yt_fetch.services.id_parser import load_ids_from_file, parse_many, parse_video_id
 
 
@@ -106,11 +104,13 @@ class TestParseMany:
         assert result == ["dQw4w9WgXcQ", "a1-B2_c3D4e"]
 
     def test_deduplication(self):
-        result = parse_many([
-            "dQw4w9WgXcQ",
-            "https://youtu.be/dQw4w9WgXcQ",
-            "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        ])
+        result = parse_many(
+            [
+                "dQw4w9WgXcQ",
+                "https://youtu.be/dQw4w9WgXcQ",
+                "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            ]
+        )
         assert result == ["dQw4w9WgXcQ"]
 
     def test_preserves_order(self):
@@ -125,11 +125,13 @@ class TestParseMany:
         assert parse_many([]) == []
 
     def test_mixed_urls_and_ids(self):
-        result = parse_many([
-            "dQw4w9WgXcQ",
-            "https://youtu.be/a1-B2_c3D4e",
-            "https://www.youtube.com/shorts/xxxxxxxxxxx",
-        ])
+        result = parse_many(
+            [
+                "dQw4w9WgXcQ",
+                "https://youtu.be/a1-B2_c3D4e",
+                "https://www.youtube.com/shorts/xxxxxxxxxxx",
+            ]
+        )
         assert result == ["dQw4w9WgXcQ", "a1-B2_c3D4e", "xxxxxxxxxxx"]
 
 

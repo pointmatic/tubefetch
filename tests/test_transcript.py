@@ -81,75 +81,55 @@ class TestSelectTranscript:
 
     def test_prefers_manual_in_preferred_language(self):
         available = self._make_entries([("en", False), ("en", True), ("es", False)])
-        result = _select_transcript(
-            available, languages=["en"], allow_generated=True, allow_any_language=False
-        )
+        result = _select_transcript(available, languages=["en"], allow_generated=True, allow_any_language=False)
         assert result.language_code == "en"
         assert result.is_generated is False
 
     def test_falls_back_to_generated_when_allowed(self):
         available = self._make_entries([("en", True), ("es", False)])
-        result = _select_transcript(
-            available, languages=["en"], allow_generated=True, allow_any_language=False
-        )
+        result = _select_transcript(available, languages=["en"], allow_generated=True, allow_any_language=False)
         assert result.language_code == "en"
         assert result.is_generated is True
 
     def test_skips_generated_when_not_allowed(self):
         available = self._make_entries([("en", True), ("es", False)])
-        result = _select_transcript(
-            available, languages=["en"], allow_generated=False, allow_any_language=False
-        )
+        result = _select_transcript(available, languages=["en"], allow_generated=False, allow_any_language=False)
         assert result is None
 
     def test_language_priority_order(self):
         available = self._make_entries([("es", False), ("en", False)])
-        result = _select_transcript(
-            available, languages=["en", "es"], allow_generated=True, allow_any_language=False
-        )
+        result = _select_transcript(available, languages=["en", "es"], allow_generated=True, allow_any_language=False)
         assert result.language_code == "en"
 
     def test_second_language_fallback(self):
         available = self._make_entries([("es", False), ("de", False)])
-        result = _select_transcript(
-            available, languages=["en", "es"], allow_generated=True, allow_any_language=False
-        )
+        result = _select_transcript(available, languages=["en", "es"], allow_generated=True, allow_any_language=False)
         assert result.language_code == "es"
 
     def test_allow_any_language_manual_first(self):
         available = self._make_entries([("ja", False), ("ja", True)])
-        result = _select_transcript(
-            available, languages=["en"], allow_generated=True, allow_any_language=True
-        )
+        result = _select_transcript(available, languages=["en"], allow_generated=True, allow_any_language=True)
         assert result.language_code == "ja"
         assert result.is_generated is False
 
     def test_allow_any_language_generated_fallback(self):
         available = self._make_entries([("ja", True)])
-        result = _select_transcript(
-            available, languages=["en"], allow_generated=True, allow_any_language=True
-        )
+        result = _select_transcript(available, languages=["en"], allow_generated=True, allow_any_language=True)
         assert result.language_code == "ja"
         assert result.is_generated is True
 
     def test_allow_any_language_no_generated(self):
         available = self._make_entries([("ja", True)])
-        result = _select_transcript(
-            available, languages=["en"], allow_generated=False, allow_any_language=True
-        )
+        result = _select_transcript(available, languages=["en"], allow_generated=False, allow_any_language=True)
         assert result is None
 
     def test_no_transcripts_available(self):
-        result = _select_transcript(
-            [], languages=["en"], allow_generated=True, allow_any_language=True
-        )
+        result = _select_transcript([], languages=["en"], allow_generated=True, allow_any_language=True)
         assert result is None
 
     def test_preferred_language_beats_any_language(self):
         available = self._make_entries([("ja", False), ("en", True)])
-        result = _select_transcript(
-            available, languages=["en"], allow_generated=True, allow_any_language=True
-        )
+        result = _select_transcript(available, languages=["en"], allow_generated=True, allow_any_language=True)
         assert result.language_code == "en"
 
 

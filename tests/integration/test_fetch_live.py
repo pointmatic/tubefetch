@@ -59,6 +59,7 @@ class TestMetadataLive:
         assert path.name == "metadata.json"
 
         import json
+
         data = json.loads(path.read_text())
         assert data["video_id"] == KNOWN_VIDEO_ID
 
@@ -155,6 +156,7 @@ class TestBatchLive:
         assert summary.exists()
 
         import json
+
         data = json.loads(summary.read_text())
         assert data["total"] == 1
         assert data["succeeded"] == 1

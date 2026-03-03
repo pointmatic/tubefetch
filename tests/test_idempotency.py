@@ -161,6 +161,7 @@ class TestIdempotencyForce:
         process_video("testVid12345", opts)
 
         import json
+
         data1 = json.loads((tmp_path / "testVid12345" / "metadata.json").read_text())
         assert data1["title"] == "Original"
 

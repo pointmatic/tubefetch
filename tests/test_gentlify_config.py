@@ -6,7 +6,6 @@
 
 """Tests for gentlify throttle configuration and retry logic."""
 
-
 import pytest
 
 from yt_fetch.core.errors import (
@@ -217,6 +216,7 @@ class TestExecuteWithRetry:
 
     def test_sync_execute_with_kwargs(self):
         """Sync wrapper should handle kwargs correctly."""
+
         def func_with_kwargs(a, b=10):
             return a + b
 

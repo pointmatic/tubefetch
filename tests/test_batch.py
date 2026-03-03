@@ -183,7 +183,7 @@ class TestProcessBatchConcurrency:
         mock_meta.side_effect = lambda vid, opts: _make_metadata(vid)
         mock_trans.side_effect = lambda vid, opts: _make_transcript(vid)
 
-        ids = [f"vid_{chr(97+i)}" * 3 + chr(97+i) * 2 for i in range(5)]
+        ids = [f"vid_{chr(97 + i)}" * 3 + chr(97 + i) * 2 for i in range(5)]
         opts = FetchOptions(out=tmp_path, workers=3)
         result = process_batch(ids, opts)
 

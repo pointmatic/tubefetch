@@ -110,7 +110,9 @@ class TestCliFetch:
     @patch("yt_fetch.core.pipeline.process_batch")
     def test_with_id(self, mock_batch, tmp_path):
         mock_batch.return_value = BatchResult(
-            total=1, succeeded=1, failed=0,
+            total=1,
+            succeeded=1,
+            failed=0,
             results=[FetchResult(video_id="dQw4w9WgXcQ", success=True)],
         )
         runner = CliRunner()
@@ -121,7 +123,9 @@ class TestCliFetch:
     @patch("yt_fetch.core.pipeline.process_batch")
     def test_strict_partial_failure(self, mock_batch, tmp_path):
         mock_batch.return_value = BatchResult(
-            total=2, succeeded=1, failed=1,
+            total=2,
+            succeeded=1,
+            failed=1,
             results=[
                 FetchResult(video_id="a", success=True),
                 FetchResult(
@@ -140,10 +144,19 @@ class TestCliFetch:
             ],
         )
         runner = CliRunner()
-        result = runner.invoke(cli, [
-            "fetch", "--id", "dQw4w9WgXcQ", "--id", "xxxxxxxxxxx",
-            "--out", str(tmp_path), "--strict",
-        ])
+        result = runner.invoke(
+            cli,
+            [
+                "fetch",
+                "--id",
+                "dQw4w9WgXcQ",
+                "--id",
+                "xxxxxxxxxxx",
+                "--out",
+                str(tmp_path),
+                "--strict",
+            ],
+        )
         assert result.exit_code == EXIT_PARTIAL
 
 
@@ -160,9 +173,16 @@ class TestCliTranscript:
         mock_write.return_value = tmp_path / "dQw4w9WgXcQ" / "transcript.json"
 
         runner = CliRunner()
-        result = runner.invoke(cli, [
-            "transcript", "--id", "dQw4w9WgXcQ", "--out", str(tmp_path),
-        ])
+        result = runner.invoke(
+            cli,
+            [
+                "transcript",
+                "--id",
+                "dQw4w9WgXcQ",
+                "--out",
+                str(tmp_path),
+            ],
+        )
         assert result.exit_code == EXIT_OK
 
 
@@ -179,9 +199,16 @@ class TestCliMetadata:
         mock_write.return_value = tmp_path / "dQw4w9WgXcQ" / "metadata.json"
 
         runner = CliRunner()
-        result = runner.invoke(cli, [
-            "metadata", "--id", "dQw4w9WgXcQ", "--out", str(tmp_path),
-        ])
+        result = runner.invoke(
+            cli,
+            [
+                "metadata",
+                "--id",
+                "dQw4w9WgXcQ",
+                "--out",
+                str(tmp_path),
+            ],
+        )
         assert result.exit_code == EXIT_OK
 
 
@@ -196,21 +223,36 @@ class TestCliMedia:
         mock_dl.return_value = MediaResult(video_id="dQw4w9WgXcQ", paths=[Path("/tmp/v.mp4")])
 
         runner = CliRunner()
-        result = runner.invoke(cli, [
-            "media", "--id", "dQw4w9WgXcQ", "--out", str(tmp_path),
-        ])
+        result = runner.invoke(
+            cli,
+            [
+                "media",
+                "--id",
+                "dQw4w9WgXcQ",
+                "--out",
+                str(tmp_path),
+            ],
+        )
         assert result.exit_code == EXIT_OK
 
     @patch("yt_fetch.services.media.download_media")
     def test_media_error(self, mock_dl, tmp_path):
         from yt_fetch.core.errors import FetchErrorCode
         from yt_fetch.services.media import MediaError
+
         mock_dl.side_effect = MediaError("download failed", code=FetchErrorCode.SERVICE_ERROR)
 
         runner = CliRunner()
-        result = runner.invoke(cli, [
-            "media", "--id", "dQw4w9WgXcQ", "--out", str(tmp_path),
-        ])
+        result = runner.invoke(
+            cli,
+            [
+                "media",
+                "--id",
+                "dQw4w9WgXcQ",
+                "--out",
+                str(tmp_path),
+            ],
+        )
         assert result.exit_code == EXIT_ALL_FAILED
 
     @patch("yt_fetch.services.media.download_media")
@@ -229,9 +271,16 @@ class TestCliMedia:
             ],
         )
         runner = CliRunner()
-        result = runner.invoke(cli, [
-            "media", "--id", "dQw4w9WgXcQ", "--out", str(tmp_path),
-        ])
+        result = runner.invoke(
+            cli,
+            [
+                "media",
+                "--id",
+                "dQw4w9WgXcQ",
+                "--out",
+                str(tmp_path),
+            ],
+        )
         assert result.exit_code == EXIT_OK
 
 
@@ -240,12 +289,20 @@ class TestCliTranscriptError:
     def test_transcript_error(self, mock_get, tmp_path):
         from yt_fetch.core.errors import FetchErrorCode
         from yt_fetch.services.transcript import TranscriptError
+
         mock_get.side_effect = TranscriptError("not found", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
         runner = CliRunner()
-        result = runner.invoke(cli, [
-            "transcript", "--id", "dQw4w9WgXcQ", "--out", str(tmp_path),
-        ])
+        result = runner.invoke(
+            cli,
+            [
+                "transcript",
+                "--id",
+                "dQw4w9WgXcQ",
+                "--out",
+                str(tmp_path),
+            ],
+        )
         assert result.exit_code == EXIT_ALL_FAILED
 
 
@@ -254,23 +311,33 @@ class TestCliMetadataError:
     def test_metadata_error(self, mock_get, tmp_path):
         from yt_fetch.core.errors import FetchErrorCode
         from yt_fetch.services.metadata import MetadataError
+
         mock_get.side_effect = MetadataError("not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
 
         runner = CliRunner()
-        result = runner.invoke(cli, [
-            "metadata", "--id", "dQw4w9WgXcQ", "--out", str(tmp_path),
-        ])
+        result = runner.invoke(
+            cli,
+            [
+                "metadata",
+                "--id",
+                "dQw4w9WgXcQ",
+                "--out",
+                str(tmp_path),
+            ],
+        )
         assert result.exit_code == EXIT_ALL_FAILED
 
 
 class TestBuildOptions:
     def test_format_option(self):
         from yt_fetch.cli import _build_options
+
         opts = _build_options(format_="mp4")
         assert opts.format == "mp4"
 
     def test_languages_option(self):
         from yt_fetch.cli import _build_options
+
         opts = _build_options(languages="en, fr, de")
         assert opts.languages == ["en", "fr", "de"]
 

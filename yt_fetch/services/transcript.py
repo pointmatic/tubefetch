@@ -49,18 +49,12 @@ def get_transcript(video_id: str, options: FetchOptions) -> Transcript:
     try:
         transcript_list = api.list(video_id)
     except TranscriptsDisabled as exc:
-        raise TranscriptsDisabledError(
-            f"Transcripts are disabled for {video_id}"
-        ) from exc
+        raise TranscriptsDisabledError(f"Transcripts are disabled for {video_id}") from exc
     except Exception as exc:
         code = _classify_exception(exc)
         if code in RETRYABLE_CODES:
-            raise TranscriptServiceError(
-                f"Failed to list transcripts for {video_id}: {exc}", code=code
-            ) from exc
-        raise TranscriptError(
-            f"Failed to list transcripts for {video_id}: {exc}", code=code
-        ) from exc
+            raise TranscriptServiceError(f"Failed to list transcripts for {video_id}: {exc}", code=code) from exc
+        raise TranscriptError(f"Failed to list transcripts for {video_id}: {exc}", code=code) from exc
 
     available = list(transcript_list)
     available_languages = [t.language_code for t in available]
@@ -84,12 +78,8 @@ def get_transcript(video_id: str, options: FetchOptions) -> Transcript:
     except Exception as exc:
         code = _classify_exception(exc)
         if code in RETRYABLE_CODES:
-            raise TranscriptServiceError(
-                f"Failed to fetch transcript for {video_id}: {exc}", code=code
-            ) from exc
-        raise TranscriptError(
-            f"Failed to fetch transcript for {video_id}: {exc}", code=code
-        ) from exc
+            raise TranscriptServiceError(f"Failed to fetch transcript for {video_id}: {exc}", code=code) from exc
+        raise TranscriptError(f"Failed to fetch transcript for {video_id}: {exc}", code=code) from exc
 
     segments = [
         TranscriptSegment(
@@ -121,18 +111,12 @@ def list_available_transcripts(video_id: str) -> list[dict]:
     try:
         transcript_list = api.list(video_id)
     except TranscriptsDisabled as exc:
-        raise TranscriptsDisabledError(
-            f"Transcripts are disabled for {video_id}"
-        ) from exc
+        raise TranscriptsDisabledError(f"Transcripts are disabled for {video_id}") from exc
     except Exception as exc:
         code = _classify_exception(exc)
         if code in RETRYABLE_CODES:
-            raise TranscriptServiceError(
-                f"Failed to list transcripts for {video_id}: {exc}", code=code
-            ) from exc
-        raise TranscriptError(
-            f"Failed to list transcripts for {video_id}: {exc}", code=code
-        ) from exc
+            raise TranscriptServiceError(f"Failed to list transcripts for {video_id}: {exc}", code=code) from exc
+        raise TranscriptError(f"Failed to list transcripts for {video_id}: {exc}", code=code) from exc
 
     return [
         {

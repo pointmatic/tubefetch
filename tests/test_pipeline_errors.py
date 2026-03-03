@@ -138,6 +138,7 @@ class TestBatchTranscriptErrors:
     def test_both_metadata_and_transcript_error(self, mock_meta, mock_trans, tmp_path):
         """Both metadata and transcript errors should be collected."""
         from yt_fetch.core.errors import FetchErrorCode
+
         mock_meta.side_effect = MetadataError("meta fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
         mock_trans.side_effect = TranscriptError("trans fail", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
@@ -162,6 +163,7 @@ class TestFailFastTranscript:
         Transcript-only failures are warnings and do not trigger fail-fast.
         A metadata failure sets success=False and triggers early termination.
         """
+
         def meta_side(vid, opts):
             if vid == "bad_meta_aaa":
                 raise MetadataError("fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
@@ -171,9 +173,7 @@ class TestFailFastTranscript:
         mock_trans.side_effect = lambda vid, opts: _make_transcript(vid)
 
         opts = FetchOptions(out=tmp_path, fail_fast=True, workers=1)
-        result = process_batch(
-            ["vid_aaaaaaa", "bad_meta_aaa", "vid_ccccccc", "vid_ddddddd"], opts
-        )
+        result = process_batch(["vid_aaaaaaa", "bad_meta_aaa", "vid_ccccccc", "vid_ddddddd"], opts)
 
         assert result.failed >= 1
         assert result.total < 4

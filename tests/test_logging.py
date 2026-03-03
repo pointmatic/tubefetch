@@ -60,8 +60,13 @@ class TestJsonlFormatter:
     def test_format_basic(self):
         formatter = JsonlFormatter()
         record = logging.LogRecord(
-            name="yt_fetch", level=logging.INFO, pathname="", lineno=0,
-            msg="hello", args=(), exc_info=None,
+            name="yt_fetch",
+            level=logging.INFO,
+            pathname="",
+            lineno=0,
+            msg="hello",
+            args=(),
+            exc_info=None,
         )
         output = formatter.format(record)
         data = json.loads(output)
@@ -72,8 +77,13 @@ class TestJsonlFormatter:
     def test_format_with_extras(self):
         formatter = JsonlFormatter()
         record = logging.LogRecord(
-            name="yt_fetch", level=logging.ERROR, pathname="", lineno=0,
-            msg="fail", args=(), exc_info=None,
+            name="yt_fetch",
+            level=logging.ERROR,
+            pathname="",
+            lineno=0,
+            msg="fail",
+            args=(),
+            exc_info=None,
         )
         record.video_id = "abc12345678"
         record.event = "metadata_fetch"

@@ -130,9 +130,7 @@ class TestExceptionHierarchy:
 
     def test_fetch_exception_base(self):
         """Test FetchException base class."""
-        exc = FetchException(
-            "Test error", code=FetchErrorCode.UNKNOWN, retryable=False
-        )
+        exc = FetchException("Test error", code=FetchErrorCode.UNKNOWN, retryable=False)
         assert str(exc) == "Test error"
         assert exc.code == FetchErrorCode.UNKNOWN
         assert exc.retryable is False
@@ -258,6 +256,7 @@ class TestClassifyException:
 
     def test_classify_http_429(self):
         """Test HTTP 429 → RATE_LIMITED."""
+
         class MockHTTPError(Exception):
             status_code = 429
 
@@ -266,6 +265,7 @@ class TestClassifyException:
 
     def test_classify_http_500(self):
         """Test HTTP 500 → SERVICE_ERROR."""
+
         class MockHTTPError(Exception):
             status_code = 500
 
@@ -274,6 +274,7 @@ class TestClassifyException:
 
     def test_classify_http_503(self):
         """Test HTTP 503 → SERVICE_ERROR."""
+
         class MockHTTPError(Exception):
             code = 503
 
@@ -340,9 +341,7 @@ class TestClassifyException:
             assert _classify_exception(exc) == FetchErrorCode.TRANSCRIPTS_DISABLED
 
             # Test NoTranscriptFound
-            exc = NoTranscriptFound(
-                "test_video_id", ["en"], {"transcript_list": []}
-            )
+            exc = NoTranscriptFound("test_video_id", ["en"], {"transcript_list": []})
             assert _classify_exception(exc) == FetchErrorCode.TRANSCRIPT_NOT_FOUND
 
             # Test NoTranscriptAvailable

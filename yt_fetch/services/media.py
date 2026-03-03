@@ -80,7 +80,7 @@ def download_media(
             raise MediaError(
                 "ffmpeg is required for media download but was not found. "
                 "Install ffmpeg or set --ffmpeg-fallback=skip.",
-                code=FetchErrorCode.MISSING_DEPENDENCY
+                code=FetchErrorCode.MISSING_DEPENDENCY,
             )
 
     media_dir = Path(out_dir) / video_id / "media"
@@ -186,11 +186,7 @@ def _run_yt_dlp(url: str, video_id: str, ydl_opts: dict, media_type: str) -> lis
     except yt_dlp.utils.DownloadError as exc:
         code = _classify_exception(exc)
         if code in RETRYABLE_CODES:
-            raise MediaServiceError(
-                f"Failed to download {media_type} for {video_id}: {exc}", code=code
-            ) from exc
-        raise MediaError(
-            f"Failed to download {media_type} for {video_id}: {exc}", code=code
-        ) from exc
+            raise MediaServiceError(f"Failed to download {media_type} for {video_id}: {exc}", code=code) from exc
+        raise MediaError(f"Failed to download {media_type} for {video_id}: {exc}", code=code) from exc
 
     return downloaded

@@ -80,6 +80,7 @@ class TestProcessVideo:
     @patch("yt_fetch.core.pipeline.get_metadata")
     def test_metadata_error_continues(self, mock_meta, mock_trans, tmp_path):
         from yt_fetch.core.errors import FetchErrorCode
+
         mock_meta.side_effect = MetadataError("Video not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
         mock_trans.return_value = _make_transcript()
 
@@ -111,6 +112,7 @@ class TestProcessVideo:
     @patch("yt_fetch.core.pipeline.get_metadata")
     def test_both_errors(self, mock_meta, mock_trans, tmp_path):
         from yt_fetch.core.errors import FetchErrorCode
+
         mock_meta.side_effect = MetadataError("fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
         mock_trans.side_effect = TranscriptError("fail", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
@@ -128,9 +130,8 @@ class TestProcessVideo:
         video_dir = tmp_path / "dQw4w9WgXcQ"
         video_dir.mkdir()
         import json
-        (video_dir / "metadata.json").write_text(
-            json.dumps(meta.model_dump(mode="json"), default=str)
-        )
+
+        (video_dir / "metadata.json").write_text(json.dumps(meta.model_dump(mode="json"), default=str))
 
         mock_trans.return_value = _make_transcript()
 
@@ -151,9 +152,8 @@ class TestProcessVideo:
         video_dir = tmp_path / "dQw4w9WgXcQ"
         video_dir.mkdir()
         import json
-        (video_dir / "transcript.json").write_text(
-            json.dumps(trans.model_dump(mode="json"), default=str)
-        )
+
+        (video_dir / "transcript.json").write_text(json.dumps(trans.model_dump(mode="json"), default=str))
 
         mock_meta.return_value = _make_metadata()
 
@@ -250,6 +250,7 @@ class TestProcessVideo:
     def test_success_true_when_only_transcript_fails(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata()
         from yt_fetch.core.errors import FetchErrorCode
+
         mock_trans.side_effect = TranscriptError("No captions", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
         opts = FetchOptions(out=tmp_path)
@@ -265,6 +266,7 @@ class TestProcessVideo:
     @patch("yt_fetch.core.pipeline.get_metadata")
     def test_success_false_when_metadata_fails(self, mock_meta, mock_trans, tmp_path):
         from yt_fetch.core.errors import FetchErrorCode
+
         mock_meta.side_effect = MetadataError("Video not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
         mock_trans.return_value = _make_transcript()
 
@@ -286,12 +288,8 @@ class TestProcessVideo:
         trans = _make_transcript()
         video_dir = tmp_path / "dQw4w9WgXcQ"
         video_dir.mkdir()
-        (video_dir / "metadata.json").write_text(
-            json.dumps(meta.model_dump(mode="json"), default=str)
-        )
-        (video_dir / "transcript.json").write_text(
-            json.dumps(trans.model_dump(mode="json"), default=str)
-        )
+        (video_dir / "metadata.json").write_text(json.dumps(meta.model_dump(mode="json"), default=str))
+        (video_dir / "transcript.json").write_text(json.dumps(trans.model_dump(mode="json"), default=str))
 
         opts = FetchOptions(out=tmp_path)
         result = process_video("dQw4w9WgXcQ", opts)
