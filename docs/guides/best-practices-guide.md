@@ -4,6 +4,54 @@ This guide documents key learnings and best practices for LLM-assisted software 
 
 ---
 
+## Development Modes
+
+### Velocity Mode vs. Production Mode
+
+**Problem:** Applying production-grade processes too early slows down initial development. Conversely, maintaining velocity practices in production projects creates security and quality risks.
+
+**Best Practice:**
+
+Recognize and adapt to two distinct development modes:
+
+**Velocity Mode** (Early Development):
+- **When:** Phases A-F (foundation through initial testing)
+- **Practices:**
+  - Direct commits to main branch
+  - Minimal process overhead
+  - Version bump per story (v0.1.0 → v0.2.0 → v0.3.0)
+  - Focus on feature completion and iteration speed
+  - Skip branch protection, PR reviews, security policies
+- **Commit messages:** `"Story A.a: v0.1.0 Hello World"`
+
+**Production Mode** (Mature Development):
+- **When:** After CI/CD phase is complete and core functionality works
+- **Practices:**
+  - Branch protection enabled (PRs required)
+  - CI checks mandatory before merge
+  - Security hardening (Dependabot, SECURITY.md, CONTRIBUTING.md)
+  - Bundled releases with multiple stories (v0.8.0 includes J.a-J.d)
+  - Trusted publishers for package registries
+  - Code review requirements
+- **Commit messages:** `"Story J.c: Branch Protection & Repo Settings"`
+- **Release process:** Tag-based automation with GitHub Releases
+
+**The Switch:**
+- Occurs when enabling branch protection (typically in the CI/CD phase)
+- Marked by adding security and contribution policies
+- From this point forward, all changes go through PRs
+- Version numbers may skip (v0.7.1 → v0.8.0 bundling multiple stories)
+
+**How to Audit:**
+- Check if branch protection is enabled → should be ON for production projects
+- Look for CONTRIBUTING.md and SECURITY.md → missing indicates velocity mode
+- Review recent commits → direct to main = velocity, via PRs = production
+- Check version history → incremental (v0.1→v0.2) = velocity, bundled releases = production
+
+**Rationale:** Velocity mode maximizes learning and iteration speed when exploring solutions. Production mode maximizes stability and security when users depend on the project. Using the wrong mode at the wrong time either slows progress unnecessarily or creates technical debt.
+
+---
+
 ## CI/CD Setup
 
 ### Always Validate Locally Before Creating CI Infrastructure
