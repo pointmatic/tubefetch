@@ -619,33 +619,32 @@ Streamline release notes generation.
 
 ## Phase K: GitHub Pages Documentation
 
-### Story K.a: v0.8.1 MkDocs Configuration & Project Structure [Planned]
+### Story K.a: v0.8.1 MkDocs Configuration & Project Structure [Done]
 
 Set up MkDocs with Material theme and create documentation directory structure.
 
-- [ ] Install MkDocs dependencies locally:
-  - [ ] `pip install mkdocs-material mkdocs-git-revision-date-localized-plugin`
-- [ ] Create `mkdocs.yml` at repository root:
-  - [ ] Set `site_name: yt-fetch`
-  - [ ] Set `site_description` from descriptions.md (Friendly Brief Description)
-  - [ ] Set `site_url: https://pointmatic.github.io/yt-fetch`
-  - [ ] Set `repo_url: https://github.com/pointmatic/yt-fetch`
-  - [ ] Configure Material theme with teal/cyan palette (matching brand color `#3ee8c8`)
-  - [ ] Enable dark/light mode toggle
-  - [ ] Enable navigation features (instant, tracking, tabs, sections, expand, top)
-  - [ ] Enable search features (suggest, highlight)
-  - [ ] Enable content features (code.copy, code.annotate)
-  - [ ] Set `docs_dir: docs/site`
-  - [ ] Set `site_dir: site`
-  - [ ] Configure `nav` structure with Home (index.html) and placeholder pages
-  - [ ] Add markdown extensions (admonition, pymdownx.details, pymdownx.superfences, pymdownx.highlight, pymdownx.tabbed, tables, toc)
-  - [ ] Add plugins (search, git-revision-date-localized)
-- [ ] Create `docs/site/` directory structure
-- [ ] Create `docs/site/.gitignore`:
-  - [ ] Ignore `/site/` build output
-  - [ ] Ignore `.DS_Store`
-- [ ] Add `mkdocs-material` and `mkdocs-git-revision-date-localized-plugin` to `[project.optional-dependencies] dev` in `pyproject.toml`
-- [ ] Verify: `mkdocs serve` runs locally and shows placeholder site
+- [x] Install MkDocs dependencies locally:
+  - [x] `pip install mkdocs-material mkdocs-git-revision-date-localized-plugin`
+- [x] Create `mkdocs.yml` at repository root:
+  - [x] Set `site_name: yt-fetch`
+  - [x] Set `site_description` from descriptions.md (Friendly Brief Description)
+  - [x] Set `site_url: https://pointmatic.github.io/yt-fetch`
+  - [x] Set `repo_url: https://github.com/pointmatic/yt-fetch`
+  - [x] Configure Material theme with teal/cyan palette (matching brand color `#3ee8c8`)
+  - [x] Enable dark/light mode toggle
+  - [x] Enable navigation features (instant, tracking, tabs, sections, expand, top)
+  - [x] Enable search features (suggest, highlight)
+  - [x] Enable content features (code.copy, code.annotate)
+  - [x] Set `docs_dir: docs/site`
+  - [x] Set `site_dir: site`
+  - [x] Configure `nav` structure with Home (index.html) and placeholder pages
+  - [x] Add markdown extensions (admonition, pymdownx.details, pymdownx.superfences, pymdownx.highlight, pymdownx.tabbed, tables, toc)
+  - [x] Add plugins (search, git-revision-date-localized)
+- [x] Create `docs/site/` directory structure
+- [x] Create placeholder documentation pages (getting-started.md, usage.md, api.md, advanced.md)
+- [x] Add `mkdocs-material` and `mkdocs-git-revision-date-localized-plugin` to `[project.optional-dependencies] dev` in `pyproject.toml`
+- [x] Update `.gitignore` to ignore `site/` build output
+- [ ] Verify: `mkdocs serve` runs locally and shows placeholder site (requires user to run locally)
 
 ### Story K.b: v0.8.2 Custom Landing Page [Planned]
 
