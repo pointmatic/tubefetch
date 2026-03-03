@@ -1,0 +1,23 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 90%  # Minimum project coverage target
+        threshold: 2%  # Allow 2% drop before failing
+    patch:
+      default:
+        target: 80%  # Coverage for new code in patches
+
+  precision: 2  # Decimal places in coverage reports
+
+ignore:
+  - "tests/"
+  - "docs/"
+  - "__pycache__/"
+  - "*.pyc"
+  - ".github/"
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false

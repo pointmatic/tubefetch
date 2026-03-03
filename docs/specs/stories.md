@@ -493,16 +493,16 @@ GitHub Actions workflow for linting, testing, and coverage on every push and PR.
 - [x] Add `pytest-cov` to `[project.optional-dependencies] dev` in `pyproject.toml`
 - [x] Verify: coverage command works locally (94% coverage, 329 tests passed)
 
-### Story I.b: Codecov Configuration [Planned]
+### Story I.b: Codecov Configuration [Done]
 
 Configure Codecov for coverage thresholds and dynamic badge.
 
-- [ ] Create `codecov.yml` at repo root
-  - [ ] Set project coverage target (e.g., 90%)
-  - [ ] Set patch coverage target (e.g., 80%)
-  - [ ] Exclude `tests/` and `docs/` from coverage reporting
-- [ ] Enable the Codecov GitHub App on the `pointmatic/yt-fetch` repository (manual step)
-- [ ] Verify: Codecov receives coverage data after a CI run and the badge URL resolves
+- [x] Create `codecov.yml` at repo root
+  - [x] Set project coverage target (90%)
+  - [x] Set patch coverage target (80%)
+  - [x] Exclude `tests/` and `docs/` from coverage reporting
+- [ ] Enable the Codecov GitHub App on the `pointmatic/yt-fetch` repository (manual step - requires user action)
+- [ ] Verify: Codecov receives coverage data after a CI run and the badge URL resolves (requires push to GitHub)
 
 ### Story I.c: v0.7.1 Release Workflow — Auto-Publish to PyPI [Planned]
 
