@@ -233,6 +233,105 @@ git push origin --delete story/j.d-release-workflow
 
 ---
 
+## Branch Management
+
+### List Existing Branches
+
+**List local branches:**
+```bash
+git branch
+```
+Shows all local branches. Current branch is marked with `*`.
+
+**List remote branches:**
+```bash
+git branch -r
+```
+Shows all branches on GitHub (origin).
+
+**List all branches (local + remote):**
+```bash
+git branch -a
+```
+Shows both local and remote branches.
+
+**List branches with last commit info:**
+```bash
+git branch -v
+```
+Shows branches with their last commit message and hash.
+
+**List merged branches:**
+```bash
+git branch --merged
+```
+Shows branches that have been merged into current branch.
+
+**List unmerged branches:**
+```bash
+git branch --no-merged
+```
+Shows branches that haven't been merged yet.
+
+### Clean Up Old Branches
+
+**Delete local branch (safe):**
+```bash
+git branch -d branch-name
+```
+Only deletes if branch has been merged.
+
+**Force delete local branch:**
+```bash
+git branch -D branch-name
+```
+Force delete even if not merged.
+
+**Delete remote branch:**
+```bash
+git push origin --delete branch-name
+```
+
+**Prune deleted remote branches:**
+```bash
+git fetch --prune
+```
+Removes local references to remote branches that have been deleted on GitHub.
+
+**Delete all merged local branches:**
+```bash
+git branch --merged | grep -v "main" | xargs git branch -d
+```
+Deletes all local branches that have been merged (except main).
+
+**Delete all local branches except main:**
+```bash
+git branch | grep -v "main" | xargs git branch -D
+```
+⚠️ **Use with caution** - force deletes all local branches except main.
+
+### Recommended Cleanup Workflow
+
+```bash
+# 1. See what branches exist
+git branch -a
+
+# 2. Update remote branch list (removes deleted remote branches)
+git fetch --prune
+
+# 3. Delete specific merged local branches
+git branch -d story/j.d-release-workflow
+git branch -d fix/codecov-upload-error
+
+# 4. Or delete all merged local branches at once
+git branch --merged | grep -v "main" | xargs git branch -d
+
+# 5. Verify cleanup
+git branch
+```
+
+---
+
 ## Quick Reference
 
 ### Create and Push Branch
