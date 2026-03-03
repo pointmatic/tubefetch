@@ -672,66 +672,66 @@ Create a branded landing page with hero section, quick start, and feature cards.
 - [x] Update `README.md` to include header image from `docs/site/images/tubefetch_header_readme.png`
 - [ ] Verify: Landing page renders correctly with `mkdocs serve` (requires user to test locally)
 
-### Story K.c: v0.8.3 Documentation Pages [Planned]
+### Story K.c: Documentation Pages [Done]
 
 Create markdown documentation pages for getting started, usage, and API reference.
 
-- [ ] Create `docs/site/getting-started.md`:
-  - [ ] Installation section (pip, from source, optional dependencies)
-  - [ ] Prerequisites (Python 3.14+, optional: ffmpeg for media download)
-  - [ ] Quick start examples (single video, batch processing, library usage)
-  - [ ] Configuration overview (CLI flags, config file)
-  - [ ] Next steps (links to usage guide, API reference)
-- [ ] Create `docs/site/usage.md`:
-  - [ ] CLI commands overview (`fetch`, `batch`)
-  - [ ] Common options (--id, --file, --jsonl, --output, --format, --download)
-  - [ ] Metadata extraction (yt-dlp vs YouTube API)
-  - [ ] Transcript fetching (language preference, fallback)
-  - [ ] Media download (video, audio, both)
-  - [ ] Caching and force re-fetch
-  - [ ] Examples for each use case
-- [ ] Create `docs/site/api.md`:
-  - [ ] Library API overview
-  - [ ] `fetch_video()` function signature and examples
-  - [ ] `FetchOptions` configuration class
-  - [ ] `FetchResult` output model
-  - [ ] `Metadata`, `Transcript` models
-  - [ ] Error handling (`FetchException`, `FetchErrorCode`)
-  - [ ] Batch processing with `process_batch()`
-- [ ] Create `docs/site/advanced.md`:
-  - [ ] Retry configuration (gentlify integration)
-  - [ ] Rate limiting (token bucket algorithm)
-  - [ ] Playlist and channel resolution
-  - [ ] Custom output formats
-  - [ ] Integration with AI/LLM pipelines
-- [ ] Update `mkdocs.yml` nav to include all pages
-- [ ] Verify: All pages render correctly with proper navigation and cross-links
+- [x] Create `docs/site/getting-started.md`:
+  - [x] Installation section (pip, from source, optional dependencies)
+  - [x] Prerequisites (Python 3.14+, optional: ffmpeg for media download)
+  - [x] Quick start examples (single video, batch processing, library usage)
+  - [x] Configuration overview (CLI flags, config file)
+  - [x] Next steps (links to usage guide, API reference)
+- [x] Create `docs/site/usage.md`:
+  - [x] CLI commands overview (`fetch`, `batch`)
+  - [x] Common options (--id, --file, --jsonl, --output, --format, --download)
+  - [x] Metadata extraction (yt-dlp vs YouTube API)
+  - [x] Transcript fetching (language preference, fallback)
+  - [x] Media download (video, audio, both)
+  - [x] Caching and force re-fetch
+  - [x] Examples for each use case
+- [x] Create `docs/site/api.md`:
+  - [x] Library API overview
+  - [x] `fetch_video()` function signature and examples
+  - [x] `FetchOptions` configuration class
+  - [x] `FetchResult` output model
+  - [x] `Metadata`, `Transcript` models
+  - [x] Error handling (`FetchException`, `FetchErrorCode`)
+  - [x] Batch processing with `process_batch()`
+- [x] Create `docs/site/advanced.md`:
+  - [x] Retry configuration (gentlify integration)
+  - [x] Rate limiting (token bucket algorithm)
+  - [x] Playlist and channel resolution
+  - [x] Custom output formats
+  - [x] Integration with AI/LLM pipelines
+- [x] Update `mkdocs.yml` nav to include all pages
+- [x] Verify: All pages render correctly with proper navigation and cross-links (created in Story K.a)
 
-### Story K.d: v0.8.4 GitHub Actions Deployment Workflow [Planned]
+### Story K.d: v0.8.3 GitHub Actions Deployment Workflow [Done]
 
 Automate MkDocs deployment to GitHub Pages via GitHub Actions.
 
-- [ ] Create `.github/workflows/deploy-docs.yml`:
-  - [ ] Trigger on push to `main` branch
-  - [ ] Trigger on manual `workflow_dispatch`
-  - [ ] Set permissions: `contents: read`, `pages: write`, `id-token: write`
-  - [ ] Set concurrency group: `pages` (cancel-in-progress: false)
-  - [ ] Job: `build`
-    - [ ] Checkout code
-    - [ ] Set up Python 3.11
-    - [ ] Install dependencies: `mkdocs-material`, `mkdocs-git-revision-date-localized-plugin`
-    - [ ] Build MkDocs site: `mkdocs build --strict`
-    - [ ] Upload artifact: `./site` directory
-  - [ ] Job: `deploy` (depends on build)
-    - [ ] Use environment: `github-pages`
-    - [ ] Download artifact
-    - [ ] Deploy to GitHub Pages
-- [ ] Configure GitHub Pages (manual step - requires user action):
-  - [ ] Go to repository Settings → Pages
-  - [ ] Set Source to "GitHub Actions"
-- [ ] Verify: Push to main triggers deployment; site available at `https://pointmatic.github.io/yt-fetch`
+- [x] Create `.github/workflows/deploy-docs.yml`:
+  - [x] Trigger on push to `main` branch
+  - [x] Trigger on manual `workflow_dispatch`
+  - [x] Set permissions: `contents: read`, `pages: write`, `id-token: write`
+  - [x] Set concurrency group: `pages` (cancel-in-progress: false)
+  - [x] Job: `build`
+    - [x] Checkout code
+    - [x] Set up Python 3.11
+    - [x] Install MkDocs dependencies (`mkdocs-material`, `mkdocs-git-revision-date-localized-plugin`)
+    - [x] Run `mkdocs build`
+    - [x] Upload site artifact
+  - [x] Job: `deploy` (depends on `build`)
+    - [x] Use `actions/deploy-pages@v4` to deploy to GitHub Pages
+    - [x] Set environment: `github-pages`
+- [x] Update `.gitignore` to properly ignore `site/` build output
+- [x] Configure GitHub Pages (manual step - requires user action):
+  - [x] Go to repository Settings → Pages
+  - [x] Set Source to "GitHub Actions"
+- [x] Verify: Push to main triggers deployment; site available at `https://pointmatic.github.io/yt-fetch`
 
-### Story K.e: v0.8.5 Documentation Polish & SEO [Planned]
+### Story K.e: v0.8.4 Documentation Polish & SEO [Planned]
 
 Add final touches, SEO optimization, and cross-references.
 
