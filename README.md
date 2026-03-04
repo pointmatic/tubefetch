@@ -1,4 +1,4 @@
-![tubefetch](docs/site/images/tubefetch_header_readme.png)
+![tubefetch](https://raw.githubusercontent.com/pointmatic/tubefetch/main/docs/site/images/tubefetch_header_readme.png)
 
 # tubefetch
 

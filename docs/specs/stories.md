@@ -942,6 +942,27 @@ tubefetch media dQw4w9WgXcQ
 - Specialized commands still available when needed
 - Breaking change: `all` and `fetch` commands removed
 
+### Story K.k: v0.9.1 Fix PyPI README Header Image [Done]
+
+Fix broken header image on PyPI package page by using absolute GitHub URL.
+
+**Issue:**
+- Header image broken on https://pypi.org/project/tubefetch/
+- README used relative path: `docs/site/images/tubefetch_header_readme.png`
+- PyPI doesn't have access to repository file structure
+
+**Implemented changes:**
+- [x] Update `README.md` header image to use absolute GitHub URL:
+  - [x] Changed from `docs/site/images/tubefetch_header_readme.png`
+  - [x] Changed to `https://raw.githubusercontent.com/pointmatic/tubefetch/main/docs/site/images/tubefetch_header_readme.png`
+- [x] Bump version to `0.9.1` in `pyproject.toml`
+- [x] Verify: Image displays correctly on both GitHub and PyPI
+
+**Rationale:**
+- External-facing bug affecting package presentation on PyPI
+- Absolute URLs work on both GitHub and PyPI
+- Improves first impression for potential users browsing PyPI
+
 ---
 
 ## Phase L: Code Quality & Documentation
