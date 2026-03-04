@@ -581,7 +581,7 @@ def is_tokenizer_available() -> bool
     """Check if tiktoken is installed."""
 ```
 
-- `tiktoken` is an **optional dependency** — installed via `pip install yt-fetch[tokens]`
+- `tiktoken` is an **optional dependency** — installed via `pip install tubefetch[tokens]`
 - When `tiktoken` is not installed and a tokenizer is requested, a warning is logged and `token_count` is set to `None` (no crash)
 - Supported tokenizers: any name accepted by `tiktoken.encoding_for_model()` or `tiktoken.get_encoding()`
 

@@ -127,7 +127,7 @@ def _youtube_api_backend(video_id: str, api_key: str) -> Metadata:
     except ImportError as exc:
         raise MetadataError(
             "google-api-python-client is required for YouTube API backend. "
-            "Install with: pip install yt-fetch[youtube-api]",
+            "Install with: pip install tubefetch[youtube-api]",
             code=FetchErrorCode.MISSING_DEPENDENCY,
         ) from exc
 

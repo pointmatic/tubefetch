@@ -362,7 +362,7 @@ Optionally estimate the token count of transcript text using a configurable toke
 - Supported tokenizers: `cl100k_base` (GPT-4), `o200k_base` (GPT-4o), or any tokenizer supported by `tiktoken`
 - Token count is stored in `transcript.json` as `token_count` (integer or `null`)
 - Also available in `video_bundle.json` and `FetchResult.transcript.token_count`
-- `tiktoken` is an optional dependency (installed via `pip install yt-fetch[tokens]`)
+- `tiktoken` is an optional dependency (installed via `pip install tubefetch[tokens]`)
 
 This lets AI pipelines know upfront whether a transcript fits in a context window without importing `tiktoken` themselves.
 
