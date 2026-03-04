@@ -13,7 +13,7 @@ pip install tubefetch
 For YouTube Data API v3 support (optional):
 
 ```bash
-pip install tubefetch[youtube-api]
+pip install 'tubefetch[youtube-api]'
 ```
 
 ## Prerequisites

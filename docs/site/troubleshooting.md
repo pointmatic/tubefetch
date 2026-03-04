@@ -33,8 +33,10 @@ The YouTube Data API v3 backend can access metadata for restricted videos withou
 #### Step 1: Install the optional dependency
 
 ```bash
-pip install tubefetch[youtube-api]
+pip install 'tubefetch[youtube-api]'
 ```
+
+> **Note for zsh users:** The quotes are required in zsh to prevent bracket expansion. If you see `zsh: no matches found`, make sure to quote the package name.
 
 #### Step 2: Get a YouTube Data API key
 

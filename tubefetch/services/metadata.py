@@ -51,6 +51,20 @@ def get_metadata(video_id: str, options: FetchOptions) -> Metadata:
     if options.yt_api_key:
         try:
             return _youtube_api_backend(video_id, options.yt_api_key)
+        except MetadataError as exc:
+            # If missing dependency, show helpful install message
+            if exc.code == FetchErrorCode.MISSING_DEPENDENCY:
+                logger.warning(
+                    "YouTube API backend unavailable for %s: "
+                    "Install with \"pip install 'tubefetch[youtube-api]'\". Falling back to yt-dlp.",
+                    video_id,
+                )
+            else:
+                logger.warning(
+                    "YouTube API backend failed for %s, falling back to yt-dlp: %s",
+                    video_id,
+                    exc,
+                )
         except Exception as exc:
             logger.warning(
                 "YouTube API backend failed for %s, falling back to yt-dlp: %s",
@@ -127,7 +141,7 @@ def _youtube_api_backend(video_id: str, api_key: str) -> Metadata:
     except ImportError as exc:
         raise MetadataError(
             "google-api-python-client is required for YouTube API backend. "
-            "Install with: pip install tubefetch[youtube-api]",
+            "Install with: pip install 'tubefetch[youtube-api]'",
             code=FetchErrorCode.MISSING_DEPENDENCY,
         ) from exc
 

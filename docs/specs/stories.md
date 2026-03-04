@@ -1046,6 +1046,42 @@ Fix remaining `yt-fetch` references and add comprehensive troubleshooting docume
 - Reduces support burden by documenting common issues
 - Improves onboarding for users hitting yt-dlp restrictions
 
+### Story K.n: v0.9.4 Improve Warning Messages and zsh Compatibility [Done]
+
+Fix truncated warning messages and add zsh compatibility for pip install commands.
+
+**Issues:**
+- Warning message for missing YouTube API dependency was truncated in logs
+- pip install commands with square brackets fail in zsh without quotes
+- Users see `zsh: no matches found: tubefetch[youtube-api]` error
+
+**Implemented changes:**
+- [x] Fix warning message in `tubefetch/services/metadata.py`:
+  - [x] Check for `MISSING_DEPENDENCY` error code specifically
+  - [x] Show concise, complete message: "Install with 'pip install tubefetch[youtube-api]'"
+  - [x] Prevents truncation in log output
+  - [x] Include quotes in command for zsh compatibility
+- [x] Update all documentation to use quoted pip install commands:
+  - [x] `README.md` - Add quotes: `pip install 'tubefetch[youtube-api]'`
+  - [x] `docs/site/getting-started.md` - Add quotes
+  - [x] `docs/site/usage.md` - Add quotes
+  - [x] `docs/site/troubleshooting.md` - Add quotes + zsh note explaining the issue
+- [x] Update error message in `tubefetch/services/metadata.py`:
+  - [x] Add quotes to pip install command in ImportError exception
+- [x] Bump version to `0.9.4` in `pyproject.toml`
+- [x] Verify: All tests passing
+
+**Example warning output:**
+```
+WARNING  YouTube API backend unavailable for VIDEO_ID: Install with "pip install 'tubefetch[youtube-api]'". Falling back to yt-dlp.
+```
+
+**Rationale:**
+- Prevents user frustration with truncated install commands
+- Eliminates zsh compatibility issues (common on macOS)
+- Provides complete, copy-pastable commands in all documentation
+- Improves first-time user experience when encountering missing dependencies
+
 ---
 
 ## Phase L: Code Quality & Documentation

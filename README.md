@@ -37,7 +37,7 @@ pip install tubefetch
 Install for age-restricted or geo-restricted videos:
 
 ```bash
-pip install tubefetch[youtube-api]
+pip install 'tubefetch[youtube-api]'
 export TUBEFETCH_YT_API_KEY="your-api-key"
 ```
 
