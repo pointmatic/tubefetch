@@ -1,6 +1,6 @@
 # API Reference
 
-Use yt-fetch as a Python library in your projects.
+Use tubefetch as a Python library in your projects.
 
 ## Installation
 
@@ -11,7 +11,7 @@ pip install tubefetch
 ## Quick Start
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 # Fetch a single video
 result = fetch_video("dQw4w9WgXcQ")
@@ -49,7 +49,7 @@ def fetch_video(
 **Example:**
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 options = FetchOptions(
     out_dir="./output",
@@ -81,7 +81,7 @@ def fetch_videos(
 **Example:**
 
 ```python
-from yt_fetch import fetch_videos
+from tubefetch import fetch_videos
 
 video_ids = ["ID1", "ID2", "ID3"]
 batch_result = fetch_videos(video_ids)
@@ -183,7 +183,7 @@ class FetchError(BaseModel):
 ## Error Handling
 
 ```python
-from yt_fetch import fetch_video, FetchErrorCode
+from tubefetch import fetch_video, FetchErrorCode
 
 result = fetch_video("VIDEO_ID")
 
@@ -202,7 +202,7 @@ if not result.success:
 ### Custom Retry Configuration
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 options = FetchOptions(
     retries=5,  # Max retry attempts
@@ -215,7 +215,7 @@ result = fetch_video("VIDEO_ID", options)
 ### Media Download
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 options = FetchOptions(
     download="both",  # Download video and audio
@@ -228,7 +228,7 @@ result = fetch_video("VIDEO_ID", options)
 ### Batch Processing with Error Handling
 
 ```python
-from yt_fetch import fetch_videos, FetchOptions
+from tubefetch import fetch_videos, FetchOptions
 
 options = FetchOptions(
     fail_fast=False,  # Continue on errors

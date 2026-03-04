@@ -4,12 +4,12 @@ Advanced usage patterns and integration with AI/LLM pipelines.
 
 ## Retry Configuration with gentlify
 
-yt-fetch uses [gentlify](https://github.com/pointmatic/gentlify) for intelligent retry logic with exponential backoff and jitter.
+tubefetch uses [gentlify](https://github.com/pointmatic/gentlify) for intelligent retry logic with exponential backoff and jitter.
 
 ### Default Retry Behavior
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 # Default: 3 retries with exponential backoff
 options = FetchOptions(retries=3)
@@ -19,7 +19,7 @@ result = fetch_video("VIDEO_ID", options)
 ### Custom Retry Configuration
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 # More aggressive retries
 options = FetchOptions(
@@ -34,7 +34,7 @@ result = fetch_video("VIDEO_ID", options)
 For advanced use cases where you want to manage retries externally:
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 # Disable internal retries
 options = FetchOptions(retries=0)
@@ -48,7 +48,7 @@ result = fetch_video("VIDEO_ID", options)
 ### Built-in Rate Limiting
 
 ```python
-from yt_fetch import fetch_videos, FetchOptions
+from tubefetch import fetch_videos, FetchOptions
 
 # Limit to 1 request per second
 options = FetchOptions(rate_limit=1.0)
@@ -68,7 +68,7 @@ options = FetchOptions(rate_limit=0)  # Disable internal rate limiting
 ### Transcript for Summarization
 
 ```python
-from yt_fetch import fetch_video
+from tubefetch import fetch_video
 
 result = fetch_video("VIDEO_ID")
 
@@ -85,7 +85,7 @@ if result.transcript:
 
 ```python
 import json
-from yt_fetch import fetch_video
+from tubefetch import fetch_video
 
 result = fetch_video("VIDEO_ID")
 
@@ -110,7 +110,7 @@ for segment in transcript_data["segments"]:
 ### Batch Processing for Dataset Creation
 
 ```python
-from yt_fetch import fetch_videos, FetchOptions
+from tubefetch import fetch_videos, FetchOptions
 
 # Fetch large dataset
 video_ids = [...]  # List of video IDs
@@ -133,10 +133,10 @@ print(f"Successfully fetched {len(successful)} videos")
 
 ### Default Caching Behavior
 
-yt-fetch automatically caches fetched data. Re-running the same fetch will use cached files:
+tubefetch automatically caches fetched data. Re-running the same fetch will use cached files:
 
 ```python
-from yt_fetch import fetch_video
+from tubefetch import fetch_video
 
 # First fetch - downloads from YouTube
 result1 = fetch_video("VIDEO_ID")
@@ -148,7 +148,7 @@ result2 = fetch_video("VIDEO_ID")
 ### Force Re-fetch
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 # Force re-fetch everything
 options = FetchOptions(force=True)
@@ -166,7 +166,7 @@ options = FetchOptions(
 ### Programmatic Error Handling
 
 ```python
-from yt_fetch import fetch_video, FetchErrorCode, FetchPhase
+from tubefetch import fetch_video, FetchErrorCode, FetchPhase
 
 result = fetch_video("VIDEO_ID")
 
@@ -197,7 +197,7 @@ for error in result.errors:
 ### Video and Audio Download
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 options = FetchOptions(
     download="both",  # Download video and audio
@@ -212,7 +212,7 @@ result = fetch_video("VIDEO_ID", options)
 ### Audio-Only for Speech-to-Text
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 # Download audio for STT fallback when no transcript exists
 options = FetchOptions(download="audio")
@@ -230,7 +230,7 @@ For richer metadata, use the YouTube Data API v3 (requires API key):
 
 ```python
 import os
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 # Set API key via environment variable
 os.environ["YOUTUBE_API_KEY"] = "your-api-key"
@@ -246,7 +246,7 @@ result = fetch_video("VIDEO_ID", options)
 
 ```python
 import asyncio
-from yt_fetch import fetch_videos, FetchOptions
+from tubefetch import fetch_videos, FetchOptions
 
 # Concurrent workers (default: 3)
 options = FetchOptions(

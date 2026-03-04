@@ -1,10 +1,10 @@
 # Getting Started
 
-Welcome to yt-fetch! This guide will help you get started with fetching YouTube video metadata and transcripts.
+Welcome to tubefetch! This guide will help you get started with fetching YouTube video metadata and transcripts.
 
 ## Installation
 
-Install yt-fetch using pip:
+Install tubefetch using pip:
 
 ```bash
 pip install tubefetch
@@ -27,7 +27,7 @@ pip install tubefetch[youtube-api]
 ### Fetch a Single Video
 
 ```bash
-yt_fetch fetch --id dQw4w9WgXcQ
+tubefetch fetch --id dQw4w9WgXcQ
 ```
 
 This will create an output directory with:
@@ -38,7 +38,7 @@ This will create an output directory with:
 ### Fetch Multiple Videos
 
 ```bash
-yt_fetch fetch --id VIDEO_ID_1 --id VIDEO_ID_2 --id VIDEO_ID_3
+tubefetch fetch --id VIDEO_ID_1 --id VIDEO_ID_2 --id VIDEO_ID_3
 ```
 
 ### From a File
@@ -46,7 +46,7 @@ yt_fetch fetch --id VIDEO_ID_1 --id VIDEO_ID_2 --id VIDEO_ID_3
 Create a text file with one video ID per line:
 
 ```bash
-yt_fetch fetch --file video_ids.txt
+tubefetch fetch --file video_ids.txt
 ```
 
 ## Next Steps
