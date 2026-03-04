@@ -367,7 +367,7 @@ If you see errors like `ERROR: [youtube] VIDEO_ID: This video is not available` 
 **Solution:** Use the YouTube Data API v3 backend:
 
 ```bash
-pip install tubefetch[youtube-api]
+pip install 'tubefetch[youtube-api]'
 export TUBEFETCH_YT_API_KEY="your-api-key"
 tubefetch VIDEO_ID
 ```

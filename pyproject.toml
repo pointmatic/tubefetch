@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tubefetch"
-version = "0.9.3"
+version = "0.9.4"
 description = "YouTube video metadata, transcript, and media fetcher"
 readme = "README.md"
 license = {text = "Apache-2.0"}
