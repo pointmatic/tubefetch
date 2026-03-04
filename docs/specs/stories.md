@@ -963,6 +963,46 @@ Fix broken header image on PyPI package page by using absolute GitHub URL.
 - Absolute URLs work on both GitHub and PyPI
 - Improves first impression for potential users browsing PyPI
 
+### Story K.l: v0.9.2 Improve Summary Output Visibility [Done]
+
+Add metadata status to default command summary and add summaries to all specialized commands.
+
+**Issue:**
+- Default command summary didn't show metadata fetch status (only transcripts)
+- Specialized commands (`metadata`, `transcript`, `media`) had no summary output for batch operations
+- Users couldn't easily tell if all 12+ videos were successfully processed
+
+**Implemented changes:**
+- [x] Update `tubefetch/core/pipeline.py`:
+  - [x] Add "Metadata: X ok, Y failed" line to `print_summary()`
+  - [x] Matches format of "Transcripts: X ok, Y failed"
+- [x] Update `tubefetch/cli.py`:
+  - [x] Add `_print_simple_summary()` helper function
+  - [x] Track `succeeded` and `failed` counts in all specialized commands
+  - [x] Print summary at end of `metadata` command
+  - [x] Print summary at end of `transcript` command
+  - [x] Print summary at end of `media` command
+- [x] Bump version to `0.9.2` in `pyproject.toml`
+- [x] Verify: All 329 tests passing
+
+**Example output:**
+```
+========================================
+  Metadata Summary
+========================================
+  Total:        12
+  Succeeded:    12
+  Failed:       0
+  Output:       /path/to/out
+========================================
+```
+
+**Rationale:**
+- Improves batch operation visibility across all commands
+- Consistent UX between default and specialized commands
+- Users can quickly verify success/failure counts without counting log lines
+- Better user experience for common workflows (fetching 10+ videos)
+
 ---
 
 ## Phase L: Code Quality & Documentation

@@ -138,6 +138,24 @@ def _exit_code(total: int, failed: int, strict: bool) -> int:
     return EXIT_OK
 
 
+def _print_simple_summary(content_type: str, total: int, succeeded: int, failed: int, out_dir: Path) -> None:
+    """Print a simple summary for specialized commands."""
+    log = get_logger()
+    lines = [
+        "",
+        "=" * 40,
+        f"  {content_type} Summary",
+        "=" * 40,
+        f"  Total:        {total}",
+        f"  Succeeded:    {succeeded}",
+        f"  Failed:       {failed}",
+        f"  Output:       {out_dir.resolve()}",
+        "=" * 40,
+        "",
+    ]
+    log.info("\n".join(lines))
+
+
 @click.group()
 @click.version_option(version=__version__, prog_name="tubefetch")
 def cli():
@@ -227,16 +245,19 @@ def transcript(videos, file_path, jsonl_path, id_field, strict, **kwargs):
     from tubefetch.core.writer import write_transcript_json
     from tubefetch.services.transcript import TranscriptError, get_transcript
 
+    succeeded = 0
     failed = 0
     for vid in video_ids:
         try:
             t = get_transcript(vid, options)
             write_transcript_json(t, Path(options.out))
             log.info("Wrote transcript for %s", vid)
+            succeeded += 1
         except TranscriptError as exc:
             log.error("Transcript error for %s: %s", vid, exc)
             failed += 1
 
+    _print_simple_summary("Transcripts", len(video_ids), succeeded, failed, Path(options.out))
     sys.exit(_exit_code(len(video_ids), failed, strict))
 
 
@@ -257,16 +278,19 @@ def metadata(videos, file_path, jsonl_path, id_field, strict, **kwargs):
     from tubefetch.core.writer import write_metadata
     from tubefetch.services.metadata import MetadataError, get_metadata
 
+    succeeded = 0
     failed = 0
     for vid in video_ids:
         try:
             m = get_metadata(vid, options)
             write_metadata(m, Path(options.out))
             log.info("Wrote metadata for %s", vid)
+            succeeded += 1
         except MetadataError as exc:
             log.error("Metadata error for %s: %s", vid, exc)
             failed += 1
 
+    _print_simple_summary("Metadata", len(video_ids), succeeded, failed, Path(options.out))
     sys.exit(_exit_code(len(video_ids), failed, strict))
 
 
@@ -289,6 +313,7 @@ def media(videos, file_path, jsonl_path, id_field, strict, **kwargs):
 
     from tubefetch.services.media import MediaError, download_media
 
+    succeeded = 0
     failed = 0
     for vid in video_ids:
         try:
@@ -297,10 +322,12 @@ def media(videos, file_path, jsonl_path, id_field, strict, **kwargs):
                 log.warning("Skipped media for %s: %s", vid, result.errors)
             else:
                 log.info("Downloaded media for %s", vid)
+                succeeded += 1
         except MediaError as exc:
             log.error("Media error for %s: %s", vid, exc)
             failed += 1
 
+    _print_simple_summary("Media", len(video_ids), succeeded, failed, Path(options.out))
     sys.exit(_exit_code(len(video_ids), failed, strict))
 
 

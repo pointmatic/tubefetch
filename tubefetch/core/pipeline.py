@@ -200,6 +200,8 @@ def process_batch(video_ids: list[str], options: FetchOptions) -> BatchResult:
 
 def print_summary(batch: BatchResult, out_dir: Path) -> None:
     """Print a human-readable batch summary to the console."""
+    metadata_ok = sum(1 for r in batch.results if r.metadata_path is not None)
+    metadata_fail = sum(1 for r in batch.results if any(e.phase == FetchPhase.METADATA for e in r.errors))
     transcript_ok = sum(1 for r in batch.results if r.transcript_path is not None)
     transcript_fail = sum(1 for r in batch.results if any(e.phase == FetchPhase.TRANSCRIPT for e in r.errors))
     media_count = sum(len(r.media_paths) for r in batch.results)
@@ -212,6 +214,7 @@ def print_summary(batch: BatchResult, out_dir: Path) -> None:
         f"  Total:        {batch.total}",
         f"  Succeeded:    {batch.succeeded}",
         f"  Failed:       {batch.failed}",
+        f"  Metadata:     {metadata_ok} ok, {metadata_fail} failed",
         f"  Transcripts:  {transcript_ok} ok, {transcript_fail} failed",
         f"  Media files:  {media_count}",
         f"  Output:       {out_dir.resolve()}",
