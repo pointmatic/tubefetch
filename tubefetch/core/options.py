@@ -29,8 +29,8 @@ from pydantic_settings import (
 
 class FetchOptions(BaseSettings):
     model_config = SettingsConfigDict(
-        env_prefix="YT_FETCH_",
-        yaml_file="yt_fetch.yaml",
+        env_prefix="TUBEFETCH_",
+        yaml_file="tubefetch.yaml",
         yaml_file_encoding="utf-8",
     )
 

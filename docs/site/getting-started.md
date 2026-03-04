@@ -27,7 +27,7 @@ pip install tubefetch[youtube-api]
 ### Fetch a Single Video
 
 ```bash
-tubefetch fetch --id dQw4w9WgXcQ
+tubefetch dQw4w9WgXcQ
 ```
 
 This will create an output directory with:
@@ -38,7 +38,7 @@ This will create an output directory with:
 ### Fetch Multiple Videos
 
 ```bash
-tubefetch fetch --id VIDEO_ID_1 --id VIDEO_ID_2 --id VIDEO_ID_3
+tubefetch VIDEO_ID_1 VIDEO_ID_2 VIDEO_ID_3
 ```
 
 ### From a File
@@ -46,7 +46,7 @@ tubefetch fetch --id VIDEO_ID_1 --id VIDEO_ID_2 --id VIDEO_ID_3
 Create a text file with one video ID per line:
 
 ```bash
-tubefetch fetch --file video_ids.txt
+tubefetch --file video_ids.txt
 ```
 
 ## Next Steps

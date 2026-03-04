@@ -25,12 +25,12 @@ import json
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from yt_fetch.core.errors import FetchErrorCode, FetchPhase
-from yt_fetch.core.models import Metadata, Transcript, TranscriptSegment
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.core.pipeline import process_batch, process_video
-from yt_fetch.services.metadata import MetadataError
-from yt_fetch.services.transcript import TranscriptError
+from tubefetch.core.errors import FetchErrorCode, FetchPhase
+from tubefetch.core.models import Metadata, Transcript, TranscriptSegment
+from tubefetch.core.options import FetchOptions
+from tubefetch.core.pipeline import process_batch, process_video
+from tubefetch.services.metadata import MetadataError
+from tubefetch.services.transcript import TranscriptError
 
 
 def _make_metadata(video_id: str = "testVid12345") -> Metadata:
@@ -58,8 +58,8 @@ def _make_transcript(video_id: str = "testVid12345", text: str = "Hello") -> Tra
 
 
 class TestIdempotencyTranscript:
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_force_overwrites_transcript(self, mock_meta, mock_trans, tmp_path):
         """--force should overwrite transcript content."""
         mock_meta.return_value = _make_metadata()
@@ -78,8 +78,8 @@ class TestIdempotencyTranscript:
         data2 = json.loads((tmp_path / "testVid12345" / "transcript.json").read_text())
         assert data2["segments"][0]["text"] == "Updated text"
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_force_transcript_only_preserves_metadata(self, mock_meta, mock_trans, tmp_path):
         """--force-transcript should not refetch metadata."""
         meta = _make_metadata()
@@ -110,8 +110,8 @@ class TestIdempotencyTranscript:
 
 
 class TestBatchTranscriptErrors:
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_transcript_error_isolated(self, mock_meta, mock_trans, tmp_path):
         """A transcript error for one video should not affect others.
 
@@ -141,11 +141,11 @@ class TestBatchTranscriptErrors:
         good = [r for r in result.results if r.success]
         assert len(good) == 3
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_both_metadata_and_transcript_error(self, mock_meta, mock_trans, tmp_path):
         """Both metadata and transcript errors should be collected."""
-        from yt_fetch.core.errors import FetchErrorCode
+        from tubefetch.core.errors import FetchErrorCode
 
         mock_meta.side_effect = MetadataError("meta fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
         mock_trans.side_effect = TranscriptError("trans fail", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
@@ -163,8 +163,8 @@ class TestBatchTranscriptErrors:
 
 
 class TestFailFastTranscript:
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_fail_fast_on_transcript_error(self, mock_meta, mock_trans, tmp_path):
         """Fail-fast should trigger on metadata errors (critical failures).
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tubefetch"
-version = "0.8.2"
+version = "0.9.0"
 description = "YouTube video metadata, transcript, and media fetcher"
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -52,10 +52,10 @@ dev = [
 ]
 
 [project.scripts]
-tubefetch = "yt_fetch.cli:cli"
+tubefetch = "tubefetch.cli:cli"
 
 [tool.setuptools.packages.find]
-include = ["yt_fetch*"]
+include = ["tubefetch*"]
 
 [tool.ruff]
 target-version = "py314"

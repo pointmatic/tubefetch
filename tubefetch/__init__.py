@@ -16,9 +16,9 @@
 
 __version__ = "0.8.0"
 
-from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchException, FetchPhase
-from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript
-from yt_fetch.core.options import FetchOptions
+from tubefetch.core.errors import FetchError, FetchErrorCode, FetchException, FetchPhase
+from tubefetch.core.models import BatchResult, FetchResult, Metadata, Transcript
+from tubefetch.core.options import FetchOptions
 
 
 def fetch_video(video_id: str, options: FetchOptions | None = None) -> FetchResult:
@@ -33,8 +33,8 @@ def fetch_video(video_id: str, options: FetchOptions | None = None) -> FetchResu
     Returns:
         FetchResult with metadata, transcript, paths, and any errors.
     """
-    from yt_fetch.core.pipeline import process_video
-    from yt_fetch.services.id_parser import parse_video_id
+    from tubefetch.core.pipeline import process_video
+    from tubefetch.services.id_parser import parse_video_id
 
     if options is None:
         options = FetchOptions()
@@ -70,8 +70,8 @@ def fetch_batch(video_ids: list[str], options: FetchOptions | None = None) -> Ba
     Returns:
         BatchResult with per-video results and summary counts.
     """
-    from yt_fetch.core.pipeline import process_batch
-    from yt_fetch.services.id_parser import parse_many
+    from tubefetch.core.pipeline import process_batch
+    from tubefetch.services.id_parser import parse_many
 
     if options is None:
         options = FetchOptions()

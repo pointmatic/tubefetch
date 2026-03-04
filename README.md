@@ -10,7 +10,7 @@
 
 A Python CLI and library that fetches and extracts structured metadata and transcripts from YouTube videos, producing LLM-ready plain text, content hashes for change detection, and unified video bundles with batch processing, caching, and retry logic.
 
-tubefetch is a Python tool that extracts structured, AI-ready content from YouTube videos. Given one or more video IDs, URLs, playlists, or channels, it produces normalized metadata, transcripts, and optional media in formats optimized for downstream AI/LLM pipelines (summarization, fact-checking, RAG, search indexing, etc.). It provides content hashes for change detection, optional token count estimates, and unified video bundles. The tool supports both CLI and library usage with batch processing, intelligent caching, configurable retries via gentlify, and rate limiting.
+TubeFetch is a Python tool that extracts structured, AI-ready content from YouTube videos. Given one or more video IDs, URLs, playlists, or channels, it produces normalized metadata, transcripts, and optional media in formats optimized for downstream AI/LLM pipelines (summarization, fact-checking, RAG, search indexing, etc.). It provides content hashes for change detection, optional token count estimates, and unified video bundles. The tool supports both CLI and library usage with batch processing, intelligent caching, configurable retries via gentlify, and rate limiting.
 
 ## Features
 
@@ -38,30 +38,51 @@ For YouTube Data API v3 support (optional):
 pip install tubefetch[youtube-api]
 ```
 
-> **Note:** The CLI command is `tubefetch`.
+> **Note:** The CLI accepts video IDs/URLs as positional arguments. Use `tubefetch VIDEO_ID` for the default behavior (metadata + transcript), or specialized commands like `metadata`, `transcript`, `media` for specific content.
 
 ## Quick Start
 
 ### CLI
 
 ```bash
-# Fetch metadata + transcript for a single video
-tubefetch fetch --id dQw4w9WgXcQ
+# Fetch a single video
+tubefetch dQw4w9WgXcQ
 
-# Fetch with media download
-tubefetch fetch --id dQw4w9WgXcQ --download video
+# Multiple videos
+tubefetch VIDEO_ID_1 VIDEO_ID_2 VIDEO_ID_3
+
+# From a file
+tubefetch --file video_ids.txt
+
+# With media download
+tubefetch VIDEO_ID --download video
 
 # Batch from a file
-tubefetch fetch --file video_ids.txt --out ./output --workers 3
+tubefetch --file video_ids.txt --workers 3
 
 # Transcript only
-tubefetch transcript --id dQw4w9WgXcQ --languages en,fr
+tubefetch transcript dQw4w9WgXcQ --languages en,fr
 
 # Metadata only
-tubefetch metadata --id dQw4w9WgXcQ
+tubefetch metadata dQw4w9WgXcQ
+
+# Media only (downloads video+audio by default)
+tubefetch media dQw4w9WgXcQ
+```
+
+### Specialized Commands
+
+For exceptional cases when you only need specific data:
+
+```bash
+# Metadata only
+tubefetch metadata VIDEO_ID
+
+# Transcript only
+tubefetch transcript VIDEO_ID
 
 # Media only
-tubefetch media --id dQw4w9WgXcQ
+tubefetch media VIDEO_ID
 ```
 
 ### Library API
@@ -193,10 +214,10 @@ result = fetch_video("dQw4w9WgXcQ", opts)
 CLI:
 ```bash
 # Custom retry count
-tubefetch fetch --id dQw4w9WgXcQ --retries 5
+tubefetch dQw4w9WgXcQ --retries 5
 
 # Disable retries
-tubefetch fetch --id dQw4w9WgXcQ --retries 0
+tubefetch dQw4w9WgXcQ --retries 0
 ```
 
 ## Exit Codes

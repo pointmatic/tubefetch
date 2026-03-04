@@ -12,20 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.core.writer."""
+"""Tests for tubefetch.core.writer."""
 
 import json
 from datetime import datetime, timezone
 
-from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
-from yt_fetch.core.models import (
+from tubefetch.core.errors import FetchError, FetchErrorCode, FetchPhase
+from tubefetch.core.models import (
     BatchResult,
     FetchResult,
     Metadata,
     Transcript,
     TranscriptSegment,
 )
-from yt_fetch.core.writer import (
+from tubefetch.core.writer import (
     read_metadata,
     read_transcript_json,
     write_metadata,

@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 
 from youtube_transcript_api import TranscriptsDisabled, YouTubeTranscriptApi
 
-from yt_fetch.core.errors import (
+from tubefetch.core.errors import (
     FetchErrorCode,
     TranscriptError,
     TranscriptNotFound,
@@ -29,10 +29,10 @@ from yt_fetch.core.errors import (
     TranscriptServiceError,
     _classify_exception,
 )
-from yt_fetch.core.models import Transcript, TranscriptSegment
-from yt_fetch.core.options import FetchOptions
+from tubefetch.core.models import Transcript, TranscriptSegment
+from tubefetch.core.options import FetchOptions
 
-logger = logging.getLogger("yt_fetch")
+logger = logging.getLogger("tubefetch")
 
 # Retryable error codes for transient failures
 RETRYABLE_CODES = (

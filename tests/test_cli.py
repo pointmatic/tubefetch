@@ -20,7 +20,7 @@ from unittest.mock import patch
 
 from click.testing import CliRunner
 
-from yt_fetch.cli import (
+from tubefetch.cli import (
     EXIT_ALL_FAILED,
     EXIT_ERROR,
     EXIT_OK,
@@ -29,9 +29,9 @@ from yt_fetch.cli import (
     _exit_code,
     cli,
 )
-from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
-from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
-from yt_fetch.services.media import MediaResult
+from tubefetch.core.errors import FetchError, FetchErrorCode, FetchPhase
+from tubefetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
+from tubefetch.services.media import MediaResult
 
 
 def _make_metadata(video_id: str = "dQw4w9WgXcQ") -> Metadata:
@@ -80,14 +80,14 @@ class TestExitCode:
 
 class TestCollectIds:
     def test_from_ids(self):
-        result = _collect_ids(("dQw4w9WgXcQ",), None, None, "id")
-        assert result == ["dQw4w9WgXcQ"]
+        result = _collect_ids(("dQw4w9WgXcQ", "abc12345678"), None, None, "id")
+        assert result == ["dQw4w9WgXcQ", "abc12345678"]
 
     def test_from_file(self, tmp_path):
         f = tmp_path / "ids.txt"
         f.write_text("dQw4w9WgXcQ\nabc12345678\n")
         result = _collect_ids((), f, None, "id")
-        assert len(result) == 2
+        assert result == ["dQw4w9WgXcQ", "abc12345678"]
 
     def test_deduplication(self):
         result = _collect_ids(("dQw4w9WgXcQ", "dQw4w9WgXcQ"), None, None, "id")
@@ -106,16 +106,16 @@ class TestCliVersion:
         runner = CliRunner()
         result = runner.invoke(cli, ["--version"])
         assert result.exit_code == 0
-        assert "yt_fetch" in result.output
+        assert "tubefetch" in result.output
 
 
 class TestCliFetch:
     def test_no_ids_exits_1(self):
         runner = CliRunner()
-        result = runner.invoke(cli, ["fetch"])
+        result = runner.invoke(cli, [])
         assert result.exit_code == EXIT_ERROR
 
-    @patch("yt_fetch.core.pipeline.process_batch")
+    @patch("tubefetch.core.pipeline.process_batch")
     def test_with_id(self, mock_batch, tmp_path):
         mock_batch.return_value = BatchResult(
             total=1,
@@ -124,11 +124,11 @@ class TestCliFetch:
             results=[FetchResult(video_id="dQw4w9WgXcQ", success=True)],
         )
         runner = CliRunner()
-        result = runner.invoke(cli, ["fetch", "--id", "dQw4w9WgXcQ", "--out", str(tmp_path)])
+        result = runner.invoke(cli, ["dQw4w9WgXcQ", "--out", str(tmp_path)])
         assert result.exit_code == EXIT_OK
         mock_batch.assert_called_once()
 
-    @patch("yt_fetch.core.pipeline.process_batch")
+    @patch("tubefetch.core.pipeline.process_batch")
     def test_strict_partial_failure(self, mock_batch, tmp_path):
         mock_batch.return_value = BatchResult(
             total=2,
@@ -155,10 +155,7 @@ class TestCliFetch:
         result = runner.invoke(
             cli,
             [
-                "fetch",
-                "--id",
                 "dQw4w9WgXcQ",
-                "--id",
                 "xxxxxxxxxxx",
                 "--out",
                 str(tmp_path),
@@ -174,8 +171,8 @@ class TestCliTranscript:
         result = runner.invoke(cli, ["transcript"])
         assert result.exit_code == EXIT_ERROR
 
-    @patch("yt_fetch.core.writer.write_transcript_json")
-    @patch("yt_fetch.services.transcript.get_transcript")
+    @patch("tubefetch.core.writer.write_transcript_json")
+    @patch("tubefetch.services.transcript.get_transcript")
     def test_success(self, mock_get, mock_write, tmp_path):
         mock_get.return_value = _make_transcript()
         mock_write.return_value = tmp_path / "dQw4w9WgXcQ" / "transcript.json"
@@ -185,7 +182,6 @@ class TestCliTranscript:
             cli,
             [
                 "transcript",
-                "--id",
                 "dQw4w9WgXcQ",
                 "--out",
                 str(tmp_path),
@@ -200,8 +196,8 @@ class TestCliMetadata:
         result = runner.invoke(cli, ["metadata"])
         assert result.exit_code == EXIT_ERROR
 
-    @patch("yt_fetch.core.writer.write_metadata")
-    @patch("yt_fetch.services.metadata.get_metadata")
+    @patch("tubefetch.core.writer.write_metadata")
+    @patch("tubefetch.services.metadata.get_metadata")
     def test_success(self, mock_get, mock_write, tmp_path):
         mock_get.return_value = _make_metadata()
         mock_write.return_value = tmp_path / "dQw4w9WgXcQ" / "metadata.json"
@@ -211,7 +207,6 @@ class TestCliMetadata:
             cli,
             [
                 "metadata",
-                "--id",
                 "dQw4w9WgXcQ",
                 "--out",
                 str(tmp_path),
@@ -226,7 +221,7 @@ class TestCliMedia:
         result = runner.invoke(cli, ["media"])
         assert result.exit_code == EXIT_ERROR
 
-    @patch("yt_fetch.services.media.download_media")
+    @patch("tubefetch.services.media.download_media")
     def test_success(self, mock_dl, tmp_path):
         mock_dl.return_value = MediaResult(video_id="dQw4w9WgXcQ", paths=[Path("/tmp/v.mp4")])
 
@@ -235,7 +230,6 @@ class TestCliMedia:
             cli,
             [
                 "media",
-                "--id",
                 "dQw4w9WgXcQ",
                 "--out",
                 str(tmp_path),
@@ -243,10 +237,10 @@ class TestCliMedia:
         )
         assert result.exit_code == EXIT_OK
 
-    @patch("yt_fetch.services.media.download_media")
+    @patch("tubefetch.services.media.download_media")
     def test_media_error(self, mock_dl, tmp_path):
-        from yt_fetch.core.errors import FetchErrorCode
-        from yt_fetch.services.media import MediaError
+        from tubefetch.core.errors import FetchErrorCode
+        from tubefetch.services.media import MediaError
 
         mock_dl.side_effect = MediaError("download failed", code=FetchErrorCode.SERVICE_ERROR)
 
@@ -255,7 +249,6 @@ class TestCliMedia:
             cli,
             [
                 "media",
-                "--id",
                 "dQw4w9WgXcQ",
                 "--out",
                 str(tmp_path),
@@ -263,7 +256,7 @@ class TestCliMedia:
         )
         assert result.exit_code == EXIT_ALL_FAILED
 
-    @patch("yt_fetch.services.media.download_media")
+    @patch("tubefetch.services.media.download_media")
     def test_media_skipped(self, mock_dl, tmp_path):
         mock_dl.return_value = MediaResult(
             video_id="dQw4w9WgXcQ",
@@ -283,20 +276,20 @@ class TestCliMedia:
             cli,
             [
                 "media",
-                "--id",
                 "dQw4w9WgXcQ",
                 "--out",
                 str(tmp_path),
             ],
         )
         assert result.exit_code == EXIT_OK
+        assert "no ffmpeg" in result.output
 
 
 class TestCliTranscriptError:
-    @patch("yt_fetch.services.transcript.get_transcript")
+    @patch("tubefetch.services.transcript.get_transcript")
     def test_transcript_error(self, mock_get, tmp_path):
-        from yt_fetch.core.errors import FetchErrorCode
-        from yt_fetch.services.transcript import TranscriptError
+        from tubefetch.core.errors import FetchErrorCode
+        from tubefetch.services.transcript import TranscriptError
 
         mock_get.side_effect = TranscriptError("not found", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
@@ -305,7 +298,6 @@ class TestCliTranscriptError:
             cli,
             [
                 "transcript",
-                "--id",
                 "dQw4w9WgXcQ",
                 "--out",
                 str(tmp_path),
@@ -315,10 +307,10 @@ class TestCliTranscriptError:
 
 
 class TestCliMetadataError:
-    @patch("yt_fetch.services.metadata.get_metadata")
+    @patch("tubefetch.services.metadata.get_metadata")
     def test_metadata_error(self, mock_get, tmp_path):
-        from yt_fetch.core.errors import FetchErrorCode
-        from yt_fetch.services.metadata import MetadataError
+        from tubefetch.core.errors import FetchErrorCode
+        from tubefetch.services.metadata import MetadataError
 
         mock_get.side_effect = MetadataError("not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
 
@@ -327,7 +319,6 @@ class TestCliMetadataError:
             cli,
             [
                 "metadata",
-                "--id",
                 "dQw4w9WgXcQ",
                 "--out",
                 str(tmp_path),
@@ -338,13 +329,13 @@ class TestCliMetadataError:
 
 class TestBuildOptions:
     def test_format_option(self):
-        from yt_fetch.cli import _build_options
+        from tubefetch.cli import _build_options
 
         opts = _build_options(format_="mp4")
         assert opts.format == "mp4"
 
     def test_languages_option(self):
-        from yt_fetch.cli import _build_options
+        from tubefetch.cli import _build_options
 
         opts = _build_options(languages="en, fr, de")
         assert opts.languages == ["en", "fr", "de"]
@@ -352,7 +343,7 @@ class TestBuildOptions:
 
 class TestCollectIdsJsonl:
     def test_from_jsonl(self, tmp_path):
-        f = tmp_path / "ids.jsonl"
-        f.write_text('{"id": "dQw4w9WgXcQ"}\n{"id": "abc12345678"}\n')
-        result = _collect_ids((), None, f, "id")
-        assert len(result) == 2
+        f = tmp_path / "data.jsonl"
+        f.write_text('{"video_id": "dQw4w9WgXcQ"}\n{"video_id": "abc12345678"}\n')
+        result = _collect_ids((), None, f, "video_id")
+        assert result == ["dQw4w9WgXcQ", "abc12345678"]

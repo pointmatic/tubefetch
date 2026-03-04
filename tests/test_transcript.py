@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.services.transcript."""
+"""Tests for tubefetch.services.transcript."""
 
 from dataclasses import dataclass
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from yt_fetch.core.models import Transcript
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.services.transcript import (
+from tubefetch.core.models import Transcript
+from tubefetch.core.options import FetchOptions
+from tubefetch.services.transcript import (
     TranscriptError,
     TranscriptNotFound,
     _select_transcript,
@@ -147,7 +147,7 @@ class TestSelectTranscript:
 class TestGetTranscript:
     """Test get_transcript with mocked youtube-transcript-api."""
 
-    @patch("yt_fetch.services.transcript.YouTubeTranscriptApi")
+    @patch("tubefetch.services.transcript.YouTubeTranscriptApi")
     def test_success(self, mock_api_class):
         mock_api = MagicMock()
         mock_api_class.return_value = mock_api
@@ -169,7 +169,7 @@ class TestGetTranscript:
         assert result.transcript_source == "youtube-transcript-api"
         assert result.available_languages == ["en"]
 
-    @patch("yt_fetch.services.transcript.YouTubeTranscriptApi")
+    @patch("tubefetch.services.transcript.YouTubeTranscriptApi")
     def test_transcript_not_found(self, mock_api_class):
         mock_api = MagicMock()
         mock_api_class.return_value = mock_api
@@ -179,7 +179,7 @@ class TestGetTranscript:
         with pytest.raises(TranscriptNotFound, match="TRANSCRIPT_NOT_FOUND"):
             get_transcript("xxxxxxxxxxx", options)
 
-    @patch("yt_fetch.services.transcript.YouTubeTranscriptApi")
+    @patch("tubefetch.services.transcript.YouTubeTranscriptApi")
     def test_transcripts_disabled(self, mock_api_class):
         from youtube_transcript_api import TranscriptsDisabled
 
@@ -191,7 +191,7 @@ class TestGetTranscript:
         with pytest.raises(TranscriptError, match="Transcripts are disabled"):
             get_transcript("xxxxxxxxxxx", options)
 
-    @patch("yt_fetch.services.transcript.YouTubeTranscriptApi")
+    @patch("tubefetch.services.transcript.YouTubeTranscriptApi")
     def test_generated_transcript_when_allowed(self, mock_api_class):
         mock_api = MagicMock()
         mock_api_class.return_value = mock_api
@@ -205,7 +205,7 @@ class TestGetTranscript:
         result = get_transcript("dQw4w9WgXcQ", options)
         assert result.is_generated is True
 
-    @patch("yt_fetch.services.transcript.YouTubeTranscriptApi")
+    @patch("tubefetch.services.transcript.YouTubeTranscriptApi")
     def test_generated_rejected_when_not_allowed(self, mock_api_class):
         mock_api = MagicMock()
         mock_api_class.return_value = mock_api
@@ -219,7 +219,7 @@ class TestGetTranscript:
         with pytest.raises(TranscriptNotFound):
             get_transcript("dQw4w9WgXcQ", options)
 
-    @patch("yt_fetch.services.transcript.YouTubeTranscriptApi")
+    @patch("tubefetch.services.transcript.YouTubeTranscriptApi")
     def test_any_language_fallback(self, mock_api_class):
         mock_api = MagicMock()
         mock_api_class.return_value = mock_api
@@ -240,7 +240,7 @@ class TestGetTranscript:
 class TestListAvailableTranscripts:
     """Test list_available_transcripts."""
 
-    @patch("yt_fetch.services.transcript.YouTubeTranscriptApi")
+    @patch("tubefetch.services.transcript.YouTubeTranscriptApi")
     def test_lists_all(self, mock_api_class):
         mock_api = MagicMock()
         mock_api_class.return_value = mock_api
@@ -258,7 +258,7 @@ class TestListAvailableTranscripts:
         assert result[1]["is_generated"] is True
         assert result[2]["language_code"] == "es"
 
-    @patch("yt_fetch.services.transcript.YouTubeTranscriptApi")
+    @patch("tubefetch.services.transcript.YouTubeTranscriptApi")
     def test_disabled(self, mock_api_class):
         from youtube_transcript_api import TranscriptsDisabled
 

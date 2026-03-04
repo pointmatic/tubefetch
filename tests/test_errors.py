@@ -16,7 +16,7 @@
 
 import pytest
 
-from yt_fetch.core.errors import (
+from tubefetch.core.errors import (
     FetchError,
     FetchErrorCode,
     FetchException,

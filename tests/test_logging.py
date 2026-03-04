@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.core.logging."""
+"""Tests for tubefetch.core.logging."""
 
 import json
 import logging
 
-from yt_fetch.core.logging import (
+from tubefetch.core.logging import (
     JsonlFormatter,
     get_logger,
     log_event,
@@ -29,7 +29,7 @@ class TestSetupLogging:
     def test_returns_logger(self):
         logger = setup_logging()
         assert isinstance(logger, logging.Logger)
-        assert logger.name == "yt_fetch"
+        assert logger.name == "tubefetch"
 
     def test_info_level_by_default(self):
         logger = setup_logging(verbose=False)
@@ -109,7 +109,7 @@ class TestGetLogger:
     def test_returns_same_logger(self):
         setup_logging()
         logger = get_logger()
-        assert logger.name == "yt_fetch"
+        assert logger.name == "tubefetch"
 
 
 class TestLogEvent:

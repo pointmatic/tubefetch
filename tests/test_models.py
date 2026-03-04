@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.core.models and yt_fetch.core.options."""
+"""Tests for tubefetch.core.models and yt_fetch.core.options."""
 
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,15 +20,15 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
-from yt_fetch.core.models import (
+from tubefetch.core.errors import FetchError, FetchErrorCode, FetchPhase
+from tubefetch.core.models import (
     BatchResult,
     FetchResult,
     Metadata,
     Transcript,
     TranscriptSegment,
 )
-from yt_fetch.core.options import FetchOptions
+from tubefetch.core.options import FetchOptions
 
 # --- Metadata ---
 
@@ -257,12 +257,14 @@ class TestFetchOptions:
         assert opts.ffmpeg_fallback == "error"
 
     def test_env_override(self, monkeypatch):
-        monkeypatch.setenv("YT_FETCH_RETRIES", "5")
-        monkeypatch.setenv("YT_FETCH_VERBOSE", "true")
-        monkeypatch.setenv("YT_FETCH_DOWNLOAD", "audio")
+        monkeypatch.setenv("TUBEFETCH_RETRIES", "5")
         opts = FetchOptions()
         assert opts.retries == 5
+        monkeypatch.setenv("TUBEFETCH_VERBOSE", "true")
+        opts = FetchOptions()
         assert opts.verbose is True
+        monkeypatch.setenv("TUBEFETCH_DOWNLOAD", "audio")
+        opts = FetchOptions()
         assert opts.download == "audio"
 
     def test_invalid_download_value(self):

@@ -63,7 +63,7 @@ def setup_logging(*, verbose: bool = False, jsonl_path: Path | None = None) -> l
     Returns:
         The configured 'yt_fetch' logger.
     """
-    logger = logging.getLogger("yt_fetch")
+    logger = logging.getLogger("tubefetch")
     logger.handlers.clear()
     logger.setLevel(logging.DEBUG if verbose else logging.INFO)
 
@@ -87,7 +87,7 @@ def setup_logging(*, verbose: bool = False, jsonl_path: Path | None = None) -> l
 
 def get_logger() -> logging.Logger:
     """Get the yt_fetch logger (must call setup_logging first)."""
-    return logging.getLogger("yt_fetch")
+    return logging.getLogger("tubefetch")
 
 
 def log_event(

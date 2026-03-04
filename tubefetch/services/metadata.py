@@ -21,17 +21,17 @@ from datetime import datetime, timezone
 
 import yt_dlp
 
-from yt_fetch.core.errors import (
+from tubefetch.core.errors import (
     FetchErrorCode,
     MetadataError,
     MetadataServiceError,
     VideoNotFoundError,
     _classify_exception,
 )
-from yt_fetch.core.models import Metadata
-from yt_fetch.core.options import FetchOptions
+from tubefetch.core.models import Metadata
+from tubefetch.core.options import FetchOptions
 
-logger = logging.getLogger("yt_fetch")
+logger = logging.getLogger("tubefetch")
 
 # Retryable error codes for transient failures
 RETRYABLE_CODES = (

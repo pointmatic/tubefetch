@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.services.id_parser."""
+"""Tests for tubefetch.services.id_parser."""
 
-from yt_fetch.services.id_parser import load_ids_from_file, parse_many, parse_video_id
+from tubefetch.services.id_parser import load_ids_from_file, parse_many, parse_video_id
 
 
 class TestParseVideoId:

@@ -22,7 +22,7 @@ from pathlib import Path
 
 import yt_dlp
 
-from yt_fetch.core.errors import (
+from tubefetch.core.errors import (
     FetchError,
     FetchErrorCode,
     FetchPhase,
@@ -30,10 +30,10 @@ from yt_fetch.core.errors import (
     MediaServiceError,
     _classify_exception,
 )
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.utils.ffmpeg import check_ffmpeg
+from tubefetch.core.options import FetchOptions
+from tubefetch.utils.ffmpeg import check_ffmpeg
 
-logger = logging.getLogger("yt_fetch")
+logger = logging.getLogger("tubefetch")
 
 # Retryable error codes for transient failures
 RETRYABLE_CODES = (

@@ -20,10 +20,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
-from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
-from yt_fetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.core.pipeline import print_summary, process_batch
+from tubefetch.core.errors import FetchError, FetchErrorCode, FetchPhase
+from tubefetch.core.models import BatchResult, FetchResult, Metadata, Transcript, TranscriptSegment
+from tubefetch.core.options import FetchOptions
+from tubefetch.core.pipeline import print_summary, process_batch
 
 
 def _make_metadata(video_id: str) -> Metadata:
@@ -73,7 +73,7 @@ class TestPrintSummary:
                 ),
             ],
         )
-        with caplog.at_level(logging.INFO, logger="yt_fetch"):
+        with caplog.at_level(logging.INFO, logger="tubefetch"):
             print_summary(batch, tmp_path)
 
         output = caplog.text
@@ -103,7 +103,7 @@ class TestPrintSummary:
                 ),
             ],
         )
-        with caplog.at_level(logging.INFO, logger="yt_fetch"):
+        with caplog.at_level(logging.INFO, logger="tubefetch"):
             print_summary(batch, tmp_path)
 
         assert "Transcripts:  1 ok, 1 failed" in caplog.text
@@ -118,21 +118,21 @@ class TestPrintSummary:
                 FetchResult(video_id="b", success=True, media_paths=[Path("/b/v.mp4"), Path("/b/a.m4a")]),
             ],
         )
-        with caplog.at_level(logging.INFO, logger="yt_fetch"):
+        with caplog.at_level(logging.INFO, logger="tubefetch"):
             print_summary(batch, tmp_path)
 
         assert "Media files:  3" in caplog.text
 
     def test_prints_output_dir(self, tmp_path, caplog):
         batch = BatchResult(total=0, succeeded=0, failed=0, results=[])
-        with caplog.at_level(logging.INFO, logger="yt_fetch"):
+        with caplog.at_level(logging.INFO, logger="tubefetch"):
             print_summary(batch, tmp_path)
 
         assert str(tmp_path.resolve()) in caplog.text
 
     def test_empty_batch(self, tmp_path, caplog):
         batch = BatchResult(total=0, succeeded=0, failed=0, results=[])
-        with caplog.at_level(logging.INFO, logger="yt_fetch"):
+        with caplog.at_level(logging.INFO, logger="tubefetch"):
             print_summary(batch, tmp_path)
 
         assert "Total:        0" in caplog.text
@@ -143,8 +143,8 @@ class TestPrintSummary:
 class TestProcessBatchSummary:
     """Test that process_batch writes summary.json and prints summary."""
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_writes_summary_json(self, mock_meta, mock_trans, tmp_path):
         mock_meta.side_effect = lambda vid, opts: _make_metadata(vid)
         mock_trans.side_effect = lambda vid, opts: _make_transcript(vid)
@@ -161,10 +161,10 @@ class TestProcessBatchSummary:
         assert data["failed"] == 0
         assert len(data["results"]) == 2
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_summary_json_includes_errors(self, mock_meta, mock_trans, tmp_path):
-        from yt_fetch.services.metadata import MetadataError
+        from tubefetch.services.metadata import MetadataError
 
         def meta_side(vid, opts):
             if vid == "bad_vid_aaaaa":
@@ -183,15 +183,15 @@ class TestProcessBatchSummary:
         assert len(failed) == 1
         assert len(failed[0]["errors"]) > 0
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_prints_summary_to_log(self, mock_meta, mock_trans, tmp_path, caplog):
         mock_meta.side_effect = lambda vid, opts: _make_metadata(vid)
         mock_trans.side_effect = lambda vid, opts: _make_transcript(vid)
 
         opts = FetchOptions(out=tmp_path, workers=1)
-        with caplog.at_level(logging.INFO, logger="yt_fetch"):
+        with caplog.at_level(logging.INFO, logger="tubefetch"):
             process_batch(["vid_aaaaaaa"], opts)
 
-        assert "yt-fetch Summary" in caplog.text
+        assert "TubeFetch Summary" in caplog.text
         assert "Total:        1" in caplog.text

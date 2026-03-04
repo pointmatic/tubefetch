@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tubefetch - Fetch AI-ready YouTube content</title>
+    <title>TubeFetch - Fetch AI-ready YouTube content</title>
     <meta name="description" content="tubefetch fetches and extracts metadata, transcripts, and media from YouTube videos in formats optimized for AI/LLM pipelines — with batch processing, caching, retries, and rate limiting.">
     <meta name="keywords" content="youtube, transcript, metadata, yt-dlp, video, ai, llm, content-extraction, batch-processing, cli, python, async, rate-limiting, retry, gentlify">
     <style>
@@ -266,11 +266,18 @@
             </div>
         </div>
         <div class="quick-start">
-            <h3>Basic Usage</h3>
+            <h3>Fetch Metadata & Transcript</h3>
             <div class="code-block">
-                <code>tubefetch fetch --id dQw4w9WgXcQ</code>
+                <code>tubefetch dQw4w9WgXcQ</code>
             </div>
             <p style="color: #8b949e; margin-top: 1rem;">Fetches metadata, transcript, and exports to JSON and plain text formats.</p>
+        </div>
+        <div class="quick-start">
+            <h3>Download Video</h3>
+            <div class="code-block">
+                <code>tubefetch dQw4w9WgXcQ --download video</code>
+            </div>
+            <p style="color: #8b949e; margin-top: 1rem;">Downloads the video (merged video+audio MP4) along with metadata and transcript.</p>
         </div>
     </section>
 

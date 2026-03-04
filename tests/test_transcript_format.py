@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.utils.time_fmt — timestamp edge cases."""
+"""Tests for tubefetch.utils.time_fmt — timestamp edge cases."""
 
-from yt_fetch.utils.time_fmt import seconds_to_srt, seconds_to_vtt
+from tubefetch.utils.time_fmt import seconds_to_srt, seconds_to_vtt
 
 
 class TestSecondsToVtt:

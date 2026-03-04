@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.core.pipeline.process_batch."""
+"""Tests for tubefetch.core.pipeline.process_batch."""
 
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from yt_fetch.core.errors import FetchErrorCode
-from yt_fetch.core.models import BatchResult, Metadata, Transcript, TranscriptSegment
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.core.pipeline import process_batch
-from yt_fetch.services.metadata import MetadataError
+from tubefetch.core.errors import FetchErrorCode
+from tubefetch.core.models import BatchResult, Metadata, Transcript, TranscriptSegment
+from tubefetch.core.options import FetchOptions
+from tubefetch.core.pipeline import process_batch
+from tubefetch.services.metadata import MetadataError
 
 
 def _make_metadata(video_id: str) -> Metadata:
@@ -48,8 +48,8 @@ def _make_transcript(video_id: str) -> Transcript:
 class TestProcessBatch:
     """Test batch processing."""
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_all_succeed(self, mock_meta, mock_trans, tmp_path):
         mock_meta.side_effect = lambda vid, opts: _make_metadata(vid)
         mock_trans.side_effect = lambda vid, opts: _make_transcript(vid)
@@ -63,8 +63,8 @@ class TestProcessBatch:
         assert result.failed == 0
         assert len(result.results) == 2
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_mixed_success_and_failure(self, mock_meta, mock_trans, tmp_path):
         def meta_side_effect(vid, opts):
             if vid == "bad_vid_aaaaa":
@@ -86,8 +86,8 @@ class TestProcessBatch:
         assert len(failed) == 1
         assert failed[0].video_id == "bad_vid_aaaaa"
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_error_isolation(self, mock_meta, mock_trans, tmp_path):
         """One failure should not prevent other videos from processing."""
         call_order = []
@@ -110,8 +110,8 @@ class TestProcessBatch:
         good = [r for r in result.results if r.success]
         assert len(good) == 2
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_empty_batch(self, mock_meta, mock_trans, tmp_path):
         opts = FetchOptions(out=tmp_path)
         result = process_batch([], opts)
@@ -121,8 +121,8 @@ class TestProcessBatch:
         assert result.failed == 0
         assert result.results == []
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_single_video(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata("vid_aaaaaaa")
         mock_trans.return_value = _make_transcript("vid_aaaaaaa")
@@ -137,8 +137,8 @@ class TestProcessBatch:
 class TestProcessBatchFailFast:
     """Test --fail-fast behavior."""
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_fail_fast_stops_after_error(self, mock_meta, mock_trans, tmp_path):
         processed = []
 
@@ -161,8 +161,8 @@ class TestProcessBatchFailFast:
         # Total processed should be less than 4 (some skipped after fail-fast)
         assert result.total < 4
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_no_fail_fast_processes_all(self, mock_meta, mock_trans, tmp_path):
         def meta_side_effect(vid, opts):
             if vid == "bad_vid_aaaaa":
@@ -184,8 +184,8 @@ class TestProcessBatchFailFast:
 class TestProcessBatchConcurrency:
     """Test concurrency behavior."""
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_respects_workers_count(self, mock_meta, mock_trans, tmp_path):
         """Verify batch completes with multiple workers."""
         mock_meta.side_effect = lambda vid, opts: _make_metadata(vid)

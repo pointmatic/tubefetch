@@ -16,15 +16,15 @@
 
 import pytest
 
-from yt_fetch.core.errors import (
+from tubefetch.core.errors import (
     FetchErrorCode,
     MetadataError,
     MetadataServiceError,
     TranscriptError,
     TranscriptServiceError,
 )
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.utils.gentlify_config import (
+from tubefetch.core.options import FetchOptions
+from tubefetch.utils.gentlify_config import (
     _is_retryable_exception,
     async_execute_with_retry,
     create_throttle,

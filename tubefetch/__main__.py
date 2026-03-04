@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Allow running yt_fetch as a module: python -m yt_fetch"""
+"""Allow running tubefetch as a module: python -m tubefetch"""
 
-from yt_fetch.cli import cli
+from tubefetch.cli import cli
 
 if __name__ == "__main__":
     cli()

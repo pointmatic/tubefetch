@@ -22,8 +22,8 @@ from typing import Callable, TypeVar
 
 from gentlify import RetryConfig, Throttle
 
-from yt_fetch.core.errors import FetchException
-from yt_fetch.core.options import FetchOptions
+from tubefetch.core.errors import FetchException
+from tubefetch.core.options import FetchOptions
 
 T = TypeVar("T")
 

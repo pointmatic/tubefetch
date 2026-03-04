@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""CLI entry point for yt-fetch."""
+"""CLI entry point for tubefetch."""
 
 from __future__ import annotations
 
@@ -21,10 +21,10 @@ from pathlib import Path
 
 import click
 
-from yt_fetch import __version__
-from yt_fetch.core.logging import get_logger, setup_logging
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.services.id_parser import load_ids_from_file, parse_many
+from tubefetch import __version__
+from tubefetch.core.logging import get_logger, setup_logging
+from tubefetch.core.options import FetchOptions
+from tubefetch.services.id_parser import load_ids_from_file, parse_many
 
 # Exit codes
 EXIT_OK = 0
@@ -36,7 +36,7 @@ EXIT_ALL_FAILED = 3
 def _input_options(fn):
     """Shared input source options."""
     decorators = [
-        click.option("--id", "ids", multiple=True, help="YouTube video ID or URL (repeatable)."),
+        click.argument("videos", nargs=-1),
         click.option(
             "--file",
             "file_path",
@@ -110,13 +110,14 @@ def _build_options(strict: bool = False, **cli_kwargs) -> FetchOptions:
 
 
 def _collect_ids(
-    ids: tuple[str, ...],
+    videos: tuple[str, ...],
     file_path: Path | None,
     jsonl_path: Path | None,
     id_field: str,
 ) -> list[str]:
     """Collect and deduplicate video IDs from all input sources."""
-    raw: list[str] = list(ids)
+    raw: list[str] = list(videos)
+
     if file_path:
         raw.extend(load_ids_from_file(file_path, id_field=id_field))
     if jsonl_path:
@@ -138,47 +139,93 @@ def _exit_code(total: int, failed: int, strict: bool) -> int:
 
 
 @click.group()
-@click.version_option(version=__version__, prog_name="yt_fetch")
-def cli() -> None:
-    """YouTube video metadata, transcript, and media fetcher."""
+@click.version_option(version=__version__, prog_name="tubefetch")
+def cli():
+    """YouTube video metadata, transcript, and media fetcher.
+
+    Fetch metadata, transcripts, and optionally media from YouTube videos.
+
+    Examples:
+      tubefetch VIDEO_ID
+      tubefetch VIDEO_ID --download video
+      tubefetch VIDEO_ID1 VIDEO_ID2 VIDEO_ID3
+      tubefetch --file videos.txt
+
+    Commands (for specialized use cases):
+      metadata    Fetch metadata only
+      transcript  Fetch transcripts only
+      media       Download media only
+    """
+    pass
 
 
-@cli.command()
+# Add a default command that handles when no subcommand is provided
+@cli.command(name="default", hidden=True)
 @_input_options
 @_common_options
-def fetch(ids, file_path, jsonl_path, id_field, strict, **kwargs):
-    """Fetch metadata, transcripts, and optionally media."""
+def default_cmd(videos, file_path, jsonl_path, id_field, strict, **kwargs):
+    """Default command - fetch metadata, transcripts, and optionally media."""
     options = _build_options(strict=strict, **kwargs)
     setup_logging(verbose=options.verbose)
     log = get_logger()
 
-    video_ids = _collect_ids(ids, file_path, jsonl_path, id_field)
+    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field)
     if not video_ids:
-        log.error("No video IDs provided. Use --id, --file, or --jsonl.")
+        log.error("No video IDs provided. Provide video IDs/URLs as arguments, or use --file/--jsonl.")
         sys.exit(EXIT_ERROR)
 
-    from yt_fetch.core.pipeline import process_batch
+    from tubefetch.core.pipeline import process_batch
 
     result = process_batch(video_ids, options)
     sys.exit(_exit_code(result.total, result.failed, strict))
 
 
+# Override the group's main to handle default command
+_original_cli_main = cli.main
+
+
+def _cli_main_with_default(args=None, **kwargs):
+    """Wrapper that invokes default command if no subcommand is provided."""
+    import sys as _sys
+
+    if args is None:
+        args = _sys.argv[1:]
+
+    # Don't intercept --version or --help
+    if args and args[0] in ("--version", "--help", "-h"):
+        return _original_cli_main(args, **kwargs)
+
+    # Check if first arg is a known subcommand
+    known_commands = {"metadata", "transcript", "media"}
+    if args and args[0] not in known_commands and not args[0].startswith("-"):
+        # First arg is not a subcommand, invoke default command
+        args = ["default"] + args
+    elif not args or (args and args[0].startswith("-")):
+        # No args or starts with option, invoke default command
+        args = ["default"] + args
+
+    return _original_cli_main(args, **kwargs)
+
+
+cli.main = _cli_main_with_default
+
+
 @cli.command()
 @_input_options
 @_common_options
-def transcript(ids, file_path, jsonl_path, id_field, strict, **kwargs):
+def transcript(videos, file_path, jsonl_path, id_field, strict, **kwargs):
     """Fetch transcripts only."""
     options = _build_options(strict=strict, **kwargs)
     setup_logging(verbose=options.verbose)
     log = get_logger()
 
-    video_ids = _collect_ids(ids, file_path, jsonl_path, id_field)
+    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field)
     if not video_ids:
-        log.error("No video IDs provided. Use --id, --file, or --jsonl.")
+        log.error("No video IDs provided. Provide video IDs/URLs as arguments, or use --file/--jsonl.")
         sys.exit(EXIT_ERROR)
 
-    from yt_fetch.core.writer import write_transcript_json
-    from yt_fetch.services.transcript import TranscriptError, get_transcript
+    from tubefetch.core.writer import write_transcript_json
+    from tubefetch.services.transcript import TranscriptError, get_transcript
 
     failed = 0
     for vid in video_ids:
@@ -196,19 +243,19 @@ def transcript(ids, file_path, jsonl_path, id_field, strict, **kwargs):
 @cli.command()
 @_input_options
 @_common_options
-def metadata(ids, file_path, jsonl_path, id_field, strict, **kwargs):
+def metadata(videos, file_path, jsonl_path, id_field, strict, **kwargs):
     """Fetch metadata only."""
     options = _build_options(strict=strict, **kwargs)
     setup_logging(verbose=options.verbose)
     log = get_logger()
 
-    video_ids = _collect_ids(ids, file_path, jsonl_path, id_field)
+    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field)
     if not video_ids:
-        log.error("No video IDs provided. Use --id, --file, or --jsonl.")
+        log.error("No video IDs provided. Provide video IDs/URLs as arguments, or use --file/--jsonl.")
         sys.exit(EXIT_ERROR)
 
-    from yt_fetch.core.writer import write_metadata
-    from yt_fetch.services.metadata import MetadataError, get_metadata
+    from tubefetch.core.writer import write_metadata
+    from tubefetch.services.metadata import MetadataError, get_metadata
 
     failed = 0
     for vid in video_ids:
@@ -226,21 +273,21 @@ def metadata(ids, file_path, jsonl_path, id_field, strict, **kwargs):
 @cli.command()
 @_input_options
 @_common_options
-def media(ids, file_path, jsonl_path, id_field, strict, **kwargs):
-    """Download media only."""
+def media(videos, file_path, jsonl_path, id_field, strict, **kwargs):
+    """Download media only (defaults to video if --download not specified)."""
     options = _build_options(strict=strict, **kwargs)
     setup_logging(verbose=options.verbose)
     log = get_logger()
 
-    video_ids = _collect_ids(ids, file_path, jsonl_path, id_field)
+    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field)
     if not video_ids:
-        log.error("No video IDs provided. Use --id, --file, or --jsonl.")
+        log.error("No video IDs provided. Provide video IDs/URLs as arguments, or use --file/--jsonl.")
         sys.exit(EXIT_ERROR)
 
     if options.download == "none":
         options = options.model_copy(update={"download": "video"})
 
-    from yt_fetch.services.media import MediaError, download_media
+    from tubefetch.services.media import MediaError, download_media
 
     failed = 0
     for vid in video_ids:
