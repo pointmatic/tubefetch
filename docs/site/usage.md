@@ -354,7 +354,30 @@ tubefetch --file video_ids.txt \
 
 ---
 
+## Troubleshooting
+
+### "This video is not available" Errors
+
+If you see errors like `ERROR: [youtube] VIDEO_ID: This video is not available` but the video plays in your browser, this is likely due to:
+
+- **Age-restricted content** - Video requires sign-in
+- **Geographic restrictions** - Content blocked in your region
+- **YouTube bot detection** - yt-dlp being blocked
+
+**Solution:** Use the YouTube Data API v3 backend:
+
+```bash
+pip install tubefetch[youtube-api]
+export TUBEFETCH_YT_API_KEY="your-api-key"
+tubefetch VIDEO_ID
+```
+
+See the [Troubleshooting Guide](troubleshooting.md) for detailed setup instructions and solutions to common issues.
+
+---
+
 ## Next Steps
 
 - Check the [API Reference](api.md) for library usage
 - Explore [Advanced](advanced.md) features like retry configuration and caching
+- Read the [Troubleshooting Guide](troubleshooting.md) for common issues

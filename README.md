@@ -32,11 +32,21 @@ Requires **Python 3.14+**.
 pip install tubefetch
 ```
 
-For YouTube Data API v3 support (optional):
+### Optional: YouTube Data API v3
+
+Install for age-restricted or geo-restricted videos:
 
 ```bash
 pip install tubefetch[youtube-api]
+export TUBEFETCH_YT_API_KEY="your-api-key"
 ```
+
+The YouTube Data API backend is used when:
+- Videos are age-restricted (require sign-in)
+- yt-dlp is blocked by YouTube's bot detection
+- You need higher rate limits
+
+Get a free API key from [Google Cloud Console](https://console.cloud.google.com/). See [Troubleshooting](https://github.com/pointmatic/tubefetch/blob/main/docs/site/troubleshooting.md) for setup instructions.
 
 > **Note:** The CLI accepts video IDs/URLs as positional arguments. Use `tubefetch VIDEO_ID` for the default behavior (metadata + transcript), or specialized commands like `metadata`, `transcript`, `media` for specific content.
 

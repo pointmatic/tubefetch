@@ -1003,6 +1003,49 @@ Add metadata status to default command summary and add summaries to all speciali
 - Users can quickly verify success/failure counts without counting log lines
 - Better user experience for common workflows (fetching 10+ videos)
 
+### Story K.m: v0.9.3 Fix Stale References and Add Troubleshooting Docs [Done]
+
+Fix remaining `yt-fetch` references and add comprehensive troubleshooting documentation for YouTube API usage.
+
+**Issues:**
+- Error message in `metadata.py` still referenced `pip install yt-fetch[youtube-api]`
+- Documentation references `yt-fetch` in tech-spec.md and features.md
+- No troubleshooting guide for "This video is not available" errors
+- YouTube Data API usage not well documented (when/why to use it)
+- Missing setup instructions for API key and quota considerations
+
+**Implemented changes:**
+- [x] Fix stale references:
+  - [x] `tubefetch/services/metadata.py` - Change error message to `pip install tubefetch[youtube-api]`
+  - [x] `docs/specs/tech-spec.md` - Change `yt-fetch[tokens]` to `tubefetch[tokens]`
+  - [x] `docs/specs/features.md` - Change `yt-fetch[tokens]` to `tubefetch[tokens]`
+- [x] Add troubleshooting documentation:
+  - [x] Create `docs/site/troubleshooting.md`:
+    - [x] Section: "Video Not Available" errors
+    - [x] Explain yt-dlp vs YouTube Data API backends
+    - [x] When to use YouTube Data API (age-restricted, geo-restricted, bot detection)
+    - [x] How to get API key from Google Cloud Console
+    - [x] How to set up IP restrictions and API restrictions
+    - [x] Quota limits explanation (10,000 units/day default)
+    - [x] Example: Handling age-restricted videos
+    - [x] Example: Handling geo-restricted videos
+  - [x] Update `docs/site/usage.md`:
+    - [x] Add "Troubleshooting" section with link to troubleshooting.md
+    - [x] Add note about optional YouTube API backend
+  - [x] Update `README.md`:
+    - [x] Expand YouTube API section with use case explanation
+    - [x] Add link to troubleshooting guide
+  - [x] Update `mkdocs.yml`:
+    - [x] Add troubleshooting.md to navigation
+- [x] Bump version to `0.9.3` in `pyproject.toml`
+- [x] Verify: All tests passing, documentation complete
+
+**Rationale:**
+- Eliminates confusion from stale package name references
+- Helps users understand when and why to use YouTube Data API
+- Reduces support burden by documenting common issues
+- Improves onboarding for users hitting yt-dlp restrictions
+
 ---
 
 ## Phase L: Code Quality & Documentation

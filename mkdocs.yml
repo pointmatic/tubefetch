@@ -42,6 +42,7 @@ nav:
   - Home: index.html
   - Getting Started: getting-started.md
   - Usage: usage.md
+  - Troubleshooting: troubleshooting.md
   - API Reference: api.md
   - Advanced: advanced.md
 
