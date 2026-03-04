@@ -12,19 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.core.pipeline."""
+"""Tests for tubefetch.core.pipeline."""
 
 from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
-from yt_fetch.core.errors import FetchPhase
-from yt_fetch.core.models import FetchResult, Metadata, Transcript, TranscriptSegment
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.core.pipeline import process_video
-from yt_fetch.services.media import MediaResult
-from yt_fetch.services.metadata import MetadataError
-from yt_fetch.services.transcript import TranscriptError, TranscriptNotFound
+from tubefetch.core.errors import FetchPhase
+from tubefetch.core.models import FetchResult, Metadata, Transcript, TranscriptSegment
+from tubefetch.core.options import FetchOptions
+from tubefetch.core.pipeline import process_video
+from tubefetch.services.media import MediaResult
+from tubefetch.services.metadata import MetadataError
+from tubefetch.services.transcript import TranscriptError, TranscriptNotFound
 
 
 def _make_metadata(video_id: str = "dQw4w9WgXcQ") -> Metadata:
@@ -51,9 +51,9 @@ def _make_transcript(video_id: str = "dQw4w9WgXcQ") -> Transcript:
 class TestProcessVideo:
     """Test the per-video pipeline."""
 
-    @patch("yt_fetch.core.pipeline.download_media")
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.download_media")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_success_full_pipeline(self, mock_meta, mock_trans, mock_media, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.return_value = _make_transcript()
@@ -73,8 +73,8 @@ class TestProcessVideo:
         mock_meta.assert_called_once()
         mock_trans.assert_called_once()
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_creates_output_dir(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.return_value = _make_transcript()
@@ -84,10 +84,10 @@ class TestProcessVideo:
 
         assert (tmp_path / "dQw4w9WgXcQ").is_dir()
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_metadata_error_continues(self, mock_meta, mock_trans, tmp_path):
-        from yt_fetch.core.errors import FetchErrorCode
+        from tubefetch.core.errors import FetchErrorCode
 
         mock_meta.side_effect = MetadataError("Video not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
         mock_trans.return_value = _make_transcript()
@@ -101,8 +101,8 @@ class TestProcessVideo:
         assert len(result.errors) == 1
         assert result.errors[0].phase == FetchPhase.METADATA
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_transcript_error_continues(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.side_effect = TranscriptNotFound("No transcript")
@@ -116,10 +116,10 @@ class TestProcessVideo:
         assert len(result.errors) == 1
         assert result.errors[0].phase == FetchPhase.TRANSCRIPT
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_both_errors(self, mock_meta, mock_trans, tmp_path):
-        from yt_fetch.core.errors import FetchErrorCode
+        from tubefetch.core.errors import FetchErrorCode
 
         mock_meta.side_effect = MetadataError("fail", code=FetchErrorCode.VIDEO_NOT_FOUND)
         mock_trans.side_effect = TranscriptError("fail", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
@@ -130,8 +130,8 @@ class TestProcessVideo:
         assert result.success is False
         assert len(result.errors) == 2
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_cache_skip_metadata(self, mock_meta, mock_trans, tmp_path):
         # Pre-create cached metadata file with valid data
         meta = _make_metadata()
@@ -152,8 +152,8 @@ class TestProcessVideo:
         assert result.metadata.video_id == "dQw4w9WgXcQ"
         assert result.metadata.title == "Test Video"
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_cache_skip_transcript(self, mock_meta, mock_trans, tmp_path):
         # Pre-create cached transcript file with valid data
         trans = _make_transcript()
@@ -175,8 +175,8 @@ class TestProcessVideo:
         assert result.transcript.language == "en"
         assert len(result.transcript.segments) == 1
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_force_overrides_cache(self, mock_meta, mock_trans, tmp_path):
         # Pre-create cached files
         video_dir = tmp_path / "dQw4w9WgXcQ"
@@ -194,8 +194,8 @@ class TestProcessVideo:
         mock_trans.assert_called_once()
         assert result.success is True
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_force_metadata_selective(self, mock_meta, mock_trans, tmp_path):
         video_dir = tmp_path / "dQw4w9WgXcQ"
         video_dir.mkdir()
@@ -210,9 +210,9 @@ class TestProcessVideo:
         mock_meta.assert_called_once()
         mock_trans.assert_not_called()
 
-    @patch("yt_fetch.core.pipeline.download_media")
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.download_media")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_media_download_when_enabled(self, mock_meta, mock_trans, mock_media, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.return_value = _make_transcript()
@@ -228,8 +228,8 @@ class TestProcessVideo:
         assert len(result.media_paths) == 1
         mock_media.assert_called_once()
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_no_media_when_download_none(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.return_value = _make_transcript()
@@ -239,8 +239,8 @@ class TestProcessVideo:
 
         assert result.media_paths == []
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_returns_metadata_and_transcript_objects(self, mock_meta, mock_trans, tmp_path):
         meta = _make_metadata()
         trans = _make_transcript()
@@ -253,11 +253,11 @@ class TestProcessVideo:
         assert result.metadata == meta
         assert result.transcript == trans
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_success_true_when_only_transcript_fails(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata()
-        from yt_fetch.core.errors import FetchErrorCode
+        from tubefetch.core.errors import FetchErrorCode
 
         mock_trans.side_effect = TranscriptError("No captions", code=FetchErrorCode.TRANSCRIPT_NOT_FOUND)
 
@@ -270,10 +270,10 @@ class TestProcessVideo:
         assert len(result.errors) == 1
         assert result.errors[0].phase == FetchPhase.TRANSCRIPT
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_success_false_when_metadata_fails(self, mock_meta, mock_trans, tmp_path):
-        from yt_fetch.core.errors import FetchErrorCode
+        from tubefetch.core.errors import FetchErrorCode
 
         mock_meta.side_effect = MetadataError("Video not found", code=FetchErrorCode.VIDEO_NOT_FOUND)
         mock_trans.return_value = _make_transcript()
@@ -286,8 +286,8 @@ class TestProcessVideo:
         assert result.transcript is not None
         assert any(e.phase == FetchPhase.METADATA for e in result.errors)
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_cached_rerun_populates_both_objects(self, mock_meta, mock_trans, tmp_path):
         """Simulate a second run where both files are cached on disk."""
         import json

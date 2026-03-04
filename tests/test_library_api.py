@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch public library API."""
+"""Tests for tubefetch public library API."""
 
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-import yt_fetch
-from yt_fetch import (
+import tubefetch
+from tubefetch import (
     BatchResult,
     FetchOptions,
     FetchResult,
@@ -27,7 +27,7 @@ from yt_fetch import (
     fetch_batch,
     fetch_video,
 )
-from yt_fetch.core.models import TranscriptSegment
+from tubefetch.core.models import TranscriptSegment
 
 
 def _make_metadata(video_id: str) -> Metadata:
@@ -56,33 +56,33 @@ def _make_transcript(video_id: str) -> Transcript:
 
 class TestExports:
     def test_version_exported(self):
-        assert hasattr(yt_fetch, "__version__")
-        assert isinstance(yt_fetch.__version__, str)
+        assert hasattr(tubefetch, "__version__")
+        assert isinstance(tubefetch.__version__, str)
 
     def test_fetch_video_exported(self):
-        assert callable(yt_fetch.fetch_video)
+        assert callable(tubefetch.fetch_video)
 
     def test_fetch_batch_exported(self):
-        assert callable(yt_fetch.fetch_batch)
+        assert callable(tubefetch.fetch_batch)
 
     def test_models_exported(self):
-        assert yt_fetch.FetchOptions is FetchOptions
-        assert yt_fetch.FetchResult is FetchResult
-        assert yt_fetch.BatchResult is BatchResult
-        assert yt_fetch.Metadata is Metadata
-        assert yt_fetch.Transcript is Transcript
+        assert tubefetch.FetchOptions is FetchOptions
+        assert tubefetch.FetchResult is FetchResult
+        assert tubefetch.BatchResult is BatchResult
+        assert tubefetch.Metadata is Metadata
+        assert tubefetch.Transcript is Transcript
 
     def test_all_list(self):
-        for name in yt_fetch.__all__:
-            assert hasattr(yt_fetch, name)
+        for name in tubefetch.__all__:
+            assert hasattr(tubefetch, name)
 
 
 # --- fetch_video ---
 
 
 class TestFetchVideo:
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_with_valid_id(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata("dQw4w9WgXcQ")
         mock_trans.return_value = _make_transcript("dQw4w9WgXcQ")
@@ -94,8 +94,8 @@ class TestFetchVideo:
         assert result.video_id == "dQw4w9WgXcQ"
         assert result.success is True
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_with_url(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata("dQw4w9WgXcQ")
         mock_trans.return_value = _make_transcript("dQw4w9WgXcQ")
@@ -112,15 +112,15 @@ class TestFetchVideo:
         assert len(result.errors) == 1
         assert "Invalid video ID" in result.errors[0].message
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_default_options(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata("dQw4w9WgXcQ")
         mock_trans.return_value = _make_transcript("dQw4w9WgXcQ")
 
         # Should work without explicit options (uses defaults)
         # We need to patch out to avoid writing to ./out
-        with patch("yt_fetch.core.pipeline.Path") as mock_path:
+        with patch("tubefetch.core.pipeline.Path") as mock_path:
             mock_path.return_value = tmp_path
             mock_path.side_effect = None
             result = fetch_video("dQw4w9WgXcQ", FetchOptions(out=tmp_path))
@@ -139,8 +139,8 @@ class TestFetchVideo:
 
 
 class TestFetchBatch:
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_batch_success(self, mock_meta, mock_trans, tmp_path):
         mock_meta.side_effect = lambda vid, opts: _make_metadata(vid)
         mock_trans.side_effect = lambda vid, opts: _make_transcript(vid)
@@ -152,8 +152,8 @@ class TestFetchBatch:
         assert result.total == 2
         assert result.succeeded == 2
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_batch_deduplicates(self, mock_meta, mock_trans, tmp_path):
         mock_meta.side_effect = lambda vid, opts: _make_metadata(vid)
         mock_trans.side_effect = lambda vid, opts: _make_transcript(vid)
@@ -163,8 +163,8 @@ class TestFetchBatch:
 
         assert result.total == 1
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_batch_parses_urls(self, mock_meta, mock_trans, tmp_path):
         mock_meta.side_effect = lambda vid, opts: _make_metadata(vid)
         mock_trans.side_effect = lambda vid, opts: _make_transcript(vid)
@@ -177,8 +177,8 @@ class TestFetchBatch:
 
         assert result.total == 2
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_batch_empty(self, mock_meta, mock_trans, tmp_path):
         opts = FetchOptions(out=tmp_path, workers=1)
         result = fetch_batch([], opts)

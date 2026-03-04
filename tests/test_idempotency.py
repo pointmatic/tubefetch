@@ -24,10 +24,10 @@ Verifies that:
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from yt_fetch.core.models import Metadata, Transcript, TranscriptSegment
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.core.pipeline import process_video
-from yt_fetch.services.media import MediaResult
+from tubefetch.core.models import Metadata, Transcript, TranscriptSegment
+from tubefetch.core.options import FetchOptions
+from tubefetch.core.pipeline import process_video
+from tubefetch.services.media import MediaResult
 
 
 def _make_metadata(video_id: str = "testVid12345") -> Metadata:
@@ -54,9 +54,9 @@ def _make_transcript(video_id: str = "testVid12345") -> Transcript:
 class TestIdempotencySkip:
     """Re-running without --force skips all work."""
 
-    @patch("yt_fetch.core.pipeline.download_media")
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.download_media")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_second_run_skips_all(self, mock_meta, mock_trans, mock_media, tmp_path):
         # First run: fetch everything
         mock_meta.return_value = _make_metadata()
@@ -82,9 +82,9 @@ class TestIdempotencySkip:
         assert result2.metadata_path == result1.metadata_path
         assert result2.transcript_path == result1.transcript_path
 
-    @patch("yt_fetch.core.pipeline.download_media")
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.download_media")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_second_run_skips_media(self, mock_meta, mock_trans, mock_media, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.return_value = _make_transcript()
@@ -115,8 +115,8 @@ class TestIdempotencySkip:
         # Cached media paths returned
         assert len(result2.media_paths) == 1
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_skipped_result_is_still_success(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.return_value = _make_transcript()
@@ -134,8 +134,8 @@ class TestIdempotencySkip:
 class TestIdempotencyForce:
     """Re-running with --force overwrites all outputs."""
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_force_refetches_all(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.return_value = _make_transcript()
@@ -157,8 +157,8 @@ class TestIdempotencyForce:
         mock_trans.assert_called_once()
         assert result.success is True
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_force_overwrites_files(self, mock_meta, mock_trans, tmp_path):
         # First run with title "Original"
         meta1 = _make_metadata()
@@ -189,8 +189,8 @@ class TestIdempotencyForce:
 class TestSelectiveForce:
     """Selective --force-metadata, --force-transcript, --force-media."""
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_force_metadata_only(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.return_value = _make_transcript()
@@ -207,8 +207,8 @@ class TestSelectiveForce:
         mock_meta.assert_called_once()
         mock_trans.assert_not_called()
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_force_transcript_only(self, mock_meta, mock_trans, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.return_value = _make_transcript()
@@ -225,9 +225,9 @@ class TestSelectiveForce:
         mock_meta.assert_not_called()
         mock_trans.assert_called_once()
 
-    @patch("yt_fetch.core.pipeline.download_media")
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.download_media")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_force_media_only(self, mock_meta, mock_trans, mock_media, tmp_path):
         mock_meta.return_value = _make_metadata()
         mock_trans.return_value = _make_transcript()
@@ -252,8 +252,8 @@ class TestSelectiveForce:
         mock_trans.assert_not_called()
         mock_media.assert_called_once()
 
-    @patch("yt_fetch.core.pipeline.get_transcript")
-    @patch("yt_fetch.core.pipeline.get_metadata")
+    @patch("tubefetch.core.pipeline.get_transcript")
+    @patch("tubefetch.core.pipeline.get_metadata")
     def test_force_overrides_selective(self, mock_meta, mock_trans, tmp_path):
         """--force should override even if selective flags are not set."""
         mock_meta.return_value = _make_metadata()

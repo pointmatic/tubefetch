@@ -12,32 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.services.media and yt_fetch.utils.ffmpeg."""
+"""Tests for tubefetch.services.media and yt_fetch.utils.ffmpeg."""
 
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.services.media import (
+from tubefetch.core.options import FetchOptions
+from tubefetch.services.media import (
     MediaError,
     _build_audio_format,
     _build_video_format,
     download_media,
 )
-from yt_fetch.utils.ffmpeg import check_ffmpeg
+from tubefetch.utils.ffmpeg import check_ffmpeg
 
 # --- check_ffmpeg ---
 
 
 class TestCheckFfmpeg:
-    @patch("yt_fetch.utils.ffmpeg.shutil.which")
+    @patch("tubefetch.utils.ffmpeg.shutil.which")
     def test_found(self, mock_which):
         mock_which.return_value = "/usr/bin/ffmpeg"
         assert check_ffmpeg() is True
 
-    @patch("yt_fetch.utils.ffmpeg.shutil.which")
+    @patch("tubefetch.utils.ffmpeg.shutil.which")
     def test_not_found(self, mock_which):
         mock_which.return_value = None
         assert check_ffmpeg() is False
@@ -83,13 +83,13 @@ class TestDownloadMedia:
         assert result.skipped is True
         assert result.paths == []
 
-    @patch("yt_fetch.services.media.check_ffmpeg", return_value=False)
+    @patch("tubefetch.services.media.check_ffmpeg", return_value=False)
     def test_no_ffmpeg_error(self, mock_ffmpeg, tmp_path):
         opts = FetchOptions(download="video", ffmpeg_fallback="error")
         with pytest.raises(MediaError, match="ffmpeg is required"):
             download_media("dQw4w9WgXcQ", opts, tmp_path)
 
-    @patch("yt_fetch.services.media.check_ffmpeg", return_value=False)
+    @patch("tubefetch.services.media.check_ffmpeg", return_value=False)
     def test_no_ffmpeg_skip(self, mock_ffmpeg, tmp_path):
         opts = FetchOptions(download="video", ffmpeg_fallback="skip")
         result = download_media("dQw4w9WgXcQ", opts, tmp_path)
@@ -97,8 +97,8 @@ class TestDownloadMedia:
         assert len(result.errors) == 1
         assert "ffmpeg not found" in result.errors[0].message
 
-    @patch("yt_fetch.services.media._run_yt_dlp")
-    @patch("yt_fetch.services.media.check_ffmpeg", return_value=True)
+    @patch("tubefetch.services.media._run_yt_dlp")
+    @patch("tubefetch.services.media.check_ffmpeg", return_value=True)
     def test_video_download(self, mock_ffmpeg, mock_run, tmp_path):
         mock_run.return_value = [Path("/tmp/video.mp4")]
         opts = FetchOptions(download="video")
@@ -111,8 +111,8 @@ class TestDownloadMedia:
         media_type = kwargs.get("media_type", call_args[0][3])
         assert media_type == "video"
 
-    @patch("yt_fetch.services.media._run_yt_dlp")
-    @patch("yt_fetch.services.media.check_ffmpeg", return_value=True)
+    @patch("tubefetch.services.media._run_yt_dlp")
+    @patch("tubefetch.services.media.check_ffmpeg", return_value=True)
     def test_audio_download(self, mock_ffmpeg, mock_run, tmp_path):
         mock_run.return_value = [Path("/tmp/audio.m4a")]
         opts = FetchOptions(download="audio")
@@ -121,8 +121,8 @@ class TestDownloadMedia:
         assert len(result.paths) == 1
         mock_run.assert_called_once()
 
-    @patch("yt_fetch.services.media._run_yt_dlp")
-    @patch("yt_fetch.services.media.check_ffmpeg", return_value=True)
+    @patch("tubefetch.services.media._run_yt_dlp")
+    @patch("tubefetch.services.media.check_ffmpeg", return_value=True)
     def test_both_download(self, mock_ffmpeg, mock_run, tmp_path):
         mock_run.side_effect = [
             [Path("/tmp/video.mp4")],
@@ -134,10 +134,10 @@ class TestDownloadMedia:
         assert len(result.paths) == 2
         assert mock_run.call_count == 2
 
-    @patch("yt_fetch.services.media.check_ffmpeg", return_value=True)
+    @patch("tubefetch.services.media.check_ffmpeg", return_value=True)
     def test_creates_media_dir(self, mock_ffmpeg, tmp_path):
         opts = FetchOptions(download="video")
-        with patch("yt_fetch.services.media._run_yt_dlp", return_value=[]):
+        with patch("tubefetch.services.media._run_yt_dlp", return_value=[]):
             download_media("dQw4w9WgXcQ", opts, tmp_path)
         assert (tmp_path / "dQw4w9WgXcQ" / "media").is_dir()
 
@@ -146,19 +146,19 @@ class TestDownloadMedia:
 
 
 class TestRunYtDlp:
-    @patch("yt_fetch.services.media.yt_dlp.YoutubeDL")
+    @patch("tubefetch.services.media.yt_dlp.YoutubeDL")
     def test_success(self, mock_ydl_class):
         mock_ydl = MagicMock()
         mock_ydl.__enter__ = MagicMock(return_value=mock_ydl)
         mock_ydl.__exit__ = MagicMock(return_value=False)
         mock_ydl_class.return_value = mock_ydl
 
-        from yt_fetch.services.media import _run_yt_dlp
+        from tubefetch.services.media import _run_yt_dlp
 
         _run_yt_dlp("https://youtube.com/watch?v=abc", "abc", {}, "video")
         mock_ydl.download.assert_called_once_with(["https://youtube.com/watch?v=abc"])
 
-    @patch("yt_fetch.services.media.yt_dlp.YoutubeDL")
+    @patch("tubefetch.services.media.yt_dlp.YoutubeDL")
     def test_download_error(self, mock_ydl_class):
         import yt_dlp as real_yt_dlp
 
@@ -168,7 +168,7 @@ class TestRunYtDlp:
         mock_ydl.__exit__ = MagicMock(return_value=False)
         mock_ydl_class.return_value = mock_ydl
 
-        from yt_fetch.services.media import _run_yt_dlp
+        from tubefetch.services.media import _run_yt_dlp
 
         with pytest.raises(MediaError, match="Failed to download video"):
             _run_yt_dlp("https://youtube.com/watch?v=abc", "abc", {}, "video")

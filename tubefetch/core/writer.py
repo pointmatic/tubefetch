@@ -22,10 +22,10 @@ import os
 import tempfile
 from pathlib import Path
 
-from yt_fetch.core.models import BatchResult, Metadata, Transcript
-from yt_fetch.utils.time_fmt import seconds_to_srt, seconds_to_vtt
+from tubefetch.core.models import BatchResult, Metadata, Transcript
+from tubefetch.utils.time_fmt import seconds_to_srt, seconds_to_vtt
 
-logger = logging.getLogger("yt_fetch")
+logger = logging.getLogger("tubefetch")
 
 
 def write_metadata(metadata: Metadata, out_dir: Path) -> Path:
@@ -137,7 +137,7 @@ def write_summary(results: BatchResult, out_dir: Path) -> Path:
 def _atomic_write_json(dest: Path, data: dict) -> None:
     """Write JSON atomically: write to temp file, then rename."""
     dest.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(dir=dest.parent, suffix=".tmp", prefix=".yt_fetch_")
+    fd, tmp_path = tempfile.mkstemp(dir=dest.parent, suffix=".tmp", prefix=".tubefetch_")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, default=str, ensure_ascii=False)
@@ -151,7 +151,7 @@ def _atomic_write_json(dest: Path, data: dict) -> None:
 def _atomic_write_text(dest: Path, content: str) -> None:
     """Write text atomically: write to temp file, then rename."""
     dest.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_path = tempfile.mkstemp(dir=dest.parent, suffix=".tmp", prefix=".yt_fetch_")
+    fd, tmp_path = tempfile.mkstemp(dir=dest.parent, suffix=".tmp", prefix=".tubefetch_")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             f.write(content)

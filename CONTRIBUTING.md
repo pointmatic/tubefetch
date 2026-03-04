@@ -1,6 +1,6 @@
-# Contributing to yt-fetch
+# Contributing to tubefetch
 
-Thank you for your interest in contributing to yt-fetch! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to TubeFetch! This document provides guidelines for contributing to the project.
 
 ## Development Setup
 
@@ -27,7 +27,7 @@ pip install -e ".[dev,youtube-api]"
 pytest
 
 # Run with coverage
-pytest --cov=yt_fetch --cov-report=term-missing
+pytest --cov=tubefetch --cov-report=term-missing
 
 # Run specific test file
 pytest tests/test_models.py
@@ -164,8 +164,8 @@ When requesting features, please include:
 ### Project Structure
 
 ```
-yt-fetch/
-├── yt_fetch/           # Main package
+tubefetch/
+├── tubefetch/         # Main package
 │   ├── core/          # Core models, errors, pipeline
 │   ├── services/      # External service integrations
 │   └── utils/         # Utility functions
@@ -200,37 +200,23 @@ Releases are automated via GitHub Actions. When you push a version tag, the work
 1. **Update version numbers**:
    ```bash
    # Update version in pyproject.toml
-   # Update __version__ in yt_fetch/__init__.py
+   # Update __version__ in tubefetch/__init__.py
    ```
 
-2. **Update CHANGELOG.md** (optional but recommended):
-   ```markdown
-   ## [X.Y.Z] - YYYY-MM-DD
-   
-   ### Added
-   - New feature description
-   
-   ### Changed
-   - Changed feature description
-   
-   ### Fixed
-   - Bug fix description
-   ```
-
-3. **Commit changes**:
+2. **Commit changes**:
    ```bash
-   git add pyproject.toml yt_fetch/__init__.py CHANGELOG.md
+   git add pyproject.toml tubefetch/__init__.py
    git commit -m "Release vX.Y.Z"
    ```
 
-4. **Create and push tag**:
+3. **Create and push tag**:
    ```bash
    git tag vX.Y.Z
    git push origin main
    git push origin vX.Y.Z
    ```
 
-5. **Automated workflow**:
+4. **Automated workflow**:
    - GitHub Actions builds the package
    - Publishes to PyPI (requires PyPI trusted publisher configured)
    - Creates GitHub Release with auto-generated notes from merged PRs
@@ -249,7 +235,7 @@ Before the first release, configure PyPI trusted publisher:
 2. Add pending publisher:
    - PyPI Project Name: `tubefetch`
    - Owner: `pointmatic`
-   - Repository: `yt-fetch`
+   - Repository: `tubefetch`
    - Workflow: `release.yml`
    - Environment: `pypi`
 
@@ -259,4 +245,4 @@ Before the first release, configure PyPI trusted publisher:
 - Check existing issues and PRs for similar discussions
 - Review the documentation in `docs/`
 
-Thank you for contributing to yt-fetch! 🎉
+Thank you for contributing to tubefetch! 🎉

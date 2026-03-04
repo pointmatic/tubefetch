@@ -21,7 +21,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from yt_fetch.core.errors import FetchError
+from tubefetch.core.errors import FetchError
 
 
 class Metadata(BaseModel):

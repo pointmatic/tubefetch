@@ -41,8 +41,8 @@ class TestMetadataLive:
     """Fetch metadata for a known public video."""
 
     def test_fetch_metadata(self, tmp_path):
-        from yt_fetch.core.options import FetchOptions
-        from yt_fetch.services.metadata import get_metadata
+        from tubefetch.core.options import FetchOptions
+        from tubefetch.services.metadata import get_metadata
 
         opts = FetchOptions(out=tmp_path)
         meta = get_metadata(KNOWN_VIDEO_ID, opts)
@@ -55,9 +55,9 @@ class TestMetadataLive:
         assert meta.duration_seconds > 0
 
     def test_metadata_writes_json(self, tmp_path):
-        from yt_fetch.core.options import FetchOptions
-        from yt_fetch.core.writer import write_metadata
-        from yt_fetch.services.metadata import get_metadata
+        from tubefetch.core.options import FetchOptions
+        from tubefetch.core.writer import write_metadata
+        from tubefetch.services.metadata import get_metadata
 
         opts = FetchOptions(out=tmp_path)
         meta = get_metadata(KNOWN_VIDEO_ID, opts)
@@ -76,8 +76,8 @@ class TestTranscriptLive:
     """Fetch transcript for a known public video."""
 
     def test_fetch_transcript(self, tmp_path):
-        from yt_fetch.core.options import FetchOptions
-        from yt_fetch.services.transcript import get_transcript
+        from tubefetch.core.options import FetchOptions
+        from tubefetch.services.transcript import get_transcript
 
         opts = FetchOptions(out=tmp_path, languages=["en"])
         transcript = get_transcript(KNOWN_VIDEO_ID, opts)
@@ -88,9 +88,9 @@ class TestTranscriptLive:
         assert transcript.segments[0].text is not None
 
     def test_transcript_writes_json(self, tmp_path):
-        from yt_fetch.core.options import FetchOptions
-        from yt_fetch.core.writer import write_transcript_json
-        from yt_fetch.services.transcript import get_transcript
+        from tubefetch.core.options import FetchOptions
+        from tubefetch.core.writer import write_transcript_json
+        from tubefetch.services.transcript import get_transcript
 
         opts = FetchOptions(out=tmp_path, languages=["en"])
         transcript = get_transcript(KNOWN_VIDEO_ID, opts)
@@ -104,8 +104,8 @@ class TestPipelineLive:
     """Full pipeline end-to-end."""
 
     def test_process_video(self, tmp_path):
-        from yt_fetch.core.options import FetchOptions
-        from yt_fetch.core.pipeline import process_video
+        from tubefetch.core.options import FetchOptions
+        from tubefetch.core.pipeline import process_video
 
         opts = FetchOptions(out=tmp_path)
         result = process_video(KNOWN_VIDEO_ID, opts)
@@ -119,8 +119,8 @@ class TestPipelineLive:
         assert result.errors == []
 
     def test_process_video_output_structure(self, tmp_path):
-        from yt_fetch.core.options import FetchOptions
-        from yt_fetch.core.pipeline import process_video
+        from tubefetch.core.options import FetchOptions
+        from tubefetch.core.pipeline import process_video
 
         opts = FetchOptions(out=tmp_path)
         process_video(KNOWN_VIDEO_ID, opts)
@@ -135,8 +135,8 @@ class TestBatchLive:
     """Batch with mixed valid/invalid IDs."""
 
     def test_batch_mixed_ids(self, tmp_path):
-        from yt_fetch.core.options import FetchOptions
-        from yt_fetch.core.pipeline import process_batch
+        from tubefetch.core.options import FetchOptions
+        from tubefetch.core.pipeline import process_batch
 
         opts = FetchOptions(out=tmp_path, workers=1)
         result = process_batch([KNOWN_VIDEO_ID, INVALID_VIDEO_ID], opts)
@@ -154,8 +154,8 @@ class TestBatchLive:
         assert len(bad[0].errors) > 0
 
     def test_batch_writes_summary(self, tmp_path):
-        from yt_fetch.core.options import FetchOptions
-        from yt_fetch.core.pipeline import process_batch
+        from tubefetch.core.options import FetchOptions
+        from tubefetch.core.pipeline import process_batch
 
         opts = FetchOptions(out=tmp_path, workers=1)
         process_batch([KNOWN_VIDEO_ID], opts)

@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.services.metadata."""
+"""Tests for tubefetch.services.metadata."""
 
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from yt_fetch.core.models import Metadata
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.services.metadata import (
+from tubefetch.core.models import Metadata
+from tubefetch.core.options import FetchOptions
+from tubefetch.services.metadata import (
     MetadataError,
     _map_youtube_api_item,
     _map_yt_dlp_info,
@@ -114,7 +114,7 @@ class TestMapYtDlpInfo:
 class TestYtDlpBackend:
     """Test _yt_dlp_backend with mocked yt-dlp."""
 
-    @patch("yt_fetch.services.metadata.yt_dlp.YoutubeDL")
+    @patch("tubefetch.services.metadata.yt_dlp.YoutubeDL")
     def test_success(self, mock_ydl_class):
         mock_ydl = MagicMock()
         mock_ydl.extract_info.return_value = SAMPLE_YT_DLP_INFO
@@ -122,14 +122,14 @@ class TestYtDlpBackend:
         mock_ydl.__exit__ = MagicMock(return_value=False)
         mock_ydl_class.return_value = mock_ydl
 
-        from yt_fetch.services.metadata import _yt_dlp_backend
+        from tubefetch.services.metadata import _yt_dlp_backend
 
         result = _yt_dlp_backend("dQw4w9WgXcQ")
         assert isinstance(result, Metadata)
         assert result.video_id == "dQw4w9WgXcQ"
         assert result.title == "Rick Astley - Never Gonna Give You Up (Official Music Video)"
 
-    @patch("yt_fetch.services.metadata.yt_dlp.YoutubeDL")
+    @patch("tubefetch.services.metadata.yt_dlp.YoutubeDL")
     def test_download_error(self, mock_ydl_class):
         import yt_dlp as real_yt_dlp
 
@@ -139,12 +139,12 @@ class TestYtDlpBackend:
         mock_ydl.__exit__ = MagicMock(return_value=False)
         mock_ydl_class.return_value = mock_ydl
 
-        from yt_fetch.services.metadata import _yt_dlp_backend
+        from tubefetch.services.metadata import _yt_dlp_backend
 
         with pytest.raises(MetadataError, match="Failed to extract metadata"):
             _yt_dlp_backend("nonexistent123")
 
-    @patch("yt_fetch.services.metadata.yt_dlp.YoutubeDL")
+    @patch("tubefetch.services.metadata.yt_dlp.YoutubeDL")
     def test_none_result(self, mock_ydl_class):
         mock_ydl = MagicMock()
         mock_ydl.extract_info.return_value = None
@@ -152,7 +152,7 @@ class TestYtDlpBackend:
         mock_ydl.__exit__ = MagicMock(return_value=False)
         mock_ydl_class.return_value = mock_ydl
 
-        from yt_fetch.services.metadata import _yt_dlp_backend
+        from tubefetch.services.metadata import _yt_dlp_backend
 
         with pytest.raises(MetadataError, match="No metadata returned"):
             _yt_dlp_backend("xxxxxxxxxxx")
@@ -161,7 +161,7 @@ class TestYtDlpBackend:
 class TestGetMetadata:
     """Test get_metadata with backend selection."""
 
-    @patch("yt_fetch.services.metadata._yt_dlp_backend")
+    @patch("tubefetch.services.metadata._yt_dlp_backend")
     def test_default_uses_yt_dlp(self, mock_backend):
         mock_backend.return_value = _map_yt_dlp_info("dQw4w9WgXcQ", SAMPLE_YT_DLP_INFO)
         options = FetchOptions()
@@ -170,8 +170,8 @@ class TestGetMetadata:
         assert result.video_id == "dQw4w9WgXcQ"
         mock_backend.assert_called_once_with("dQw4w9WgXcQ")
 
-    @patch("yt_fetch.services.metadata._yt_dlp_backend")
-    @patch("yt_fetch.services.metadata._youtube_api_backend")
+    @patch("tubefetch.services.metadata._yt_dlp_backend")
+    @patch("tubefetch.services.metadata._youtube_api_backend")
     def test_api_key_tries_api_first(self, mock_api, mock_ydl):
         mock_api.return_value = _map_yt_dlp_info("dQw4w9WgXcQ", SAMPLE_YT_DLP_INFO)
         options = FetchOptions(yt_api_key="test-key")
@@ -180,10 +180,10 @@ class TestGetMetadata:
         mock_api.assert_called_once_with("dQw4w9WgXcQ", "test-key")
         mock_ydl.assert_not_called()
 
-    @patch("yt_fetch.services.metadata._yt_dlp_backend")
-    @patch("yt_fetch.services.metadata._youtube_api_backend")
+    @patch("tubefetch.services.metadata._yt_dlp_backend")
+    @patch("tubefetch.services.metadata._youtube_api_backend")
     def test_api_failure_falls_back_to_yt_dlp(self, mock_api, mock_ydl):
-        from yt_fetch.core.errors import FetchErrorCode
+        from tubefetch.core.errors import FetchErrorCode
 
         mock_api.side_effect = MetadataError("API quota exceeded", code=FetchErrorCode.SERVICE_ERROR)
         mock_ydl.return_value = _map_yt_dlp_info("dQw4w9WgXcQ", SAMPLE_YT_DLP_INFO)
@@ -340,7 +340,7 @@ class TestYoutubeApiBackend:
         mock_service.videos.return_value = mock_videos
         self.mock_build.return_value = mock_service
 
-        from yt_fetch.services.metadata import _youtube_api_backend
+        from tubefetch.services.metadata import _youtube_api_backend
 
         result = _youtube_api_backend("dQw4w9WgXcQ", "fake-key")
         assert isinstance(result, Metadata)
@@ -357,7 +357,7 @@ class TestYoutubeApiBackend:
         mock_service.videos.return_value = mock_videos
         self.mock_build.return_value = mock_service
 
-        from yt_fetch.services.metadata import _youtube_api_backend
+        from tubefetch.services.metadata import _youtube_api_backend
 
         with pytest.raises(MetadataError, match="Video not found via YouTube API"):
             _youtube_api_backend("nonexistent11", "fake-key")
@@ -365,7 +365,7 @@ class TestYoutubeApiBackend:
     def test_api_error(self):
         self.mock_build.side_effect = Exception("API key invalid")
 
-        from yt_fetch.services.metadata import _youtube_api_backend
+        from tubefetch.services.metadata import _youtube_api_backend
 
         with pytest.raises(MetadataError, match="YouTube API error"):
             _youtube_api_backend("dQw4w9WgXcQ", "bad-key")

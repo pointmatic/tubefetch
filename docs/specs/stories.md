@@ -819,9 +819,168 @@ Update README.md to use `tubefetch` instead of `yt-fetch`/`yt_fetch` throughout.
   - [x] Replace test coverage `--cov=yt_fetch` with `--cov=tubefetch`
 - [x] Bump version to `0.8.2` in `pyproject.toml`
 
+### Story K.i: v0.9.0 Improve CLI UX with parallel commands and positional args [Done]
+
+Simplify CLI by making commands parallel (all nouns) and accepting video IDs/URLs as positional arguments.
+
+**Current issues:**
+- `tubefetch fetch` is redundant (verb + verb)
+- `--id` flag is verbose for single/multiple videos
+- Commands are inconsistent: `fetch` (verb) vs `metadata`, `transcript`, `media` (nouns)
+
+**Implemented changes:**
+- [x] Rename `fetch` command to `all` (fetches everything: metadata + transcript + optional media)
+- [x] Accept video IDs/URLs as positional arguments (no `--id` flag needed)
+- [x] Support mixed input: IDs, full URLs, short URLs
+- [x] Keep `--file`, `--jsonl` flags for batch processing
+- [x] Update CLI argument parsing in `cli.py`:
+  - [x] Add positional argument `videos` (nargs=-1)
+  - [x] Validate and normalize IDs/URLs (via existing `parse_many`)
+  - [x] Maintain backward compatibility with `--id` flag (deprecated but functional)
+- [x] Update all commands to use consistent pattern:
+  - [x] `tubefetch all <videos...>` - fetch metadata + transcript + optional media
+  - [x] `tubefetch metadata <videos...>` - fetch metadata only
+  - [x] `tubefetch transcript <videos...>` - fetch transcript only
+  - [x] `tubefetch media <videos...>` - download media only
+- [x] Update help text and examples
+- [x] Update README.md with new CLI examples
+- [x] Update documentation site pages:
+  - [x] Update `getting-started.md` with new command syntax
+  - [x] **Rewrite `usage.md` to comprehensively document all four commands:**
+    - [x] Add section for `all` command (replaces `fetch`)
+    - [x] Add section for `metadata` command with use cases and examples
+    - [x] Add section for `transcript` command with language options and examples
+    - [x] Add section for `media` command with download modes:
+      - [x] Explain `--download video` (merged video+audio MP4)
+      - [x] Explain `--download audio` (audio-only M4A extraction)
+      - [x] Explain `--download both` (separate video and audio files)
+      - [x] Document default behavior (video if no flag specified)
+    - [x] Add comparison table showing when to use each command
+    - [x] Add examples for common workflows (metadata-only, transcript-only, media-only, everything)
+  - [x] Update `index.html` with new command syntax
+- [x] Add deprecation warning for `fetch` command (suggest `all` instead)
+- [x] Add deprecation warning for `--id` flag (suggest positional args instead)
+- [x] Backward compatibility maintained (old syntax still works with warnings)
+- [x] Rename package directory from `yt_fetch` to `tubefetch`
+- [x] Update all internal imports from `yt_fetch` to `tubefetch`
+- [x] Update environment variable prefix from `YT_FETCH_` to `TUBEFETCH_`
+- [x] Update config file name from `yt_fetch.yaml` to `tubefetch.yaml`
+- [x] Update logger names from `yt_fetch` to `tubefetch`
+- [x] Update CLI entry point in `pyproject.toml`
+- [x] Update test imports and patch decorators
+- [x] Update `CONTRIBUTING.md` to remove `CHANGELOG.md` references (using GitHub Releases instead)
+- [x] Update `mkdocs.yml` site name and description from `yt-fetch` to `TubeFetch`
+- [x] Delete `CHANGELOG.md` (replaced by auto-generated GitHub Releases)
+- [x] Bump version to `0.9.0` (breaking change in CLI UX and package name)
+
+**Examples:**
+```bash
+# New style (preferred)
+tubefetch all dQw4w9WgXcQ abc123def https://www.youtube.com/watch?v=QNPPEB64QbI
+tubefetch metadata dQw4w9WgXcQ
+tubefetch transcript https://youtu.be/dQw4w9WgXcQ
+tubefetch media dQw4w9WgXcQ --download video
+
+# Old style (deprecated but still works)
+tubefetch fetch --id dQw4w9WgXcQ
+tubefetch metadata --id dQw4w9WgXcQ
+
+# Batch processing (unchanged)
+tubefetch all --file videos.txt
+tubefetch metadata --jsonl videos.jsonl
+```
+
+### Story K.j: v0.9.0 Part 2 - Simplify CLI with Default Command [Done]
+
+Eliminate the `all` command in favor of a default command pattern for better UX.
+
+**Issue:**
+- `tubefetch all VIDEO_ID --download both` creates cognitive dissonance ("all" + "both")
+- The most common use case (fetch everything) should be the default, not require a subcommand
+- Current pattern is verbose for the primary workflow
+
+**Implemented changes:**
+- [x] Refactor CLI group to support default command:
+  - [x] Add `invoke_without_command=True` to `@click.group()`
+  - [x] Add `@click.pass_context` to CLI group
+  - [x] Detect when no subcommand is provided and invoke default fetch behavior
+  - [x] Add positional arguments and common options to the group itself
+- [x] Remove `all` and `fetch` commands entirely (breaking change)
+- [x] Make fetch behavior the default (no command name):
+  - [x] `tubefetch VIDEO_ID [VIDEO_ID...]` - fetch metadata + transcript
+  - [x] `tubefetch VIDEO_ID --download video` - + download video
+  - [x] `tubefetch VIDEO_ID --download both` - + download video and audio
+- [x] Keep specialized commands for exceptional cases:
+  - [x] `tubefetch metadata VIDEO_ID` - metadata only
+  - [x] `tubefetch transcript VIDEO_ID` - transcript only
+  - [x] `tubefetch media VIDEO_ID` - media only
+- [x] Update all documentation:
+  - [x] Update README.md examples to use default command
+  - [x] Update usage.md to document default command pattern
+  - [x] Update getting-started.md examples
+  - [x] Update index.html quick start
+  - [x] Update CLI help text and docstrings
+
+**New CLI pattern:**
+```bash
+# Default command (most common - no subcommand needed)
+tubefetch dQw4w9WgXcQ
+tubefetch dQw4w9WgXcQ abc123def xyz789
+tubefetch dQw4w9WgXcQ --download video
+tubefetch --file videos.txt
+
+# Specialized commands (exceptional cases)
+tubefetch metadata dQw4w9WgXcQ
+tubefetch transcript dQw4w9WgXcQ
+tubefetch media dQw4w9WgXcQ
+```
+
+**Rationale:**
+- Cleaner, more intuitive CLI
+- Follows common patterns (git, docker, etc.)
+- Reduces cognitive load for primary use case
+- Specialized commands still available when needed
+- Breaking change: `all` and `fetch` commands removed
+
 ---
 
-## Phase L: Documentation Polish
+## Phase L: Code Quality & Documentation
+
+### Story L.a: Type Safety Improvements [Planned]
+
+Address mypy strict mode errors to improve type safety and code quality.
+
+**Current state:** 41 mypy errors in strict mode (non-blocking for v0.9.0 release)
+
+**Tasks:**
+- [ ] Fix missing type parameters for generic types:
+  - [ ] `tubefetch/core/logging.py:34` - Add type params to `dict`
+  - [ ] `tubefetch/core/models.py:41` - Add type params to `dict`
+  - [ ] `tubefetch/core/writer.py:137` - Add type params to `dict`
+  - [ ] `tubefetch/services/transcript.py` - Add type params to `dict` and `list` (multiple locations)
+  - [ ] `tubefetch/services/metadata.py` - Add type params to `dict` (multiple locations)
+  - [ ] `tubefetch/services/media.py` - Add type params to `dict` (multiple locations)
+- [ ] Add type annotations to CLI functions:
+  - [ ] `tubefetch/cli.py` - Add return type annotations to decorators and helper functions
+  - [ ] Fix method assignment issue with `cli.main` wrapper
+- [ ] Fix module export issues:
+  - [ ] Add `__all__` exports to `tubefetch/services/metadata.py` for `MetadataError`
+  - [ ] Add `__all__` exports to `tubefetch/services/transcript.py` for `TranscriptError`
+  - [ ] Add `__all__` exports to `tubefetch/services/media.py` for `MediaError`
+- [ ] Address external library stub issues:
+  - [ ] Install `types-yt-dlp` stub package (or add to dev dependencies)
+  - [ ] Add type ignore comments for `googleapiclient` imports (optional dependency)
+  - [ ] Add type ignore comments for `youtube_transcript_api` attribute issues
+- [ ] Fix `tubefetch/utils/gentlify_config.py` type issues:
+  - [ ] Add proper type annotations to functions
+  - [ ] Fix `RetryConfig` argument type compatibility
+- [ ] Verify: Run `mypy tubefetch --strict` with 0 errors
+
+**Rationale:**
+- Improves code maintainability and catches potential bugs at type-check time
+- Makes IDE autocomplete and type hints more reliable
+- Demonstrates code quality commitment
+- Non-urgent: Can be addressed in v0.9.1 or v0.10.0
 
 ### Story L.b: Documentation Polish & SEO [Planned]
 

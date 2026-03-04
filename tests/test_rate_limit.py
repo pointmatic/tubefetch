@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for yt_fetch.utils.rate_limit."""
+"""Tests for tubefetch.utils.rate_limit."""
 
 import threading
 import time
 
-from yt_fetch.utils.rate_limit import TokenBucket
+from tubefetch.utils.rate_limit import TokenBucket
 
 
 class TestTokenBucketInit:

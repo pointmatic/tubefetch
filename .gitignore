@@ -20,5 +20,6 @@ dist/
 # Project
 .archive
 /site/
+out/
 
 # removed and added with `pyve --init --force`

@@ -20,10 +20,10 @@ import asyncio
 import logging
 from pathlib import Path
 
-from yt_fetch.core.errors import FetchError, FetchErrorCode, FetchPhase
-from yt_fetch.core.models import BatchResult, FetchResult
-from yt_fetch.core.options import FetchOptions
-from yt_fetch.core.writer import (
+from tubefetch.core.errors import FetchError, FetchErrorCode, FetchPhase
+from tubefetch.core.models import BatchResult, FetchResult
+from tubefetch.core.options import FetchOptions
+from tubefetch.core.writer import (
     read_metadata,
     read_transcript_json,
     write_metadata,
@@ -33,13 +33,13 @@ from yt_fetch.core.writer import (
     write_transcript_txt,
     write_transcript_vtt,
 )
-from yt_fetch.services.media import download_media
-from yt_fetch.services.metadata import MetadataError, get_metadata
-from yt_fetch.services.transcript import TranscriptError, get_transcript
-from yt_fetch.utils.gentlify_config import create_throttle, execute_with_retry
-from yt_fetch.utils.rate_limit import TokenBucket
+from tubefetch.services.media import download_media
+from tubefetch.services.metadata import MetadataError, get_metadata
+from tubefetch.services.transcript import TranscriptError, get_transcript
+from tubefetch.utils.gentlify_config import create_throttle, execute_with_retry
+from tubefetch.utils.rate_limit import TokenBucket
 
-logger = logging.getLogger("yt_fetch")
+logger = logging.getLogger("tubefetch")
 
 
 def process_video(
@@ -207,7 +207,7 @@ def print_summary(batch: BatchResult, out_dir: Path) -> None:
     lines = [
         "",
         "=" * 40,
-        "  yt-fetch Summary",
+        "  TubeFetch Summary",
         "=" * 40,
         f"  Total:        {batch.total}",
         f"  Succeeded:    {batch.succeeded}",
