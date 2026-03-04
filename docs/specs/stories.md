@@ -795,9 +795,32 @@ Update all repository references from `yt-fetch` to `tubefetch` in preparation f
   - [x] Update to instruct adding `/site/` to main `.gitignore` at repository root
   - [x] Add note explaining `/site/` vs `site/` difference
 - [x] Remove redundant `docs/site/.gitignore` file
-- [ ] Rename GitHub repository from `yt-fetch` to `tubefetch` (manual step in GitHub Settings)
-- [ ] Verify: GitHub Pages site moves to `https://pointmatic.github.io/tubefetch`
-- [ ] Verify: Old URLs redirect to new URLs automatically
+- [x] Rename GitHub repository from `yt-fetch` to `tubefetch` (manual step in GitHub Settings)
+- [x] Verify: GitHub Pages site moves to `https://pointmatic.github.io/tubefetch`
+
+### Story K.g: Update documentation site commands [Done]
+
+Replace old `yt-fetch` references with `tubefetch` in all documentation pages.
+
+- [x] Update `docs/site/advanced.md`:
+  - [x] Replace "yt-fetch uses" with "tubefetch uses" (line 7)
+  - [x] Replace "yt-fetch automatically caches" with "tubefetch automatically caches" (line 136)
+  - [x] Replace all Python imports `from yt_fetch import` with `from tubefetch import` (14 occurrences)
+- [x] Update `docs/site/usage.md`:
+  - [x] Replace "using yt-fetch from" with "using tubefetch from" (line 3)
+  - [x] Replace all CLI commands `yt_fetch fetch` with `tubefetch fetch` (24 occurrences)
+- [x] Update `docs/site/getting-started.md`:
+  - [x] Replace "Welcome to yt-fetch!" with "Welcome to tubefetch!" (line 3)
+  - [x] Replace "Install yt-fetch using pip" with "Install tubefetch using pip" (line 7)
+  - [x] Replace all CLI commands `yt_fetch fetch` with `tubefetch fetch` (3 occurrences)
+- [x] Update `docs/site/index.html`:
+  - [x] Replace "yt-fetch fetches" with "tubefetch fetches" in meta description (line 7)
+  - [x] Replace "yt-fetch fetches" with "tubefetch fetches" in hero paragraph (line 252)
+  - [x] Replace CLI command `yt_fetch fetch` with `tubefetch fetch` (line 271)
+- [x] Update `docs/site/api.md`:
+  - [x] Replace "Use yt-fetch as" with "Use tubefetch as" (line 3)
+  - [x] Replace all Python imports `from yt_fetch import` with `from tubefetch import` (9 occurrences)
+- [x] Verify: All documentation examples use correct `tubefetch` command and package name
 
 ---
 
