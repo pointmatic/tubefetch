@@ -619,7 +619,7 @@ Streamline release notes generation.
 
 ## Phase K: GitHub Pages Documentation
 
-### Story K.a: v0.8.1 MkDocs Configuration & Project Structure [Done]
+### Story K.a: MkDocs Configuration & Project Structure [Done]
 
 Set up MkDocs with Material theme and create documentation directory structure.
 
@@ -646,7 +646,7 @@ Set up MkDocs with Material theme and create documentation directory structure.
 - [x] Update `.gitignore` to ignore `site/` build output
 - [ ] Verify: `mkdocs serve` runs locally and shows placeholder site (requires user to run locally)
 
-### Story K.b: v0.8.2 Custom Landing Page [Done]
+### Story K.b: Custom Landing Page [Done]
 
 Create a branded landing page with hero section, quick start, and feature cards.
 
@@ -707,7 +707,7 @@ Create markdown documentation pages for getting started, usage, and API referenc
 - [x] Update `mkdocs.yml` nav to include all pages
 - [x] Verify: All pages render correctly with proper navigation and cross-links (created in Story K.a)
 
-### Story K.d: v0.8.3 GitHub Actions Deployment Workflow [Done]
+### Story K.d: GitHub Actions Deployment Workflow [Done]
 
 Automate MkDocs deployment to GitHub Pages via GitHub Actions.
 
@@ -731,36 +731,7 @@ Automate MkDocs deployment to GitHub Pages via GitHub Actions.
   - [x] Set Source to "GitHub Actions"
 - [x] Verify: Push to main triggers deployment; site available at `https://pointmatic.github.io/yt-fetch`
 
-### Story K.e: v0.8.4 Documentation Polish & SEO [Planned]
-
-Add final touches, SEO optimization, and cross-references.
-
-- [ ] Update `index.html`:
-  - [ ] Add Open Graph meta tags (og:title, og:description, og:image, og:url)
-  - [ ] Add Twitter Card meta tags
-  - [ ] Add favicon link (if available)
-  - [ ] Ensure all links are correct (internal and external)
-- [ ] Update all markdown pages:
-  - [ ] Add cross-references between related pages
-  - [ ] Use admonitions for notes, warnings, tips
-  - [ ] Add code examples with proper syntax highlighting
-  - [ ] Ensure consistent formatting and style
-- [ ] Create `docs/site/changelog.md`:
-  - [ ] Link to GitHub releases
-  - [ ] Summarize major version changes
-- [ ] Update `mkdocs.yml`:
-  - [ ] Add `extra` section with social links (GitHub)
-  - [ ] Add copyright notice
-  - [ ] Verify all nav links are correct
-- [ ] Test locally:
-  - [ ] Run `mkdocs serve` and verify all pages load
-  - [ ] Test navigation between pages
-  - [ ] Test search functionality
-  - [ ] Test dark/light mode toggle
-  - [ ] Test mobile responsiveness
-- [ ] Verify: Documentation site is complete, polished, and ready for public use
-
-### Story K.f: Rename yt-fetch to tubefetch everywhere [Done]
+### Story K.e: Rename yt-fetch to tubefetch everywhere [Done]
 
 Update all repository references from `yt-fetch` to `tubefetch` in preparation for GitHub repository rename.
 
@@ -798,7 +769,7 @@ Update all repository references from `yt-fetch` to `tubefetch` in preparation f
 - [x] Rename GitHub repository from `yt-fetch` to `tubefetch` (manual step in GitHub Settings)
 - [x] Verify: GitHub Pages site moves to `https://pointmatic.github.io/tubefetch`
 
-### Story K.g: Update documentation site commands [Done]
+### Story K.f: Update documentation site commands [Done]
 
 Replace old `yt-fetch` references with `tubefetch` in all documentation pages.
 
@@ -822,11 +793,54 @@ Replace old `yt-fetch` references with `tubefetch` in all documentation pages.
   - [x] Replace all Python imports `from yt_fetch import` with `from tubefetch import` (9 occurrences)
 - [x] Verify: All documentation examples use correct `tubefetch` command and package name
 
+### Story K.g: v0.8.1 Fix CLI command entry point [Done]
+
+Fix `pyproject.toml` to register `tubefetch` command instead of `yt_fetch`/`yt-fetch`.
+
+- [x] Update `pyproject.toml`:
+  - [x] Change `[project.scripts]` from `yt_fetch` and `yt-fetch` to `tubefetch`
+  - [x] Remove duplicate entry point (keep only `tubefetch`)
+- [x] Verify: `pip install tubefetch` registers the `tubefetch` CLI command
+- [x] Bump version to `0.8.1` in `pyproject.toml`
+
 ---
 
-## Phase L: AI-Ready Content Extraction
+## Phase L: Documentation Polish
 
-### Story L.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
+### Story L.b: Documentation Polish & SEO [Planned]
+
+Add final touches, SEO optimization, and cross-references.
+
+- [ ] Update `index.html`:
+  - [ ] Add Open Graph meta tags (og:title, og:description, og:image, og:url)
+  - [ ] Add Twitter Card meta tags
+  - [ ] Add favicon link (if available)
+  - [ ] Ensure all links are correct (internal and external)
+- [ ] Update all markdown pages:
+  - [ ] Add cross-references between related pages
+  - [ ] Use admonitions for notes, warnings, tips
+  - [ ] Add code examples with proper syntax highlighting
+  - [ ] Ensure consistent formatting and style
+- [ ] Create `docs/site/changelog.md`:
+  - [ ] Link to GitHub releases
+  - [ ] Summarize major version changes
+- [ ] Update `mkdocs.yml`:
+  - [ ] Add `extra` section with social links (GitHub)
+  - [ ] Add copyright notice
+  - [ ] Verify all nav links are correct
+- [ ] Test locally:
+  - [ ] Run `mkdocs serve` and verify all pages load
+  - [ ] Test navigation between pages
+  - [ ] Test search functionality
+  - [ ] Test dark/light mode toggle
+  - [ ] Test mobile responsiveness
+- [ ] Verify: Documentation site is complete, polished, and ready for public use
+
+---
+
+## Phase M: AI-Ready Content Extraction
+
+### Story M.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
 
 Replace bare concatenation in `transcript.txt` with intelligent paragraph chunking and optional features.
 
@@ -854,7 +868,7 @@ Replace bare concatenation in `transcript.txt` with intelligent paragraph chunki
 - [ ] Verify: `transcript.txt` output is readable, paragraph-chunked text by default
 - [ ] Bump version to `0.9.0`
 
-### Story L.b: v0.9.1 Content Hashing [Planned]
+### Story M.b: v0.9.1 Content Hashing [Planned]
 
 Add SHA-256 content hashes to metadata and transcript outputs for change detection.
 
@@ -878,7 +892,7 @@ Add SHA-256 content hashes to metadata and transcript outputs for change detecti
 - [ ] Verify: `metadata.json` and `transcript.json` contain `content_hash` field
 - [ ] Bump version to `0.9.1`
 
-### Story L.c: v0.9.2 Token Count Estimation [Planned]
+### Story M.c: v0.9.2 Token Count Estimation [Planned]
 
 Optionally estimate token counts for transcript text using `tiktoken`.
 
@@ -901,7 +915,7 @@ Optionally estimate token counts for transcript text using `tiktoken`.
 - [ ] Verify: `transcript.json` contains `token_count` when tokenizer configured
 - [ ] Bump version to `0.9.2`
 
-### Story L.d: v0.9.3 Playlist and Channel Resolution [Planned]
+### Story M.d: v0.9.3 Playlist and Channel Resolution [Planned]
 
 Accept playlist and channel URLs as batch input sources.
 
@@ -928,7 +942,7 @@ Accept playlist and channel URLs as batch input sources.
   - [ ] Resolve a known public channel (with `max_videos=5`)
 - [ ] Bump version to `0.9.3`
 
-### Story L.e: v0.9.4 Video Bundle Output [Planned]
+### Story M.e: v0.9.4 Video Bundle Output [Planned]
 
 Optionally emit a unified `video_bundle.json` per video.
 
@@ -951,7 +965,7 @@ Optionally emit a unified `video_bundle.json` per video.
 - [ ] Verify: `video_bundle.json` appears in output when `--bundle` is set
 - [ ] Bump version to `0.9.4`
 
-### Story L.f: v0.9.5 README and Documentation Update [Planned]
+### Story M.f: v0.9.5 README and Documentation Update [Planned]
 
 Update README and documentation to reflect the AI-ready positioning.
 
