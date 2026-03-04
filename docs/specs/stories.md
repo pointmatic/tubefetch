@@ -803,6 +803,22 @@ Fix `pyproject.toml` to register `tubefetch` command instead of `yt_fetch`/`yt-f
 - [x] Verify: `pip install tubefetch` registers the `tubefetch` CLI command
 - [x] Bump version to `0.8.1` in `pyproject.toml`
 
+### Story K.h: v0.8.2 Fix README references to yt-fetch [Done]
+
+Update README.md to use `tubefetch` instead of `yt-fetch`/`yt_fetch` throughout.
+
+- [x] Update `README.md`:
+  - [x] Change title from `# yt-fetch` to `# tubefetch`
+  - [x] Replace "yt-fetch is a Python tool" with "tubefetch is a Python tool"
+  - [x] Update CLI note to remove `yt_fetch`/`yt-fetch` aliases
+  - [x] Replace all CLI examples `yt_fetch` with `tubefetch` (7 occurrences)
+  - [x] Replace all Python imports `from yt_fetch import` with `from tubefetch import` (2 occurrences)
+  - [x] Replace environment variable prefix `YT_FETCH_` with `TUBEFETCH_`
+  - [x] Replace config file name `yt_fetch.yaml` with `tubefetch.yaml`
+  - [x] Replace `` `yt-fetch` uses`` with `` `tubefetch` uses`` in retry section
+  - [x] Replace test coverage `--cov=yt_fetch` with `--cov=tubefetch`
+- [x] Bump version to `0.8.2` in `pyproject.toml`
+
 ---
 
 ## Phase L: Documentation Polish

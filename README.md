@@ -1,6 +1,6 @@
 ![tubefetch](docs/site/images/tubefetch_header_readme.png)
 
-# yt-fetch
+# tubefetch
 
 ![CI](https://github.com/pointmatic/tubefetch/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/pointmatic/tubefetch/graph/badge.svg)](https://codecov.io/gh/pointmatic/tubefetch)
@@ -10,7 +10,7 @@
 
 A Python CLI and library that fetches and extracts structured metadata and transcripts from YouTube videos, producing LLM-ready plain text, content hashes for change detection, and unified video bundles with batch processing, caching, and retry logic.
 
-yt-fetch is a Python tool that extracts structured, AI-ready content from YouTube videos. Given one or more video IDs, URLs, playlists, or channels, it produces normalized metadata, transcripts, and optional media in formats optimized for downstream AI/LLM pipelines (summarization, fact-checking, RAG, search indexing, etc.). It provides content hashes for change detection, optional token count estimates, and unified video bundles. The tool supports both CLI and library usage with batch processing, intelligent caching, configurable retries via gentlify, and rate limiting.
+tubefetch is a Python tool that extracts structured, AI-ready content from YouTube videos. Given one or more video IDs, URLs, playlists, or channels, it produces normalized metadata, transcripts, and optional media in formats optimized for downstream AI/LLM pipelines (summarization, fact-checking, RAG, search indexing, etc.). It provides content hashes for change detection, optional token count estimates, and unified video bundles. The tool supports both CLI and library usage with batch processing, intelligent caching, configurable retries via gentlify, and rate limiting.
 
 ## Features
 
@@ -38,7 +38,7 @@ For YouTube Data API v3 support (optional):
 pip install tubefetch[youtube-api]
 ```
 
-> **Note:** The CLI command can be invoked as either `yt_fetch` or `yt-fetch`.
+> **Note:** The CLI command is `tubefetch`.
 
 ## Quick Start
 
@@ -46,28 +46,28 @@ pip install tubefetch[youtube-api]
 
 ```bash
 # Fetch metadata + transcript for a single video
-yt_fetch fetch --id dQw4w9WgXcQ
+tubefetch fetch --id dQw4w9WgXcQ
 
 # Fetch with media download
-yt_fetch fetch --id dQw4w9WgXcQ --download video
+tubefetch fetch --id dQw4w9WgXcQ --download video
 
 # Batch from a file
-yt_fetch fetch --file video_ids.txt --out ./output --workers 3
+tubefetch fetch --file video_ids.txt --out ./output --workers 3
 
 # Transcript only
-yt_fetch transcript --id dQw4w9WgXcQ --languages en,fr
+tubefetch transcript --id dQw4w9WgXcQ --languages en,fr
 
 # Metadata only
-yt_fetch metadata --id dQw4w9WgXcQ
+tubefetch metadata --id dQw4w9WgXcQ
 
 # Media only
-yt_fetch media --id dQw4w9WgXcQ
+tubefetch media --id dQw4w9WgXcQ
 ```
 
 ### Library API
 
 ```python
-from yt_fetch import fetch_video, fetch_batch, FetchOptions
+from tubefetch import fetch_video, fetch_batch, FetchOptions
 
 # Single video
 result = fetch_video("dQw4w9WgXcQ")
@@ -104,8 +104,8 @@ out/
 Options are resolved in this order (first wins):
 
 1. **CLI flags**
-2. **Environment variables** (prefix `YT_FETCH_`)
-3. **YAML config file** (`yt_fetch.yaml`)
+2. **Environment variables** (prefix `TUBEFETCH_`)
+3. **YAML config file** (`tubefetch.yaml`)
 4. **Defaults**
 
 ### CLI Flags
@@ -137,18 +137,18 @@ Options are resolved in this order (first wins):
 
 ### Environment Variables
 
-All options can be set via environment variables with the `YT_FETCH_` prefix:
+All options can be set via environment variables with the `TUBEFETCH_` prefix:
 
 ```bash
-export YT_FETCH_OUT=./output
-export YT_FETCH_LANGUAGES=en,fr
-export YT_FETCH_DOWNLOAD=video
-export YT_FETCH_YT_API_KEY=your-api-key
+export TUBEFETCH_OUT=./output
+export TUBEFETCH_LANGUAGES=en,fr
+export TUBEFETCH_DOWNLOAD=video
+export TUBEFETCH_YT_API_KEY=your-api-key
 ```
 
 ### YAML Config File
 
-Create `yt_fetch.yaml` in the working directory:
+Create `tubefetch.yaml` in the working directory:
 
 ```yaml
 out: ./output
@@ -164,7 +164,7 @@ workers: 3
 
 ## Retry Configuration
 
-`yt-fetch` uses [gentlify](https://github.com/pointmatic/gentlify) for intelligent retry management with exponential backoff and jitter.
+`tubefetch` uses [gentlify](https://github.com/pointmatic/gentlify) for intelligent retry management with exponential backoff and jitter.
 
 ### How Retries Work
 
@@ -176,7 +176,7 @@ workers: 3
 ### Examples
 
 ```python
-from yt_fetch import fetch_video, FetchOptions
+from tubefetch import fetch_video, FetchOptions
 
 # Default: 3 retry attempts
 result = fetch_video("dQw4w9WgXcQ")
@@ -193,10 +193,10 @@ result = fetch_video("dQw4w9WgXcQ", opts)
 CLI:
 ```bash
 # Custom retry count
-yt_fetch fetch --id dQw4w9WgXcQ --retries 5
+tubefetch fetch --id dQw4w9WgXcQ --retries 5
 
 # Disable retries
-yt_fetch fetch --id dQw4w9WgXcQ --retries 0
+tubefetch fetch --id dQw4w9WgXcQ --retries 0
 ```
 
 ## Exit Codes
@@ -218,7 +218,7 @@ pip install -e ".[dev]"
 python -m pytest tests/
 
 # Run with coverage
-python -m pytest tests/ --cov=yt_fetch --cov-report=term-missing
+python -m pytest tests/ --cov=tubefetch --cov-report=term-missing
 
 # Run integration tests (requires network)
 RUN_INTEGRATION=1 python -m pytest tests/integration/
