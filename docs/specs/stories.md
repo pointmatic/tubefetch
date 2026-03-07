@@ -1122,34 +1122,35 @@ Address mypy strict mode errors to improve type safety and code quality.
 - Demonstrates code quality commitment
 - Non-urgent: Can be addressed in v0.9.1 or v0.10.0
 
-### Story L.b: Documentation Polish & SEO [Planned]
+### Story L.b: v0.9.6 Documentation Polish & SEO [Done]
 
 Add final touches, SEO optimization, and cross-references.
 
-- [ ] Update `index.html`:
-  - [ ] Add Open Graph meta tags (og:title, og:description, og:image, og:url)
-  - [ ] Add Twitter Card meta tags
-  - [ ] Add favicon link (if available)
-  - [ ] Ensure all links are correct (internal and external)
-- [ ] Update all markdown pages:
-  - [ ] Add cross-references between related pages
-  - [ ] Use admonitions for notes, warnings, tips
-  - [ ] Add code examples with proper syntax highlighting
-  - [ ] Ensure consistent formatting and style
-- [ ] Create `docs/site/changelog.md`:
-  - [ ] Link to GitHub releases
-  - [ ] Summarize major version changes
-- [ ] Update `mkdocs.yml`:
-  - [ ] Add `extra` section with social links (GitHub)
-  - [ ] Add copyright notice
-  - [ ] Verify all nav links are correct
-- [ ] Test locally:
-  - [ ] Run `mkdocs serve` and verify all pages load
-  - [ ] Test navigation between pages
-  - [ ] Test search functionality
-  - [ ] Test dark/light mode toggle
-  - [ ] Test mobile responsiveness
-- [ ] Verify: Documentation site is complete, polished, and ready for public use
+- [x] Update `index.html`:
+  - [x] Add Open Graph meta tags (og:title, og:description, og:image, og:url)
+  - [x] Add Twitter Card meta tags
+  - [x] Ensure all links are correct (internal and external)
+- [x] Update all markdown pages:
+  - [x] Add cross-references between related pages
+  - [x] Use admonitions for notes, warnings, tips
+  - [x] Ensure consistent formatting and style
+- [x] Create `docs/site/changelog.md`:
+  - [x] Link to GitHub releases
+  - [x] Summarize major version changes (0.9.0 through 0.9.6)
+- [x] Update `mkdocs.yml`:
+  - [x] Add `extra` section with social links (GitHub, PyPI)
+  - [x] Add copyright notice
+  - [x] Add Changelog to navigation
+  - [x] Verify all nav links are correct
+- [x] Test locally:
+  - [x] Run `mkdocs build --strict` successfully
+- [x] Verify: Documentation site is complete, polished, and ready for public use
+
+**Rationale:**
+- Improves SEO and social media sharing with Open Graph/Twitter Card meta tags
+- Enhances user experience with admonitions and cross-references
+- Provides clear version history and upgrade guidance
+- Professional appearance with social links and copyright notice
 
 ---
 

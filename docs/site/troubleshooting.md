@@ -8,14 +8,15 @@ Common issues and solutions when using TubeFetch.
 
 ### Symptom
 
-You see errors like:
-
-```
-ERROR: [youtube] VIDEO_ID: This video is not available
-ERROR    Metadata error for VIDEO_ID: Failed to extract metadata
-```
-
-But the video plays fine in your browser.
+!!! warning "Common Error"
+    You see errors like:
+    
+    ```
+    ERROR: [youtube] VIDEO_ID: This video is not available
+    ERROR    Metadata error for VIDEO_ID: Failed to extract metadata
+    ```
+    
+    But the video plays fine in your browser.
 
 ### Cause
 
@@ -36,7 +37,8 @@ The YouTube Data API v3 backend can access metadata for restricted videos withou
 pip install 'tubefetch[youtube-api]'
 ```
 
-> **Note for zsh users:** The quotes are required in zsh to prevent bracket expansion. If you see `zsh: no matches found`, make sure to quote the package name.
+!!! note "For zsh Users"
+    The quotes are required in zsh to prevent bracket expansion. If you see `zsh: no matches found`, make sure to quote the package name.
 
 #### Step 2: Get a YouTube Data API key
 
@@ -87,20 +89,20 @@ TubeFetch will automatically use the YouTube Data API for metadata when the key 
 
 ### Important Notes
 
-**Quota Limits:**
-- YouTube Data API has a default quota of **10,000 units per day**
-- Each video metadata request costs **1 unit**
-- You can fetch ~10,000 videos per day with the API
-- Check your quota usage in [Google Cloud Console](https://console.cloud.google.com/apis/api/youtube.googleapis.com/quotas)
+!!! info "Quota Limits"
+    - YouTube Data API has a default quota of **10,000 units per day**
+    - Each video metadata request costs **1 unit**
+    - You can fetch ~10,000 videos per day with the API
+    - Check your quota usage in [Google Cloud Console](https://console.cloud.google.com/apis/api/youtube.googleapis.com/quotas)
 
-**What Works Without API Key:**
-- ✅ **Transcripts** - Always work (uses `youtube-transcript-api`)
-- ❌ **Metadata** - May fail for restricted videos (uses yt-dlp by default)
-- ❌ **Media downloads** - May fail for restricted videos (uses yt-dlp)
+!!! tip "What Works Without API Key"
+    - ✅ **Transcripts** - Always work (uses `youtube-transcript-api`)
+    - ❌ **Metadata** - May fail for restricted videos (uses yt-dlp by default)
+    - ❌ **Media downloads** - May fail for restricted videos (uses yt-dlp)
 
-**Limitations:**
-- YouTube Data API can fetch metadata but **cannot download media** for restricted videos
-- For age-restricted video downloads, you need to use yt-dlp with cookies (see below)
+!!! warning "Limitations"
+    - YouTube Data API can fetch metadata but **cannot download media** for restricted videos
+    - For age-restricted video downloads, you need to use yt-dlp with cookies (see below)
 
 ---
 
@@ -118,7 +120,8 @@ If you need to download media from age-restricted videos, you need to authentica
 
 ### Step 2: Pass cookies to yt-dlp
 
-Currently, TubeFetch doesn't have built-in cookie file support. This is a planned feature.
+!!! note "Planned Feature"
+    Currently, TubeFetch doesn't have built-in cookie file support. This is a planned feature.
 
 **Workaround:** Use yt-dlp directly for media, then use TubeFetch for metadata/transcripts:
 
@@ -223,14 +226,15 @@ curl -I https://www.youtube.com
 
 ## Getting Help
 
-If you're still having issues:
-
-1. **Check the logs** - Look in `out/VIDEO_ID/` for detailed error messages
-2. **Update dependencies**:
-   ```bash
-   pip install --upgrade tubefetch yt-dlp
-   ```
-3. **File an issue** - [GitHub Issues](https://github.com/pointmatic/tubefetch/issues)
-   - Include the full error message
-   - Include the video ID (if not private)
-   - Include your TubeFetch version: `tubefetch --version`
+!!! question "Still Having Issues?"
+    If you're still having problems:
+    
+    1. **Check the logs** - Look in `out/VIDEO_ID/` for detailed error messages
+    2. **Update dependencies**:
+       ```bash
+       pip install --upgrade tubefetch yt-dlp
+       ```
+    3. **File an issue** - [GitHub Issues](https://github.com/pointmatic/tubefetch/issues)
+       - Include the full error message
+       - Include the video ID (if not private)
+       - Include your TubeFetch version: `tubefetch --version`
