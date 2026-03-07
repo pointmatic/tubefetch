@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
+from typing import Any, cast
 
 import yt_dlp
 
@@ -30,6 +31,8 @@ from tubefetch.core.errors import (
 )
 from tubefetch.core.models import Metadata
 from tubefetch.core.options import FetchOptions
+
+__all__ = ["get_metadata", "MetadataError"]
 
 logger = logging.getLogger("tubefetch")
 
@@ -78,7 +81,7 @@ def get_metadata(video_id: str, options: FetchOptions) -> Metadata:
 def _yt_dlp_backend(video_id: str) -> Metadata:
     """Extract metadata via yt-dlp. Default, no API key required."""
     url = f"https://www.youtube.com/watch?v={video_id}"
-    ydl_opts = {
+    ydl_opts: dict[str, Any] = {
         "quiet": True,
         "no_warnings": True,
         "skip_download": True,
@@ -86,7 +89,7 @@ def _yt_dlp_backend(video_id: str) -> Metadata:
     }
 
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(cast(Any, ydl_opts)) as ydl:
             info = ydl.extract_info(url, download=False)
     except yt_dlp.utils.DownloadError as exc:
         code = _classify_exception(exc)
@@ -99,10 +102,11 @@ def _yt_dlp_backend(video_id: str) -> Metadata:
     if info is None:
         raise VideoNotFoundError(f"No metadata returned for {video_id}")
 
-    return _map_yt_dlp_info(video_id, info)
+    # yt-dlp returns _InfoDict which is compatible with dict[str, Any]
+    return _map_yt_dlp_info(video_id, dict(info))
 
 
-def _map_yt_dlp_info(video_id: str, info: dict) -> Metadata:
+def _map_yt_dlp_info(video_id: str, info: dict[str, Any]) -> Metadata:
     """Map yt-dlp info dict to Metadata model."""
     upload_date_raw = info.get("upload_date")
     upload_date = None
@@ -136,8 +140,8 @@ def _youtube_api_backend(video_id: str, api_key: str) -> Metadata:
     Requires the optional `google-api-python-client` package.
     """
     try:
-        from googleapiclient.discovery import build
-        from googleapiclient.errors import HttpError
+        from googleapiclient.discovery import build  # type: ignore[import-not-found]
+        from googleapiclient.errors import HttpError  # type: ignore[import-not-found]
     except ImportError as exc:
         raise MetadataError(
             "google-api-python-client is required for YouTube API backend. "
@@ -170,7 +174,7 @@ def _youtube_api_backend(video_id: str, api_key: str) -> Metadata:
     return _map_youtube_api_item(video_id, items[0], response)
 
 
-def _map_youtube_api_item(video_id: str, item: dict, raw_response: dict) -> Metadata:
+def _map_youtube_api_item(video_id: str, item: dict[str, Any], raw_response: dict[str, Any]) -> Metadata:
     """Map a YouTube Data API v3 video item to Metadata model."""
     snippet = item.get("snippet", {})
     content_details = item.get("contentDetails", {})

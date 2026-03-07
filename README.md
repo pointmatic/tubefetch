@@ -6,6 +6,7 @@
 [![codecov](https://codecov.io/gh/pointmatic/tubefetch/graph/badge.svg)](https://codecov.io/gh/pointmatic/tubefetch)
 [![PyPI](https://img.shields.io/pypi/v/tubefetch)](https://pypi.org/project/tubefetch/)
 ![Python](https://img.shields.io/pypi/pyversions/tubefetch)
+![Typed](https://img.shields.io/badge/typed-mypy%20strict-blue)
 ![License](https://img.shields.io/github/license/pointmatic/tubefetch)
 
 A Python CLI and library that fetches and extracts structured metadata and transcripts from YouTube videos, producing LLM-ready plain text, content hashes for change detection, and unified video bundles with batch processing, caching, and retry logic.

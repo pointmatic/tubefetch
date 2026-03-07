@@ -31,7 +31,7 @@ class JsonlFormatter(logging.Formatter):
     """Formats log records as single-line JSON objects."""
 
     def format(self, record: logging.LogRecord) -> str:
-        entry: dict = {
+        entry: dict[str, str | None] = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "level": record.levelname,
             "video_id": getattr(record, "video_id", None),

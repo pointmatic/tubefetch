@@ -18,6 +18,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -38,7 +39,7 @@ class Metadata(BaseModel):
     like_count: int | None = None
     fetched_at: datetime
     metadata_source: str
-    raw: dict | None = None
+    raw: dict[str, Any] | None = None
 
 
 class TranscriptSegment(BaseModel):

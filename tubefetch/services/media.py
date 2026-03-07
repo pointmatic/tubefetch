@@ -19,6 +19,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, cast
 
 import yt_dlp
 
@@ -32,6 +33,8 @@ from tubefetch.core.errors import (
 )
 from tubefetch.core.options import FetchOptions
 from tubefetch.utils.ffmpeg import check_ffmpeg
+
+__all__ = ["download_media", "MediaResult", "MediaError"]
 
 logger = logging.getLogger("tubefetch")
 
@@ -176,11 +179,11 @@ def _download_audio(
     return _run_yt_dlp(url, video_id, ydl_opts, "audio")
 
 
-def _run_yt_dlp(url: str, video_id: str, ydl_opts: dict, media_type: str) -> list[Path]:
+def _run_yt_dlp(url: str, video_id: str, ydl_opts: dict[str, Any], media_type: str) -> list[Path]:
     """Execute yt-dlp download and return list of downloaded file paths."""
     downloaded: list[Path] = []
 
-    def progress_hook(d: dict) -> None:
+    def progress_hook(d: dict[str, Any]) -> None:
         if d.get("status") == "finished":
             filename = d.get("filename")
             if filename:
@@ -189,7 +192,7 @@ def _run_yt_dlp(url: str, video_id: str, ydl_opts: dict, media_type: str) -> lis
     ydl_opts["progress_hooks"] = [progress_hook]
 
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(cast(Any, ydl_opts)) as ydl:
             ydl.download([url])
     except yt_dlp.utils.DownloadError as exc:
         code = _classify_exception(exc)

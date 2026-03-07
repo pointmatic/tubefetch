@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
+from typing import Any
 
 from youtube_transcript_api import TranscriptsDisabled, YouTubeTranscriptApi
 
@@ -31,6 +32,8 @@ from tubefetch.core.errors import (
 )
 from tubefetch.core.models import Transcript, TranscriptSegment
 from tubefetch.core.options import FetchOptions
+
+__all__ = ["get_transcript", "list_available_transcripts", "TranscriptError"]
 
 logger = logging.getLogger("tubefetch")
 
@@ -109,7 +112,7 @@ def get_transcript(video_id: str, options: FetchOptions) -> Transcript:
     )
 
 
-def list_available_transcripts(video_id: str) -> list[dict]:
+def list_available_transcripts(video_id: str) -> list[dict[str, Any]]:
     """List available transcripts for a video.
 
     Returns a list of dicts with keys: language_code, language, is_generated.
@@ -137,12 +140,12 @@ def list_available_transcripts(video_id: str) -> list[dict]:
 
 
 def _select_transcript(
-    available: list,
+    available: list[Any],
     *,
     languages: list[str],
     allow_generated: bool,
     allow_any_language: bool,
-) -> object | None:
+) -> Any | None:
     """Select the best transcript from available options.
 
     Priority:
@@ -152,7 +155,7 @@ def _select_transcript(
     4. Any generated transcript (if allow_any_language and allow_generated).
     5. None.
     """
-    by_lang: dict[str, list] = {}
+    by_lang: dict[str, list[Any]] = {}
     for t in available:
         by_lang.setdefault(t.language_code, []).append(t)
 

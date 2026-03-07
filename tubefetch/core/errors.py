@@ -150,7 +150,6 @@ def _classify_exception(exc: Exception) -> FetchErrorCode:
     # Import here to avoid circular dependencies and optional dependency issues
     try:
         from youtube_transcript_api import (
-            NoTranscriptAvailable,
             NoTranscriptFound,
             TranscriptsDisabled,
             VideoUnavailable,
@@ -158,7 +157,7 @@ def _classify_exception(exc: Exception) -> FetchErrorCode:
 
         if isinstance(exc, TranscriptsDisabled):
             return FetchErrorCode.TRANSCRIPTS_DISABLED
-        if isinstance(exc, (NoTranscriptFound, NoTranscriptAvailable)):
+        if isinstance(exc, NoTranscriptFound):
             return FetchErrorCode.TRANSCRIPT_NOT_FOUND
         if isinstance(exc, VideoUnavailable):
             return FetchErrorCode.VIDEO_NOT_FOUND

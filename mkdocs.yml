@@ -45,6 +45,7 @@ nav:
   - Troubleshooting: troubleshooting.md
   - API Reference: api.md
   - Advanced: advanced.md
+  - Changelog: changelog.md
 
 markdown_extensions:
   - admonition
@@ -62,3 +63,14 @@ plugins:
   - search
   - git-revision-date-localized:
       enable_creation_date: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/pointmatic/tubefetch
+      name: TubeFetch on GitHub
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/tubefetch/
+      name: TubeFetch on PyPI
+
+copyright: Copyright &copy; 2026 Pointmatic - Licensed under Apache-2.0
