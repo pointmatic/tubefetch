@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import asyncio
 from functools import partial
-from typing import Callable, TypeVar
+from typing import Any, Callable, TypeVar, cast
 
 from gentlify import RetryConfig, Throttle
 
@@ -59,7 +59,7 @@ def create_throttle(options: FetchOptions) -> Throttle:
     return throttle
 
 
-def _is_retryable_exception(exc: Exception) -> bool:
+def _is_retryable_exception(exc: BaseException) -> bool:
     """Determine if an exception should be retried.
 
     Uses the FetchException.retryable attribute if available,
@@ -85,8 +85,8 @@ def _is_retryable_exception(exc: Exception) -> bool:
 async def async_execute_with_retry(
     func: Callable[..., T],
     throttle: Throttle,
-    *args,
-    **kwargs,
+    *args: Any,
+    **kwargs: Any,
 ) -> T:
     """Execute a synchronous function with gentlify retry logic.
 
@@ -103,21 +103,22 @@ async def async_execute_with_retry(
         Exception: If all retry attempts are exhausted.
     """
 
-    async def _async_wrapper(slot):
+    async def _async_wrapper(slot: Any) -> T:
         # Execute the synchronous function in the event loop's executor
         loop = asyncio.get_event_loop()
         # Use partial to handle both args and kwargs
         func_with_args = partial(func, *args, **kwargs)
         return await loop.run_in_executor(None, func_with_args)
 
-    return await throttle.execute(_async_wrapper)
+    result = await throttle.execute(_async_wrapper)
+    return cast(T, result)
 
 
 def execute_with_retry(
     func: Callable[..., T],
     throttle: Throttle,
-    *args,
-    **kwargs,
+    *args: Any,
+    **kwargs: Any,
 ) -> T:
     """Execute a synchronous function with gentlify retry logic (sync wrapper).
 

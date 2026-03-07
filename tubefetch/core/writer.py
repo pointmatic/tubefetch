@@ -21,6 +21,7 @@ import logging
 import os
 import tempfile
 from pathlib import Path
+from typing import Any
 
 from tubefetch.core.models import BatchResult, Metadata, Transcript
 from tubefetch.utils.time_fmt import seconds_to_srt, seconds_to_vtt
@@ -134,7 +135,7 @@ def write_summary(results: BatchResult, out_dir: Path) -> Path:
     return dest
 
 
-def _atomic_write_json(dest: Path, data: dict) -> None:
+def _atomic_write_json(dest: Path, data: dict[str, Any]) -> None:
     """Write JSON atomically: write to temp file, then rename."""
     dest.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp_path = tempfile.mkstemp(dir=dest.parent, suffix=".tmp", prefix=".tubefetch_")

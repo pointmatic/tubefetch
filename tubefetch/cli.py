@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import click
 
@@ -33,7 +34,7 @@ EXIT_PARTIAL = 2
 EXIT_ALL_FAILED = 3
 
 
-def _input_options(fn):
+def _input_options(fn: Any) -> Any:
     """Shared input source options."""
     decorators = [
         click.argument("videos", nargs=-1),
@@ -58,7 +59,7 @@ def _input_options(fn):
     return fn
 
 
-def _common_options(fn):
+def _common_options(fn: Any) -> Any:
     """Shared Click options that map to FetchOptions fields."""
     decorators = [
         click.option("--out", type=click.Path(path_type=Path), default=None, help="Output directory."),
@@ -90,7 +91,7 @@ def _common_options(fn):
     return fn
 
 
-def _build_options(strict: bool = False, **cli_kwargs) -> FetchOptions:
+def _build_options(strict: bool = False, **cli_kwargs: Any) -> FetchOptions:
     """Build FetchOptions from CLI kwargs, filtering out unset (None) values.
 
     Only explicitly-provided CLI flags are passed to FetchOptions as init
@@ -158,7 +159,7 @@ def _print_simple_summary(content_type: str, total: int, succeeded: int, failed:
 
 @click.group()
 @click.version_option(version=__version__, prog_name="tubefetch")
-def cli():
+def cli() -> None:
     """YouTube video metadata, transcript, and media fetcher.
 
     Fetch metadata, transcripts, and optionally media from YouTube videos.
@@ -181,7 +182,14 @@ def cli():
 @cli.command(name="default", hidden=True)
 @_input_options
 @_common_options
-def default_cmd(videos, file_path, jsonl_path, id_field, strict, **kwargs):
+def default_cmd(
+    videos: tuple[str, ...],
+    file_path: Path | None,
+    jsonl_path: Path | None,
+    id_field: str,
+    strict: bool,
+    **kwargs: Any,
+) -> None:
     """Default command - fetch metadata, transcripts, and optionally media."""
     options = _build_options(strict=strict, **kwargs)
     setup_logging(verbose=options.verbose)
@@ -202,7 +210,7 @@ def default_cmd(videos, file_path, jsonl_path, id_field, strict, **kwargs):
 _original_cli_main = cli.main
 
 
-def _cli_main_with_default(args=None, **kwargs):
+def _cli_main_with_default(args: list[str] | None = None, **kwargs: Any) -> Any:
     """Wrapper that invokes default command if no subcommand is provided."""
     import sys as _sys
 
@@ -225,13 +233,20 @@ def _cli_main_with_default(args=None, **kwargs):
     return _original_cli_main(args, **kwargs)
 
 
-cli.main = _cli_main_with_default
+cli.main = _cli_main_with_default  # type: ignore[method-assign,assignment]
 
 
 @cli.command()
 @_input_options
 @_common_options
-def transcript(videos, file_path, jsonl_path, id_field, strict, **kwargs):
+def transcript(
+    videos: tuple[str, ...],
+    file_path: Path | None,
+    jsonl_path: Path | None,
+    id_field: str,
+    strict: bool,
+    **kwargs: Any,
+) -> None:
     """Fetch transcripts only."""
     options = _build_options(strict=strict, **kwargs)
     setup_logging(verbose=options.verbose)
@@ -264,7 +279,14 @@ def transcript(videos, file_path, jsonl_path, id_field, strict, **kwargs):
 @cli.command()
 @_input_options
 @_common_options
-def metadata(videos, file_path, jsonl_path, id_field, strict, **kwargs):
+def metadata(
+    videos: tuple[str, ...],
+    file_path: Path | None,
+    jsonl_path: Path | None,
+    id_field: str,
+    strict: bool,
+    **kwargs: Any,
+) -> None:
     """Fetch metadata only."""
     options = _build_options(strict=strict, **kwargs)
     setup_logging(verbose=options.verbose)
@@ -297,7 +319,14 @@ def metadata(videos, file_path, jsonl_path, id_field, strict, **kwargs):
 @cli.command()
 @_input_options
 @_common_options
-def media(videos, file_path, jsonl_path, id_field, strict, **kwargs):
+def media(
+    videos: tuple[str, ...],
+    file_path: Path | None,
+    jsonl_path: Path | None,
+    id_field: str,
+    strict: bool,
+    **kwargs: Any,
+) -> None:
     """Download media only (defaults to video if --download not specified)."""
     options = _build_options(strict=strict, **kwargs)
     setup_logging(verbose=options.verbose)
