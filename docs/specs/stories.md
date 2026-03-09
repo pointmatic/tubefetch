@@ -1251,29 +1251,29 @@ Replace bare concatenation in `transcript.txt` with intelligent paragraph chunki
 - [x] Verify: `transcript.txt` output is readable, paragraph-chunked text by default
 - [x] Bump version to `1.0.0`
 
-### Story M.b: v1.1.0 Content Hashing [Planned]
+### Story M.b: v1.1.0 Content Hashing [Done]
 
 Add SHA-256 content hashes to metadata and transcript outputs for change detection.
 
-- [ ] Create `tubefetch/utils/hashing.py`:
-  - [ ] `hash_metadata(metadata: Metadata) -> str` — SHA-256 of canonical fields (title, description, tags, upload_date, duration_seconds)
-  - [ ] `hash_transcript(transcript: Transcript) -> str` — SHA-256 of concatenated segment text
-  - [ ] `hash_bundle(metadata, transcript) -> str` — SHA-256 of combined content
-  - [ ] All hashes are hex-encoded lowercase strings
-  - [ ] Canonical field selection: exclude volatile fields (`view_count`, `like_count`, `fetched_at`, `raw`) so hashes are stable when content hasn't changed
-- [ ] Add `content_hash: str | None = None` field to `Metadata` model in `core/models.py`
-- [ ] Add `content_hash: str | None = None` field to `Transcript` model in `core/models.py`
-- [ ] Update `services/metadata.py`: compute and set `content_hash` after metadata extraction
-- [ ] Update `services/transcript.py`: compute and set `content_hash` after transcript extraction
-- [ ] Write `tests/test_hashing.py`:
-  - [ ] Test `hash_metadata` produces consistent hash for same content
-  - [ ] Test `hash_metadata` produces different hash when title/description changes
-  - [ ] Test `hash_metadata` produces same hash when only `view_count` changes
-  - [ ] Test `hash_transcript` produces consistent hash for same segments
-  - [ ] Test `hash_transcript` produces different hash when segment text changes
-  - [ ] Test `hash_bundle` combines metadata and transcript hashes
-- [ ] Verify: `metadata.json` and `transcript.json` contain `content_hash` field
-- [ ] Bump version to `1.1.0`
+- [x] Create `tubefetch/utils/hashing.py`:
+  - [x] `hash_metadata(metadata: Metadata) -> str` — SHA-256 of canonical fields (title, description, tags, upload_date, duration_seconds)
+  - [x] `hash_transcript(transcript: Transcript) -> str` — SHA-256 of concatenated segment text
+  - [x] `hash_bundle(metadata, transcript) -> str` — SHA-256 of combined content
+  - [x] All hashes are hex-encoded lowercase strings
+  - [x] Canonical field selection: exclude volatile fields (`view_count`, `like_count`, `fetched_at`, `raw`) so hashes are stable when content hasn't changed
+- [x] Add `content_hash: str | None = None` field to `Metadata` model in `core/models.py`
+- [x] Add `content_hash: str | None = None` field to `Transcript` model in `core/models.py`
+- [x] Update `services/metadata.py`: compute and set `content_hash` after metadata extraction
+- [x] Update `services/transcript.py`: compute and set `content_hash` after transcript extraction
+- [x] Write `tests/test_hashing.py`:
+  - [x] Test `hash_metadata` produces consistent hash for same content
+  - [x] Test `hash_metadata` produces different hash when title/description changes
+  - [x] Test `hash_metadata` produces same hash when only `view_count` changes
+  - [x] Test `hash_transcript` produces consistent hash for same segments
+  - [x] Test `hash_transcript` produces different hash when segment text changes
+  - [x] Test `hash_bundle` combines metadata and transcript hashes
+- [x] Verify: `metadata.json` and `transcript.json` contain `content_hash` field
+- [x] Bump version to `1.1.0`
 
 ### Story M.c: v1.2.0 Token Count Estimation [Planned]
 

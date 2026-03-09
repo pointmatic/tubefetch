@@ -39,6 +39,7 @@ class Metadata(BaseModel):
     like_count: int | None = None
     fetched_at: datetime
     metadata_source: str
+    content_hash: str | None = None
     raw: dict[str, Any] | None = None
 
 
@@ -56,6 +57,7 @@ class Transcript(BaseModel):
     fetched_at: datetime
     transcript_source: str
     available_languages: list[str] = []
+    content_hash: str | None = None
     errors: list[str] = []
 
 
