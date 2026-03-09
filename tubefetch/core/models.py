@@ -58,6 +58,7 @@ class Transcript(BaseModel):
     transcript_source: str
     available_languages: list[str] = []
     content_hash: str | None = None
+    token_count: int | None = None
     errors: list[str] = []
 
 

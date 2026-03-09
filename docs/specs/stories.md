@@ -1275,28 +1275,28 @@ Add SHA-256 content hashes to metadata and transcript outputs for change detecti
 - [x] Verify: `metadata.json` and `transcript.json` contain `content_hash` field
 - [x] Bump version to `1.1.0`
 
-### Story M.c: v1.2.0 Token Count Estimation [Planned]
+### Story M.c: v1.2.0 Token Count Estimation [Done]
 
 Optionally estimate token counts for transcript text using `tiktoken`.
 
-- [ ] Create `tubefetch/utils/token_counter.py`:
-  - [ ] `count_tokens(text: str, tokenizer: str = "cl100k_base") -> int`
-  - [ ] `is_tokenizer_available() -> bool` — check if `tiktoken` is installed
-  - [ ] Graceful degradation: if `tiktoken` not installed and tokenizer requested, log warning and return `None`
-- [ ] Add `tiktoken` to `[project.optional-dependencies]` as `tokens` extra in `pyproject.toml`:
-  - [ ] `tokens = ["tiktoken"]`
-- [ ] Add `token_count: int | None = None` field to `Transcript` model in `core/models.py`
-- [ ] Add `tokenizer: str | None = None` field to `FetchOptions` in `core/options.py`
-- [ ] Add `--tokenizer` CLI flag in `cli.py`
-- [ ] Update `services/transcript.py`: after fetching transcript, compute `token_count` if `options.tokenizer` is set
-- [ ] Write `tests/test_token_counter.py`:
-  - [ ] Test `count_tokens` returns correct count (mock `tiktoken` if needed)
-  - [ ] Test `is_tokenizer_available` returns `False` when `tiktoken` not installed
-  - [ ] Test graceful degradation: `token_count` is `None` when `tiktoken` unavailable
-  - [ ] Test `token_count` is `None` when `tokenizer` option is not set
-  - [ ] Test `token_count` is populated when `tokenizer` option is set and `tiktoken` available
-- [ ] Verify: `transcript.json` contains `token_count` when tokenizer configured
-- [ ] Bump version to `1.2.0`
+- [x] Create `tubefetch/utils/token_counter.py`:
+  - [x] `count_tokens(text: str, tokenizer: str = "cl100k_base") -> int`
+  - [x] `is_tokenizer_available() -> bool` — check if `tiktoken` is installed
+  - [x] Graceful degradation: if `tiktoken` not installed and tokenizer requested, log warning and return `None`
+- [x] Add `tiktoken` to `[project.optional-dependencies]` as `tokens` extra in `pyproject.toml`:
+  - [x] `tokens = ["tiktoken"]`
+- [x] Add `token_count: int | None = None` field to `Transcript` model in `core/models.py`
+- [x] Add `tokenizer: str | None = None` field to `FetchOptions` in `core/options.py`
+- [x] Add `--tokenizer` CLI flag in `cli.py`
+- [x] Update `services/transcript.py`: after fetching transcript, compute `token_count` if `options.tokenizer` is set
+- [x] Write `tests/test_token_counter.py`:
+  - [x] Test `count_tokens` returns correct count (mock `tiktoken` if needed)
+  - [x] Test `is_tokenizer_available` returns `False` when `tiktoken` not installed
+  - [x] Test graceful degradation: `token_count` is `None` when `tiktoken` unavailable
+  - [x] Test `token_count` is `None` when `tokenizer` option is not set
+  - [x] Test `token_count` is populated when `tokenizer` option is set and `tiktoken` available
+- [x] Verify: `transcript.json` contains `token_count` when tokenizer configured
+- [x] Bump version to `1.2.0`
 
 ### Story M.d: v1.3.0 Playlist and Channel Resolution [Planned]
 

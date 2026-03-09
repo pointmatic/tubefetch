@@ -90,6 +90,7 @@ def _common_options(fn: Any) -> Any:
         click.option(
             "--txt-gap-threshold", type=float, default=None, help="Silence gap (seconds) for paragraph breaks."
         ),
+        click.option("--tokenizer", type=str, default=None, help="Tokenizer for token counting (e.g., cl100k_base)."),
     ]
     for decorator in reversed(decorators):
         fn = decorator(fn)

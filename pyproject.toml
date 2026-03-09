@@ -41,6 +41,9 @@ Changelog = "https://github.com/pointmatic/tubefetch/releases"
 youtube-api = [
     "google-api-python-client",
 ]
+tokens = [
+    "tiktoken",
+]
 dev = [
     "pytest",
     "pytest-asyncio",

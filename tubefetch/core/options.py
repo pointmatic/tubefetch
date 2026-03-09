@@ -72,3 +72,4 @@ class FetchOptions(BaseSettings):
     txt_timestamps: bool = False
     txt_raw: bool = False
     txt_gap_threshold: float = 2.0
+    tokenizer: str | None = None
