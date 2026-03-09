@@ -1,6 +1,6 @@
 # tech_spec.md — tubefetch: AI-Ready YouTube Content Extraction
 
-> **Implementation Status:** This document describes both implemented features (v0.9.6) and planned features (Phase M, v1.x). Modules and features marked with **(Planned - Phase M)** are not yet implemented.
+> **Implementation Status:** This document describes implemented features through v1.4.1. Phase M (AI-Ready Content Extraction) is complete as of v1.4.1. All modules and features are now implemented.
 
 ## Overview
 
@@ -74,16 +74,16 @@ tubefetch/
     services/
         __init__.py
         id_parser.py         # URL/ID parsing and validation
-        resolver.py          # playlist/channel URL → video ID list resolution **(Planned - Phase M)**
+        resolver.py          # playlist/channel URL → video ID list resolution
         metadata.py          # metadata retrieval (yt-dlp + YouTube API backends)
         transcript.py        # transcript fetching with language selection
         media.py             # media download via yt-dlp
     utils/
         __init__.py
         time_fmt.py          # VTT/SRT timestamp formatting
-        txt_formatter.py     # LLM-ready transcript.txt formatting **(Planned - Phase M)**
-        hashing.py           # SHA-256 content hashing for change detection **(Planned - Phase M)**
-        token_counter.py     # token count estimation via tiktoken **(Planned - Phase M)**
+        txt_formatter.py     # LLM-ready transcript.txt formatting
+        hashing.py           # SHA-256 content hashing for change detection
+        token_counter.py     # token count estimation via tiktoken
         gentlify_config.py   # gentlify throttle configuration and retry logic
         rate_limit.py        # token bucket rate limiter
         ffmpeg.py            # ffmpeg detection and helpers
@@ -97,11 +97,11 @@ tests/
     test_pipeline.py         # pipeline idempotency, error handling
     test_errors.py           # error classification, exception hierarchy
     test_gentlify_config.py  # gentlify throttle configuration
-    test_resolver.py         # playlist/channel URL resolution **(Planned - Phase M)**
-    test_txt_formatter.py    # LLM-ready transcript formatting **(Planned - Phase M)**
-    test_hashing.py          # content hash computation **(Planned - Phase M)**
-    test_token_counter.py    # token count estimation **(Planned - Phase M)**
-    test_bundle.py           # video bundle output **(Planned - Phase M)**
+    test_resolver.py         # playlist/channel URL resolution
+    test_txt_formatter.py    # LLM-ready transcript formatting
+    test_hashing.py          # content hash computation
+    test_token_counter.py    # token count estimation
+    test_bundle.py           # video bundle output
     test_cli.py              # CLI smoke tests
     integration/
         __init__.py
@@ -135,7 +135,7 @@ Supported URL patterns:
 
 Validation: 11 characters, alphanumeric plus `-` and `_`. Do not over-reject.
 
-### Resolver Service (`services/resolver.py`) **(Planned - Phase M)**
+### Resolver Service (`services/resolver.py`)
 
 ```python
 def resolve_playlist(url: str, max_videos: int | None = None) -> list[str]
@@ -446,12 +446,12 @@ class FetchOptions(BaseSettings):
     verbose: bool = False
     yt_api_key: str | None = None
     ffmpeg_fallback: Literal["error", "skip"] = "error"
-    max_videos: int | None = None           # limit videos from playlist/channel **(Planned - Phase M)**
-    txt_timestamps: bool = False            # include [MM:SS] markers in transcript.txt **(Planned - Phase M)**
-    txt_raw: bool = False                   # bare concatenation (no paragraph formatting) **(Planned - Phase M)**
-    txt_gap_threshold: float = 2.0          # silence gap (seconds) for paragraph breaks **(Planned - Phase M)**
-    bundle: bool = False                    # emit video_bundle.json per video **(Planned - Phase M)**
-    tokenizer: str | None = None            # tiktoken tokenizer name (None = disabled) **(Planned - Phase M)**
+    max_videos: int | None = None           # limit videos from playlist/channel
+    txt_timestamps: bool = False            # include [MM:SS] markers in transcript.txt
+    txt_raw: bool = False                   # bare concatenation (no paragraph formatting)
+    txt_gap_threshold: float = 2.0          # silence gap (seconds) for paragraph breaks
+    bundle: bool = False                    # emit video_bundle.json per video
+    tokenizer: str | None = None            # tiktoken tokenizer name (None = disabled)
 ```
 
 Precedence: CLI flags → environment variables → `tubefetch.yaml` → defaults.
@@ -481,9 +481,9 @@ Built with `click`. Entry point: `tubefetch` (or `python -m tubefetch`).
 - Positional arguments: video IDs or URLs (no flag needed)
 - `--file <path>` (text/CSV file, one ID per line)
 - `--jsonl <path> --id-field <field>` (JSONL input)
-- `--playlist <url>` **(Planned - Phase M)** (resolve playlist to video IDs)
-- `--channel <url>` **(Planned - Phase M)** (resolve channel to video IDs)
-- `--max-videos N` **(Planned - Phase M)** (limit resolved IDs from playlist/channel)
+- `--playlist <url>` (resolve playlist to video IDs)
+- `--channel <url>` (resolve channel to video IDs)
+- `--max-videos N` (limit resolved IDs from playlist/channel)
 
 ### Exit codes
 | Code | Meaning |
@@ -504,7 +504,6 @@ result: FetchResult = fetch_video("dQw4w9WgXcQ", options=FetchOptions(...))
 batch: BatchResult = fetch_batch(["id1", "id2"], options=FetchOptions(...))
 ```
 
-**Planned - Phase M:**
 ```python
 from tubefetch import resolve_playlist, resolve_channel
 
@@ -542,7 +541,7 @@ Token bucket algorithm:
 - Thread-safe implementation
 - Library consumers that manage their own throttling externally should set `rate_limit=0`
 
-### LLM Text Formatting (`utils/txt_formatter.py`) **(Planned - Phase M)**
+### LLM Text Formatting (`utils/txt_formatter.py`)
 
 Will produce LLM-ready `transcript.txt` from transcript segments.
 
@@ -565,7 +564,7 @@ def format_transcript_txt(
 
 **Current implementation (v0.9.6):** Basic concatenation with spaces in `core/writer.py`.
 
-### Content Hashing (`utils/hashing.py`) **(Planned - Phase M)**
+### Content Hashing (`utils/hashing.py`)
 
 Deterministic SHA-256 hashing for change detection.
 
@@ -583,7 +582,7 @@ def hash_bundle(metadata: Metadata | None, transcript: Transcript | None) -> str
 - Canonical field selection ensures hashes are stable across re-fetches when content hasn't changed (e.g., `view_count` changes don't affect the hash).
 - All hashes are hex-encoded lowercase strings.
 
-### Token Counting (`utils/token_counter.py`) **(Planned - Phase M)**
+### Token Counting (`utils/token_counter.py`)
 
 Optional token count estimation using `tiktoken`.
 
@@ -642,17 +641,17 @@ All output files are written atomically:
 - Fetch transcript for a known video
 - Full pipeline end-to-end
 - Batch with mixed valid/invalid IDs
-- Resolve a known public playlist to video IDs **(Planned - Phase M)**
-- Resolve a known public channel to video IDs **(Planned - Phase M)**
+- Resolve a known public playlist to video IDs
+- Resolve a known public channel to video IDs
 
 ### Pipeline Tests
 - Idempotency: re-run without `--force` skips work
 - Force flags: re-run with `--force` overwrites
 - Error isolation: one bad ID doesn't stop batch
 - `--fail-fast`: stops on first error
-- Content hashes present in output files **(Planned - Phase M)**
-- Token counts present when tokenizer configured, absent when not **(Planned - Phase M)**
-- Bundle output present when `--bundle` set, absent when not **(Planned - Phase M)**
+- Content hashes present in output files
+- Token counts present when tokenizer configured, absent when not
+- Bundle output present when `--bundle` set, absent when not
 
 ---
 

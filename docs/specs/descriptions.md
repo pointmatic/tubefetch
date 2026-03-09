@@ -33,6 +33,11 @@ A Python CLI and library that fetches and extracts structured metadata and trans
 
 - **Metadata** — title, channel, duration, tags, upload date via yt-dlp (or YouTube Data API v3)
 - **Transcripts** — fetched via youtube-transcript-api with language preference and fallback
+- **LLM-ready text** — intelligent paragraph chunking, optional timestamps, configurable gap thresholds
+- **Content hashing** — SHA-256 hashes for change detection on metadata and transcripts
+- **Token counting** — optional token count estimation via tiktoken for LLM cost planning
+- **Playlist/Channel resolution** — resolve playlists and channels to video IDs with max_videos limiting
+- **Video bundles** — unified JSON output combining metadata, transcript, errors, and hashes
 - **Media** — optional video/audio download via yt-dlp
 - **Export formats** — JSON, plain text, WebVTT (.vtt), SubRip (.srt)
 - **Batch processing** — concurrent workers with per-video error isolation
@@ -47,7 +52,7 @@ yt-fetch is a Python tool that extracts structured, AI-ready content from YouTub
 
 ## Keywords
 
-`youtube`, `transcript`, `metadata`, `yt-dlp`, `video`, `ai`, `llm`, `content-extraction`, `batch-processing`, `cli`, `python`, `async`, `rate-limiting`, `retry`, `gentlify`
+`youtube`, `transcript`, `metadata`, `yt-dlp`, `video`, `ai`, `llm`, `content-extraction`, `batch-processing`, `cli`, `python`, `async`, `rate-limiting`, `retry`, `gentlify`, `content-hash`, `token-counting`, `tiktoken`, `playlist`, `channel`, `video-bundle`
 
 ---
 
@@ -55,16 +60,31 @@ yt-fetch is a Python tool that extracts structured, AI-ready content from YouTub
 
 Short blurbs for landing pages and feature grids. Each card has a title and a one-to-two sentence description.
 
+### AI-Ready Features
+
 | # | Title | Description |
 |---|-------|-------------|
-| 1 | Structured Metadata | Extract title, channel, duration, tags, and upload date via yt-dlp or YouTube Data API v3. |
-| 2 | Multi-Format Transcripts | Fetch transcripts with language preference and fallback, export as JSON, plain text, WebVTT, or SubRip. |
-| 3 | LLM-Ready Output | Produce plain text transcripts optimized for AI pipelines with content hashes and optional token counts. |
-| 4 | Batch Processing | Process multiple videos concurrently with per-video error isolation and progress tracking. |
-| 5 | Intelligent Caching | Skip already-fetched data automatically; use `--force` for selective re-fetching. |
-| 6 | Resilient Retry Logic | Powered by gentlify with exponential backoff, jitter, and smart classification of transient vs. permanent errors. |
-| 7 | Rate Limiting | Token bucket algorithm shared across workers prevents API throttling and service errors. |
-| 8 | Dual Interface | Use as a CLI tool for quick extraction or import as a Python library for programmatic workflows. |
+| 1 | LLM-Ready Text | Intelligent paragraph chunking with configurable gap thresholds, optional timestamps, and optimized formatting for AI/LLM consumption. |
+| 2 | Content Hashing & Token Counting | SHA-256 hashes for change detection on metadata and transcripts, plus optional token count estimation via tiktoken for LLM cost planning. |
+| 3 | Playlist & Channel Resolution | Resolve entire playlists and channels to video IDs with configurable max_videos limiting for batch processing. |
+| 4 | Unified Video Bundles | Single JSON file per video combining metadata, transcript, errors, content hash, and token count for streamlined AI pipelines. |
+
+### Core Features
+
+| # | Title | Description |
+|---|-------|-------------|
+| 5 | Structured Metadata | Extract title, channel, duration, tags, and upload date via yt-dlp or YouTube Data API v3. |
+| 6 | Multi-Format Transcripts | Fetch transcripts with language preference and fallback, export as JSON, plain text, WebVTT, or SubRip. |
+| 7 | Batch Processing | Process multiple videos concurrently with per-video error isolation and progress tracking. |
+
+### Operational Features
+
+| # | Title | Description |
+|---|-------|-------------|
+| 8 | Intelligent Caching | Skip already-fetched data automatically; use `--force` for selective re-fetching. |
+| 9 | Resilient Retry Logic | Powered by gentlify with exponential backoff, jitter, and smart classification of transient vs. permanent errors. |
+| 10 | Rate Limiting | Token bucket algorithm shared across workers prevents API throttling and service errors. |
+| 11 | Dual Interface | Use as a CLI tool for quick extraction or import as a Python library for programmatic workflows. |
 
 ---
 

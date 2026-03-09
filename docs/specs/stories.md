@@ -1348,17 +1348,67 @@ Optionally emit a unified `video_bundle.json` per video.
 - [x] Verify: `video_bundle.json` appears in output when `--bundle` is set
 - [x] Bump version to `1.4.0`
 
-### Story M.f: v1.4.1 README and Documentation Update [Planned]
+### Story M.f: v1.4.1 README and Documentation Update [Done]
 
-Update README and documentation to reflect the AI-ready positioning.
+Update README and documentation to reflect the AI-ready positioning with comprehensive examples and guides.
 
-- [ ] Update `README.md`:
-  - [ ] Change tagline to "AI-ready YouTube content extraction — metadata, transcripts, and media in structured formats"
-  - [ ] Update Features list to highlight AI-ready capabilities (LLM-ready text, token counts, content hashes, playlist/channel resolution, video bundles)
-  - [ ] Add "AI Pipeline" usage example showing `FetchOptions(tokenizer="cl100k_base", bundle=True)`
-  - [ ] Add "Playlist Processing" usage example
-  - [ ] Update CLI flags table with new flags
-  - [ ] Add `[tokens]` optional dependency to installation section
-- [ ] Update `pyproject.toml` description to "AI-ready YouTube content extraction — metadata, transcripts, and media in structured formats"
-- [ ] Verify: README renders correctly on GitHub
-- [ ] Bump version to `1.4.1`
+- [x] Update `descriptions.md`:
+  - [x] Categorize Feature Cards into: AI-Ready Features (4), Core Features (3), Operational Features (4)
+  - [x] Add category headers to Feature Cards table
+- [x] Update `README.md`:
+  - [x] Update Features list (lines 18-26) to match updated Benefits from `descriptions.md`
+  - [x] Add "AI Pipeline" usage example showing `FetchOptions(tokenizer="cl100k_base", bundle=True)`
+  - [x] Add "Playlist Processing" usage example showing `--playlist` and `--channel` flags
+  - [x] Update CLI flags table with new flags (`--tokenizer`, `--max-videos`, `--bundle`, `--playlist`, `--channel`, `--txt-timestamps`, `--txt-raw`, `--txt-gap-threshold`)
+  - [x] Add `[tokens]` optional dependency to installation section with `pip install tubefetch[tokens]`
+- [x] Update `pyproject.toml`:
+  - [x] Update description to match Long Tagline from `descriptions.md`
+- [x] Create MkDocs AI-ready features guide (`docs/guides/ai-ready-features.md`):
+  - [x] Overview of AI-ready capabilities
+  - [x] Quick start for AI pipelines
+  - [x] Links to detailed feature guides
+- [x] Create MkDocs LLM text formatting guide (`docs/guides/llm-text-formatting.md`):
+  - [x] Explain paragraph chunking with `--txt-gap-threshold`
+  - [x] Show timestamp markers with `--txt-timestamps`
+  - [x] Compare raw vs formatted output
+  - [x] Best practices for different LLM use cases
+- [x] Create MkDocs content hashing guide (`docs/guides/content-hashing.md`):
+  - [x] Explain SHA-256 hashing for metadata and transcripts
+  - [x] Show how to detect content changes
+  - [x] Example workflow for monitoring video updates
+  - [x] Explain canonical field selection (excludes view_count, like_count)
+- [x] Create MkDocs token counting guide (`docs/guides/token-counting.md`):
+  - [x] Explain tiktoken integration
+  - [x] Show `--tokenizer` flag usage
+  - [x] Cost estimation examples for different LLMs (GPT-4, Claude, etc.)
+  - [x] Graceful degradation when tiktoken not installed
+- [x] Create MkDocs playlist/channel resolution guide (`docs/guides/playlist-resolution.md`):
+  - [x] Show `--playlist` and `--channel` flag usage
+  - [x] Explain `--max-videos` limiting
+  - [x] Show `resolved_ids.json` output format
+  - [x] Batch processing workflows
+- [x] Create MkDocs video bundles guide (`docs/guides/video-bundles.md`):
+  - [x] Explain unified `video_bundle.json` format
+  - [x] Show `--bundle` flag usage
+  - [x] Example bundle structure with all fields
+  - [x] Integration with AI pipelines
+- [x] Create MkDocs use cases guide (`docs/guides/use-cases.md`):
+  - [x] RAG pipeline example (vector database indexing)
+  - [x] Content monitoring example (change detection workflow)
+  - [x] Batch analysis example (channel analytics)
+  - [x] Training data preparation example
+  - [x] Fact-checking pipeline example
+- [x] Update MkDocs CLI reference (`docs/reference/cli.md`):
+  - [x] Add all new Phase M flags with descriptions
+  - [x] Organize flags by category (Input, Output, AI Features, Processing)
+- [x] Update MkDocs API reference (`docs/reference/api.md`):
+  - [x] Document `resolve_playlist()` and `resolve_channel()` functions
+  - [x] Update `FetchOptions` with new fields
+  - [x] Add `VideoBundle` model documentation
+- [x] Update MkDocs navigation (`mkdocs.yml`):
+  - [x] Add "AI-Ready Features" section
+  - [x] Add "Use Cases" section
+  - [x] Ensure logical flow from getting started → guides → reference
+- [x] Verify: README renders correctly on GitHub
+- [x] Verify: MkDocs builds without errors
+- [x] Bump version to `1.4.1`
