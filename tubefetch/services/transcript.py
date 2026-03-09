@@ -32,6 +32,8 @@ from tubefetch.core.errors import (
 )
 from tubefetch.core.models import Transcript, TranscriptSegment
 from tubefetch.core.options import FetchOptions
+from tubefetch.utils.hashing import hash_transcript
+from tubefetch.utils.token_counter import count_tokens
 
 __all__ = ["get_transcript", "list_available_transcripts", "TranscriptError"]
 
@@ -101,7 +103,7 @@ def get_transcript(video_id: str, options: FetchOptions) -> Transcript:
         for snippet in fetched
     ]
 
-    return Transcript(
+    transcript = Transcript(
         video_id=video_id,
         language=fetched.language_code,
         is_generated=fetched.is_generated,
@@ -110,6 +112,16 @@ def get_transcript(video_id: str, options: FetchOptions) -> Transcript:
         transcript_source="youtube-transcript-api",
         available_languages=available_languages,
     )
+
+    # Compute content hash
+    transcript.content_hash = hash_transcript(transcript)
+
+    # Compute token count if tokenizer is configured
+    if options.tokenizer:
+        text = " ".join(seg.text for seg in transcript.segments)
+        transcript.token_count = count_tokens(text, options.tokenizer)
+
+    return transcript
 
 
 def list_available_transcripts(video_id: str) -> list[dict[str, Any]]:

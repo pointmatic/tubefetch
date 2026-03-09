@@ -14,11 +14,12 @@
 
 """yt-fetch — YouTube video metadata, transcript, and media fetcher."""
 
-__version__ = "0.9.6"
+__version__ = "1.4.1"
 
 from tubefetch.core.errors import FetchError, FetchErrorCode, FetchException, FetchPhase
 from tubefetch.core.models import BatchResult, FetchResult, Metadata, Transcript
 from tubefetch.core.options import FetchOptions
+from tubefetch.services.resolver import resolve_channel, resolve_playlist
 
 
 def fetch_video(video_id: str, options: FetchOptions | None = None) -> FetchResult:
@@ -84,6 +85,8 @@ __all__ = [
     "__version__",
     "fetch_video",
     "fetch_batch",
+    "resolve_playlist",
+    "resolve_channel",
     "FetchOptions",
     "FetchResult",
     "BatchResult",

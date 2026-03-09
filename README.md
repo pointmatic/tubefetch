@@ -17,6 +17,11 @@ TubeFetch is a Python tool that extracts structured, AI-ready content from YouTu
 
 - **Metadata** — title, channel, duration, tags, upload date via yt-dlp (or YouTube Data API v3)
 - **Transcripts** — fetched via youtube-transcript-api with language preference and fallback
+- **LLM-ready text** — intelligent paragraph chunking, optional timestamps, configurable gap thresholds
+- **Content hashing** — SHA-256 hashes for change detection on metadata and transcripts
+- **Token counting** — optional token count estimation via tiktoken for LLM cost planning
+- **Playlist/Channel resolution** — resolve playlists and channels to video IDs with max_videos limiting
+- **Video bundles** — unified JSON output combining metadata, transcript, errors, and hashes
 - **Media** — optional video/audio download via yt-dlp
 - **Export formats** — JSON, plain text, WebVTT (.vtt), SubRip (.srt)
 - **Batch processing** — concurrent workers with per-video error isolation
@@ -32,6 +37,16 @@ Requires **Python 3.14+**.
 ```bash
 pip install tubefetch
 ```
+
+### Optional: Token Counting
+
+Install for LLM token count estimation:
+
+```bash
+pip install 'tubefetch[tokens]'
+```
+
+Enables the `--tokenizer` flag for estimating token counts using tiktoken (useful for LLM cost planning).
 
 ### Optional: YouTube Data API v3
 
@@ -115,20 +130,82 @@ results = fetch_batch(["dQw4w9WgXcQ", "abc12345678"], opts)
 print(f"{results.succeeded}/{results.total} succeeded")
 ```
 
+### AI Pipeline Usage
+
+```bash
+# LLM-ready transcript with token counting
+tubefetch VIDEO_ID --tokenizer cl100k_base --bundle
+
+# Playlist processing with unified bundles
+tubefetch --playlist "https://www.youtube.com/playlist?list=PLxxx" --bundle --tokenizer cl100k_base
+
+# Content monitoring with hashing
+tubefetch VIDEO_ID --force
+# Check content_hash in metadata.json and transcript.json for changes
+```
+
+```python
+from tubefetch import fetch_video, FetchOptions
+
+# AI-optimized output
+opts = FetchOptions(
+    tokenizer="cl100k_base",  # Estimate token counts
+    bundle=True,              # Unified video_bundle.json
+    txt_timestamps=True,      # Add [MM:SS] markers
+    txt_gap_threshold=3.0     # Paragraph chunking threshold
+)
+result = fetch_video("dQw4w9WgXcQ", opts)
+print(f"Token count: {result.transcript.token_count}")
+print(f"Content hash: {result.metadata.content_hash}")
+```
+
+### Playlist & Channel Processing
+
+```bash
+# Fetch entire playlist
+tubefetch --playlist "https://www.youtube.com/playlist?list=PLxxx"
+
+# Limit to first 10 videos
+tubefetch --playlist "https://www.youtube.com/playlist?list=PLxxx" --max-videos 10
+
+# Fetch from channel
+tubefetch --channel "https://www.youtube.com/@channelname" --max-videos 20
+
+# Combine with other options
+tubefetch --playlist "https://..." --bundle --tokenizer cl100k_base --workers 5
+```
+
+```python
+from tubefetch import resolve_playlist, resolve_channel, fetch_batch, FetchOptions
+
+# Resolve playlist to video IDs
+video_ids = resolve_playlist("https://www.youtube.com/playlist?list=PLxxx", max_videos=10)
+print(f"Found {len(video_ids)} videos")
+
+# Resolve channel uploads
+video_ids = resolve_channel("https://www.youtube.com/@channelname", max_videos=20)
+
+# Process with AI-ready options
+opts = FetchOptions(bundle=True, tokenizer="cl100k_base")
+results = fetch_batch(video_ids, opts)
+```
+
 ## Output Structure
 
 ```
 out/
 ├── <video_id>/
-│   ├── metadata.json
-│   ├── transcript.json
-│   ├── transcript.txt
-│   ├── transcript.vtt
-│   ├── transcript.srt
+│   ├── metadata.json          # Metadata with content_hash
+│   ├── transcript.json         # Transcript with content_hash and token_count
+│   ├── transcript.txt          # LLM-ready plain text
+│   ├── transcript.vtt          # WebVTT subtitles
+│   ├── transcript.srt          # SubRip subtitles
+│   ├── video_bundle.json       # Unified bundle (with --bundle)
 │   └── media/
 │       ├── video.mp4
 │       └── audio.m4a
-└── summary.json
+├── resolved_ids.json           # Playlist/channel resolution output
+└── summary.json                # Batch processing summary
 ```
 
 ## Configuration
@@ -240,6 +317,18 @@ tubefetch dQw4w9WgXcQ --retries 0
 | 2 | Partial failure with `--strict` |
 | 3 | All videos failed |
 
+## Roadmap
+
+TubeFetch v1.4.1 is a production-ready AI content extraction tool. **Phase M (AI-Ready Content Extraction) is complete** with the following features now available:
+
+- ✅ **LLM-ready transcript formatting** (v1.0.0) — intelligent paragraph chunking with configurable silence gap detection, optional timestamp markers for citation support, and auto-generated transcript notices
+- ✅ **Content hashing** (v1.1.0) — SHA-256 hashes for metadata and transcripts to enable change detection in incremental pipelines
+- ✅ **Token count estimation** (v1.2.0) — optional token counting via tiktoken for context window planning (GPT-4, GPT-4o, etc.)
+- ✅ **Playlist/channel resolution** (v1.3.0) — accept playlist and channel URLs as batch input sources with automatic video ID extraction
+- ✅ **Video bundles** (v1.4.0) — unified `video_bundle.json` output combining metadata + transcript + errors in a single file
+
+See the [AI-Ready Features guide](https://github.com/pointmatic/tubefetch/blob/main/docs/guides/ai-ready-features.md) for usage examples and the [stories.md](https://github.com/pointmatic/tubefetch/blob/main/docs/specs/stories.md#phase-m-ai-ready-content-extraction) for implementation details.
+
 ## Development
 
 ```bash
@@ -258,4 +347,4 @@ RUN_INTEGRATION=1 python -m pytest tests/integration/
 
 ## License
 
-MPL-2.0
+Apache-2.0

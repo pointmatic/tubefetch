@@ -23,8 +23,11 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from tubefetch.core.models import BatchResult, Metadata, Transcript
+from tubefetch.core.models import BatchResult, FetchResult, Metadata, Transcript, VideoBundle
+from tubefetch.core.options import FetchOptions
+from tubefetch.utils.hashing import hash_bundle
 from tubefetch.utils.time_fmt import seconds_to_srt, seconds_to_vtt
+from tubefetch.utils.txt_formatter import format_transcript_txt
 
 logger = logging.getLogger("tubefetch")
 
@@ -79,13 +82,34 @@ def write_transcript_json(transcript: Transcript, out_dir: Path) -> Path:
     return dest
 
 
-def write_transcript_txt(transcript: Transcript, out_dir: Path) -> Path:
-    """Write transcript as plain text (no timestamps). Returns the written file path."""
+def write_transcript_txt(transcript: Transcript, out_dir: Path, options: FetchOptions | None = None) -> Path:
+    """Write transcript as LLM-ready plain text. Returns the written file path.
+
+    Args:
+        transcript: Transcript model with segments.
+        out_dir: Output directory.
+        options: FetchOptions with txt formatting preferences. If None, uses defaults.
+
+    Returns:
+        Path to written transcript.txt file.
+    """
     video_dir = out_dir / transcript.video_id
     video_dir.mkdir(parents=True, exist_ok=True)
     dest = video_dir / "transcript.txt"
-    lines = [seg.text for seg in transcript.segments]
-    _atomic_write_text(dest, "\n".join(lines) + "\n")
+
+    # Use formatter with options
+    if options is None:
+        options = FetchOptions()
+
+    text = format_transcript_txt(
+        segments=transcript.segments,
+        is_generated=transcript.is_generated,
+        gap_threshold=options.txt_gap_threshold,
+        timestamps=options.txt_timestamps,
+        raw=options.txt_raw,
+    )
+
+    _atomic_write_text(dest, text)
     return dest
 
 
@@ -160,3 +184,40 @@ def _atomic_write_text(dest: Path, content: str) -> None:
     except BaseException:
         os.unlink(tmp_path)
         raise
+
+
+def write_bundle(result: FetchResult, out_dir: Path) -> Path:
+    """Write unified video bundle JSON containing all video data.
+
+    Args:
+        result: FetchResult with metadata, transcript, and errors.
+        out_dir: Output directory.
+
+    Returns:
+        Path to written video_bundle.json file.
+    """
+    from datetime import datetime, timezone
+
+    video_dir = out_dir / result.video_id
+    video_dir.mkdir(parents=True, exist_ok=True)
+    dest = video_dir / "video_bundle.json"
+
+    # Compute content hash using hash_bundle
+    content_hash = hash_bundle(result.metadata, result.transcript)
+
+    # Get token count from transcript if available
+    token_count = result.transcript.token_count if result.transcript else None
+
+    bundle = VideoBundle(
+        video_id=result.video_id,
+        metadata=result.metadata,
+        transcript=result.transcript,
+        errors=result.errors,
+        content_hash=content_hash,
+        token_count=token_count,
+        fetched_at=datetime.now(timezone.utc),
+    )
+
+    _atomic_write_json(dest, bundle.model_dump(mode="json"))
+    logger.info("Wrote video bundle for %s", result.video_id)
+    return dest

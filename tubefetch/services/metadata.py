@@ -31,6 +31,7 @@ from tubefetch.core.errors import (
 )
 from tubefetch.core.models import Metadata
 from tubefetch.core.options import FetchOptions
+from tubefetch.utils.hashing import hash_metadata
 
 __all__ = ["get_metadata", "MetadataError"]
 
@@ -116,7 +117,7 @@ def _map_yt_dlp_info(video_id: str, info: dict[str, Any]) -> Metadata:
         else:
             upload_date = upload_date_raw
 
-    return Metadata(
+    metadata = Metadata(
         video_id=video_id,
         source_url=info.get("webpage_url", f"https://www.youtube.com/watch?v={video_id}"),
         title=info.get("title") or info.get("fulltitle"),
@@ -132,6 +133,10 @@ def _map_yt_dlp_info(video_id: str, info: dict[str, Any]) -> Metadata:
         metadata_source="yt-dlp",
         raw=info,
     )
+
+    # Compute content hash
+    metadata.content_hash = hash_metadata(metadata)
+    return metadata
 
 
 def _youtube_api_backend(video_id: str, api_key: str) -> Metadata:
@@ -185,7 +190,7 @@ def _map_youtube_api_item(video_id: str, item: dict[str, Any], raw_response: dic
 
     upload_date = snippet.get("publishedAt", "")[:10] or None
 
-    return Metadata(
+    metadata = Metadata(
         video_id=video_id,
         source_url=f"https://www.youtube.com/watch?v={video_id}",
         title=snippet.get("title"),
@@ -201,6 +206,10 @@ def _map_youtube_api_item(video_id: str, item: dict[str, Any], raw_response: dic
         metadata_source="youtube-data-api",
         raw=raw_response,
     )
+
+    # Compute content hash
+    metadata.content_hash = hash_metadata(metadata)
+    return metadata
 
 
 def _parse_iso8601_duration(duration: str) -> float | None:

@@ -53,6 +53,8 @@ def _input_options(fn: Any) -> Any:
             help="JSONL file with video IDs.",
         ),  # noqa: E501
         click.option("--id-field", default="id", help="Field name for video ID in CSV/JSONL input."),
+        click.option("--playlist", type=str, default=None, help="Playlist URL to resolve to video IDs."),
+        click.option("--channel", type=str, default=None, help="Channel URL to resolve to video IDs."),
     ]
     for decorator in reversed(decorators):
         fn = decorator(fn)
@@ -85,6 +87,14 @@ def _common_options(fn: Any) -> Any:
         click.option("--fail-fast", is_flag=True, default=None, help="Stop on first failure."),
         click.option("--strict", is_flag=True, default=False, help="Exit 2 on partial failure."),
         click.option("--verbose", is_flag=True, default=None, help="Verbose console output."),
+        click.option("--txt-timestamps", is_flag=True, default=None, help="Include [MM:SS] markers in transcript.txt."),
+        click.option("--txt-raw", is_flag=True, default=None, help="Bare concatenation (no paragraph formatting)."),
+        click.option(
+            "--txt-gap-threshold", type=float, default=None, help="Silence gap (seconds) for paragraph breaks."
+        ),
+        click.option("--tokenizer", type=str, default=None, help="Tokenizer for token counting (e.g., cl100k_base)."),
+        click.option("--max-videos", type=int, default=None, help="Max videos from playlist/channel."),
+        click.option("--bundle", is_flag=True, default=None, help="Write unified video_bundle.json per video."),
     ]
     for decorator in reversed(decorators):
         fn = decorator(fn)
@@ -115,14 +125,24 @@ def _collect_ids(
     file_path: Path | None,
     jsonl_path: Path | None,
     id_field: str,
+    playlist: str | None,
+    channel: str | None,
+    options: FetchOptions,
 ) -> list[str]:
     """Collect and deduplicate video IDs from all input sources."""
+    from tubefetch.services.resolver import resolve_channel, resolve_playlist
+
     raw: list[str] = list(videos)
 
     if file_path:
         raw.extend(load_ids_from_file(file_path, id_field=id_field))
     if jsonl_path:
         raw.extend(load_ids_from_file(jsonl_path, id_field=id_field))
+    if playlist:
+        raw.extend(resolve_playlist(playlist, options.max_videos))
+    if channel:
+        raw.extend(resolve_channel(channel, options.max_videos))
+
     return parse_many(raw)
 
 
@@ -187,6 +207,8 @@ def default_cmd(
     file_path: Path | None,
     jsonl_path: Path | None,
     id_field: str,
+    playlist: str | None,
+    channel: str | None,
     strict: bool,
     **kwargs: Any,
 ) -> None:
@@ -195,7 +217,7 @@ def default_cmd(
     setup_logging(verbose=options.verbose)
     log = get_logger()
 
-    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field)
+    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field, playlist, channel, options)
     if not video_ids:
         log.error("No video IDs provided. Provide video IDs/URLs as arguments, or use --file/--jsonl.")
         sys.exit(EXIT_ERROR)
@@ -244,6 +266,8 @@ def transcript(
     file_path: Path | None,
     jsonl_path: Path | None,
     id_field: str,
+    playlist: str | None,
+    channel: str | None,
     strict: bool,
     **kwargs: Any,
 ) -> None:
@@ -252,7 +276,7 @@ def transcript(
     setup_logging(verbose=options.verbose)
     log = get_logger()
 
-    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field)
+    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field, playlist, channel, options)
     if not video_ids:
         log.error("No video IDs provided. Provide video IDs/URLs as arguments, or use --file/--jsonl.")
         sys.exit(EXIT_ERROR)
@@ -284,6 +308,8 @@ def metadata(
     file_path: Path | None,
     jsonl_path: Path | None,
     id_field: str,
+    playlist: str | None,
+    channel: str | None,
     strict: bool,
     **kwargs: Any,
 ) -> None:
@@ -292,7 +318,7 @@ def metadata(
     setup_logging(verbose=options.verbose)
     log = get_logger()
 
-    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field)
+    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field, playlist, channel, options)
     if not video_ids:
         log.error("No video IDs provided. Provide video IDs/URLs as arguments, or use --file/--jsonl.")
         sys.exit(EXIT_ERROR)
@@ -324,6 +350,8 @@ def media(
     file_path: Path | None,
     jsonl_path: Path | None,
     id_field: str,
+    playlist: str | None,
+    channel: str | None,
     strict: bool,
     **kwargs: Any,
 ) -> None:
@@ -332,7 +360,7 @@ def media(
     setup_logging(verbose=options.verbose)
     log = get_logger()
 
-    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field)
+    video_ids = _collect_ids(videos, file_path, jsonl_path, id_field, playlist, channel, options)
     if not video_ids:
         log.error("No video IDs provided. Provide video IDs/URLs as arguments, or use --file/--jsonl.")
         sys.exit(EXIT_ERROR)

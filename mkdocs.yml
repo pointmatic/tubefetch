@@ -1,5 +1,5 @@
 site_name: TubeFetch
-site_description: TubeFetch fetches and extracts metadata, transcripts, and media from YouTube videos in formats optimized for AI/LLM pipelines — with batch processing, caching, retries, and rate limiting.
+site_description: Extract AI-ready YouTube content with tubefetch. Fetch metadata, transcripts, and media in structured formats optimized for LLM pipelines, RAG systems, and content analysis — with content hashing, token counting, playlist resolution, and unified video bundles.
 site_url: https://pointmatic.github.io/tubefetch
 repo_url: https://github.com/pointmatic/tubefetch
 repo_name: pointmatic/tubefetch
@@ -42,6 +42,14 @@ nav:
   - Home: index.html
   - Getting Started: getting-started.md
   - Usage: usage.md
+  - AI-Ready Features:
+    - Overview: ../guides/ai-ready-features.md
+    - LLM Text Formatting: ../guides/llm-text-formatting.md
+    - Content Hashing: ../guides/content-hashing.md
+    - Token Counting: ../guides/token-counting.md
+    - Playlist Resolution: ../guides/playlist-resolution.md
+    - Video Bundles: ../guides/video-bundles.md
+    - Use Cases: ../guides/use-cases.md
   - Troubleshooting: troubleshooting.md
   - API Reference: api.md
   - Advanced: advanced.md

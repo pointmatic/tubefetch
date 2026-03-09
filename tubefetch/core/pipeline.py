@@ -109,7 +109,7 @@ def process_video(
             # Use gentlify for retry logic
             transcript = execute_with_retry(get_transcript, throttle, video_id, options)
             transcript_path = write_transcript_json(transcript, out_dir)
-            write_transcript_txt(transcript, out_dir)
+            write_transcript_txt(transcript, out_dir, options)
             write_transcript_vtt(transcript, out_dir)
             write_transcript_srt(transcript, out_dir)
             logger.info("Wrote transcript for %s", video_id)
@@ -167,7 +167,7 @@ def process_video(
 
     metadata_failed = any(e.phase == FetchPhase.METADATA and not e.retryable for e in errors)
     success = not metadata_failed
-    return FetchResult(
+    result = FetchResult(
         video_id=video_id,
         success=success,
         metadata_path=metadata_path,
@@ -177,6 +177,14 @@ def process_video(
         transcript=transcript,
         errors=errors,
     )
+
+    # Write bundle if requested
+    if options.bundle:
+        from tubefetch.core.writer import write_bundle
+
+        write_bundle(result, out_dir)
+
+    return result
 
 
 def process_batch(video_ids: list[str], options: FetchOptions) -> BatchResult:

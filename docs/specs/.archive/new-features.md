@@ -8,6 +8,45 @@
 
 ---
 
+## ✅ RESOLUTION STATUS (2026-03-09)
+
+**All issues documented in this file have been resolved in tubefetch v0.9.6** (formerly yt-fetch).
+
+### Bugs Fixed
+
+- **Bug 1** (Critical) - `result.transcript` is `None` without `force_transcript=True`
+  - ✅ **Fixed in v0.5.2** (Story F.d) - Pipeline now reads cached files and always populates in-memory objects
+
+- **Bug 2** (High) - `result.metadata` is `None` without `force_metadata=True`
+  - ✅ **Fixed in v0.5.2** (Story F.d) - Same fix as Bug 1
+
+- **Bug 3** (Medium) - `success=True` with `transcript=None` and empty `errors`
+  - ✅ **Fixed in v0.5.2** (Story F.d) - Transcript failures now reported in `result.errors` with descriptive messages
+
+- **Issue 4** (Medium) - CLI/Library behavior discrepancy
+  - ✅ **Fixed in v0.5.2** (Story F.d) - CLI and library now behave identically
+
+### Feature Requests
+
+- **Feature Request 1** - `include_metadata`/`include_transcript` flags
+  - ✅ **Obsolete** - The desired behavior (always populate in-memory objects) is now the default. No explicit flags needed.
+
+- **Feature Request 2** - Report available languages on transcript failure
+  - ✅ **Implemented in v0.5.2** (Story F.d) - Available languages included in error details
+
+### Additional Changes Since v0.5.1
+
+- **v0.6.0** - Structured error handling with `FetchError` model and exception hierarchy
+- **v0.6.7-v0.6.9** - Replaced custom retry with gentlify for intelligent retry management
+- **v0.7.0** - Service error classification and centralized exception handling
+- **v0.7.1-v0.7.3** - CI/CD automation, PyPI publishing, comprehensive documentation
+- **v0.8.0-v0.8.2** - Production polish, package quality improvements
+- **v0.9.0-v0.9.6** - Major CLI UX improvements (default command, positional args), renamed to tubefetch
+
+**This document is now archived for historical reference.**
+
+---
+
 ## Bug 1: `result.transcript` is `None` without `force_transcript=True`
 
 ### Severity: **Critical** — breaks the primary library use case
