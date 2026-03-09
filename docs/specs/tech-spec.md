@@ -1,8 +1,10 @@
-# tech_spec.md — yt-fetch: AI-Ready YouTube Content Extraction
+# tech_spec.md — tubefetch: AI-Ready YouTube Content Extraction
+
+> **Implementation Status:** This document describes both implemented features (v0.9.6) and planned features (Phase M, v1.x). Modules and features marked with **(Planned - Phase M)** are not yet implemented.
 
 ## Overview
 
-This document defines the technical architecture, dependencies, module design, and implementation details for yt-fetch. For feature requirements see `features.md`; for task breakdown see `stories.md`.
+This document defines the technical architecture, dependencies, module design, and implementation details for tubefetch. For feature requirements see `features.md`; for task breakdown see `stories.md`.
 
 ---
 
@@ -56,13 +58,11 @@ This document defines the technical architecture, dependencies, module design, a
 
 ## Package Structure
 
-**Note:** Modules marked with `*` are planned for Phase L (v0.9.x) and not yet implemented as of v0.7.1.
-
 ```
-yt_fetch/
+tubefetch/
     __init__.py              # version, public API exports
-    __main__.py              # python -m yt_fetch support
-    cli.py                   # Click CLI entry point and subcommands
+    __main__.py              # python -m tubefetch support
+    cli.py                   # Click CLI entry point with default command + specialized subcommands
     core/
         __init__.py
         models.py            # Pydantic models (Metadata, Transcript, FetchResult, etc.)
@@ -74,16 +74,16 @@ yt_fetch/
     services/
         __init__.py
         id_parser.py         # URL/ID parsing and validation
-        resolver.py *        # playlist/channel URL → video ID list resolution (Phase L)
+        resolver.py          # playlist/channel URL → video ID list resolution **(Planned - Phase M)**
         metadata.py          # metadata retrieval (yt-dlp + YouTube API backends)
         transcript.py        # transcript fetching with language selection
         media.py             # media download via yt-dlp
     utils/
         __init__.py
         time_fmt.py          # VTT/SRT timestamp formatting
-        txt_formatter.py *   # LLM-ready transcript.txt formatting (Phase L)
-        hashing.py *         # SHA-256 content hashing for change detection (Phase L)
-        token_counter.py *   # token count estimation via tiktoken (Phase L)
+        txt_formatter.py     # LLM-ready transcript.txt formatting **(Planned - Phase M)**
+        hashing.py           # SHA-256 content hashing for change detection **(Planned - Phase M)**
+        token_counter.py     # token count estimation via tiktoken **(Planned - Phase M)**
         gentlify_config.py   # gentlify throttle configuration and retry logic
         rate_limit.py        # token bucket rate limiter
         ffmpeg.py            # ffmpeg detection and helpers
@@ -96,11 +96,12 @@ tests/
     test_writer.py           # output file generation
     test_pipeline.py         # pipeline idempotency, error handling
     test_errors.py           # error classification, exception hierarchy
-    test_resolver.py *       # playlist/channel URL resolution (Phase L)
-    test_txt_formatter.py *  # LLM-ready transcript formatting (Phase L)
-    test_hashing.py *        # content hash computation (Phase L)
-    test_token_counter.py *  # token count estimation (Phase L)
-    test_bundle.py *         # video bundle output (Phase L)
+    test_gentlify_config.py  # gentlify throttle configuration
+    test_resolver.py         # playlist/channel URL resolution **(Planned - Phase M)**
+    test_txt_formatter.py    # LLM-ready transcript formatting **(Planned - Phase M)**
+    test_hashing.py          # content hash computation **(Planned - Phase M)**
+    test_token_counter.py    # token count estimation **(Planned - Phase M)**
+    test_bundle.py           # video bundle output **(Planned - Phase M)**
     test_cli.py              # CLI smoke tests
     integration/
         __init__.py
@@ -134,7 +135,7 @@ Supported URL patterns:
 
 Validation: 11 characters, alphanumeric plus `-` and `_`. Do not over-reject.
 
-### Resolver Service (`services/resolver.py`)
+### Resolver Service (`services/resolver.py`) **(Planned - Phase M)**
 
 ```python
 def resolve_playlist(url: str, max_videos: int | None = None) -> list[str]
@@ -422,8 +423,8 @@ Uses Pydantic `BaseSettings` for layered config resolution.
 ```python
 class FetchOptions(BaseSettings):
     model_config = SettingsConfigDict(
-        env_prefix="YT_FETCH_",
-        yaml_file="yt_fetch.yaml",
+        env_prefix="TUBEFETCH_",
+        yaml_file="tubefetch.yaml",
     )
 
     out: Path = Path("./out")
@@ -445,38 +446,44 @@ class FetchOptions(BaseSettings):
     verbose: bool = False
     yt_api_key: str | None = None
     ffmpeg_fallback: Literal["error", "skip"] = "error"
-    max_videos: int | None = None           # limit videos from playlist/channel
-    txt_timestamps: bool = False            # include [MM:SS] markers in transcript.txt
-    txt_raw: bool = False                   # bare concatenation (no paragraph formatting)
-    txt_gap_threshold: float = 2.0          # silence gap (seconds) for paragraph breaks
-    bundle: bool = False                    # emit video_bundle.json per video
-    tokenizer: str | None = None            # tiktoken tokenizer name (None = disabled)
+    max_videos: int | None = None           # limit videos from playlist/channel **(Planned - Phase M)**
+    txt_timestamps: bool = False            # include [MM:SS] markers in transcript.txt **(Planned - Phase M)**
+    txt_raw: bool = False                   # bare concatenation (no paragraph formatting) **(Planned - Phase M)**
+    txt_gap_threshold: float = 2.0          # silence gap (seconds) for paragraph breaks **(Planned - Phase M)**
+    bundle: bool = False                    # emit video_bundle.json per video **(Planned - Phase M)**
+    tokenizer: str | None = None            # tiktoken tokenizer name (None = disabled) **(Planned - Phase M)**
 ```
 
-Precedence: CLI flags → environment variables → `yt_fetch.yaml` → defaults.
+Precedence: CLI flags → environment variables → `tubefetch.yaml` → defaults.
 
 ---
 
 ## CLI Design (`cli.py`)
 
-Built with `click`. Entry point: `yt_fetch` (or `python -m yt_fetch`).
+Built with `click`. Entry point: `tubefetch` (or `python -m tubefetch`).
 
-### Subcommands
+### Command Structure
+
+**Default command** (no subcommand needed):
+- Fetches metadata + transcript + optional media
+- Accepts video IDs/URLs as positional arguments
+- Example: `tubefetch dQw4w9WgXcQ abc123def`
+
+**Specialized commands** (for exceptional cases):
 
 | Command | Description |
 |---|---|
-| `yt_fetch fetch` | Full pipeline: metadata + transcript + media |
-| `yt_fetch transcript` | Transcript only |
-| `yt_fetch metadata` | Metadata only |
-| `yt_fetch media` | Media download only |
+| `tubefetch metadata` | Metadata only |
+| `tubefetch transcript` | Transcript only |
+| `tubefetch media` | Media download only |
 
 ### Input flags (shared)
-- `--id <id>` (repeatable)
-- `--file <path>` (text file, one ID per line)
+- Positional arguments: video IDs or URLs (no flag needed)
+- `--file <path>` (text/CSV file, one ID per line)
 - `--jsonl <path> --id-field <field>` (JSONL input)
-- `--playlist <url>` (resolve playlist to video IDs)
-- `--channel <url>` (resolve channel to video IDs)
-- `--max-videos N` (limit resolved IDs from playlist/channel)
+- `--playlist <url>` **(Planned - Phase M)** (resolve playlist to video IDs)
+- `--channel <url>` **(Planned - Phase M)** (resolve channel to video IDs)
+- `--max-videos N` **(Planned - Phase M)** (limit resolved IDs from playlist/channel)
 
 ### Exit codes
 | Code | Meaning |
@@ -491,10 +498,15 @@ Built with `click`. Entry point: `yt_fetch` (or `python -m yt_fetch`).
 ## Library API (`__init__.py`)
 
 ```python
-from yt_fetch import fetch_video, fetch_batch, resolve_playlist, resolve_channel
+from tubefetch import fetch_video, fetch_batch
 
 result: FetchResult = fetch_video("dQw4w9WgXcQ", options=FetchOptions(...))
 batch: BatchResult = fetch_batch(["id1", "id2"], options=FetchOptions(...))
+```
+
+**Planned - Phase M:**
+```python
+from tubefetch import resolve_playlist, resolve_channel
 
 # Resolve playlist/channel to video IDs
 ids: list[str] = resolve_playlist("https://www.youtube.com/playlist?list=PLxxx", max_videos=50)
@@ -530,9 +542,9 @@ Token bucket algorithm:
 - Thread-safe implementation
 - Library consumers that manage their own throttling externally should set `rate_limit=0`
 
-### LLM Text Formatting (`utils/txt_formatter.py`)
+### LLM Text Formatting (`utils/txt_formatter.py`) **(Planned - Phase M)**
 
-Produces LLM-ready `transcript.txt` from transcript segments.
+Will produce LLM-ready `transcript.txt` from transcript segments.
 
 ```python
 def format_transcript_txt(
@@ -551,7 +563,9 @@ def format_transcript_txt(
 - **Auto-generated notice**: when `is_generated` is true, prepends `[Auto-generated transcript]\n\n` to the output.
 - Modes are mutually exclusive: `raw=True` overrides `timestamps`.
 
-### Content Hashing (`utils/hashing.py`)
+**Current implementation (v0.9.6):** Basic concatenation with spaces in `core/writer.py`.
+
+### Content Hashing (`utils/hashing.py`) **(Planned - Phase M)**
 
 Deterministic SHA-256 hashing for change detection.
 
@@ -569,7 +583,7 @@ def hash_bundle(metadata: Metadata | None, transcript: Transcript | None) -> str
 - Canonical field selection ensures hashes are stable across re-fetches when content hasn't changed (e.g., `view_count` changes don't affect the hash).
 - All hashes are hex-encoded lowercase strings.
 
-### Token Counting (`utils/token_counter.py`)
+### Token Counting (`utils/token_counter.py`) **(Planned - Phase M)**
 
 Optional token count estimation using `tiktoken`.
 
@@ -628,17 +642,17 @@ All output files are written atomically:
 - Fetch transcript for a known video
 - Full pipeline end-to-end
 - Batch with mixed valid/invalid IDs
-- Resolve a known public playlist to video IDs
-- Resolve a known public channel to video IDs
+- Resolve a known public playlist to video IDs **(Planned - Phase M)**
+- Resolve a known public channel to video IDs **(Planned - Phase M)**
 
 ### Pipeline Tests
 - Idempotency: re-run without `--force` skips work
 - Force flags: re-run with `--force` overwrites
 - Error isolation: one bad ID doesn't stop batch
 - `--fail-fast`: stops on first error
-- Content hashes present in output files
-- Token counts present when tokenizer configured, absent when not
-- Bundle output present when `--bundle` set, absent when not
+- Content hashes present in output files **(Planned - Phase M)**
+- Token counts present when tokenizer configured, absent when not **(Planned - Phase M)**
+- Bundle output present when `--bundle` set, absent when not **(Planned - Phase M)**
 
 ---
 

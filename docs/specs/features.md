@@ -1,10 +1,12 @@
-# features.md — yt-fetch: Fetch structured, AI-ready content from YouTube videos. Extract AI-ready YouTube content: metadata, transcripts, and media in structured formats.
+# features.md — tubefetch: Fetch structured, AI-ready content from YouTube videos. Extract AI-ready YouTube content: metadata, transcripts, and media in structured formats.
+
+> **Implementation Status:** This document describes both implemented features (v0.9.6) and planned features (Phase M, v1.x). Planned features are marked with **(Planned - Phase M)** throughout.
 
 ## Overview
-This document defines the features and functionality (not technical or implementation details) for yt-fetch. For architecture, modules, and dependencies see `tech_spec.md`.
+This document defines the features and functionality (not technical or implementation details) for tubefetch. For architecture, modules, and dependencies see `tech_spec.md`.
 
 ## Project Goal
-Build a Python tool that extracts structured, AI-ready content from YouTube videos. Given one or more video IDs, URLs, playlists, or channels, yt-fetch produces normalized metadata, transcripts, and optional media in formats optimized for downstream AI/LLM pipelines (summarization, fact-checking, RAG, search indexing, etc.).
+Build a Python tool that extracts structured, AI-ready content from YouTube videos. Given one or more video IDs, URLs, playlists, or channels **(Planned - Phase M)**, tubefetch produces normalized metadata, transcripts, and optional media in formats optimized for downstream AI/LLM pipelines (summarization, fact-checking, RAG, search indexing, etc.).
 
 ### Core Requirements
 - fetch and store video metadata in structured JSON
@@ -12,8 +14,8 @@ Build a Python tool that extracts structured, AI-ready content from YouTube vide
 - produce LLM-ready plain text transcripts with configurable formatting
 - resolve playlist and channel URLs to video IDs for batch processing
 - emit consistent, deterministic outputs to a local folder
-- provide content hashes for change detection in incremental pipelines
-- optionally estimate token counts for context window planning
+- provide content hashes for change detection in incremental pipelines **(Planned - Phase M)**
+- optionally estimate token counts for context window planning **(Planned - Phase M)**
 
 ### Secondary Requirements
 - download video and/or audio media (optional, for speech-to-text fallback or archival)
@@ -40,8 +42,8 @@ The program should work well for:
 ### Non-goals
 - UI/web app
 - bypassing DRM or paywalled content
-- speech-to-text / audio transcription (yt-fetch fetches existing transcripts; it does not generate them from audio)
-- LLM integration (yt-fetch prepares content for LLMs; it does not call LLM APIs itself)
+- speech-to-text / audio transcription (tubefetch fetches existing transcripts; it does not generate them from audio)
+- LLM integration (tubefetch prepares content for LLMs; it does not call LLM APIs itself)
 
 ---
 
@@ -60,7 +62,7 @@ Also accept full YouTube URLs and extract the video ID:
 - `https://www.youtube.com/shorts/<id>`
 - URLs containing extra query params should still parse correctly
 
-### Playlist and channel inputs
+### Playlist and channel inputs **(Planned - Phase M)**
 Accept playlist and channel URLs as batch input sources:
 - `https://www.youtube.com/playlist?list=<playlist_id>`
 - `https://www.youtube.com/@<handle>` or `https://www.youtube.com/channel/<channel_id>`
@@ -80,7 +82,7 @@ Behavior:
 - Rate limits and retries
 - "Fail fast" vs "continue on errors"
 - API keys (optional): YouTube Data API v3 key for richer metadata
-- Token count estimation: tokenizer name (default `cl100k_base`), or disabled
+- Token count estimation: tokenizer name (default `cl100k_base`), or disabled **(Planned - Phase M)**
 
 ---
 
@@ -116,7 +118,7 @@ Include at least:
 - `view_count`, `like_count` (optional)
 - `fetched_at` (timestamp)
 - `metadata_source` (e.g., `"yt-dlp"`, `"youtube-data-api"`)
-- `content_hash` (SHA-256 of the canonical metadata fields, for change detection)
+- `content_hash` (SHA-256 of the canonical metadata fields, for change detection) **(Planned - Phase M)**
 - `raw` (optional: store the unmodified raw metadata payload under a key)
 
 ### Transcript outputs
@@ -134,22 +136,22 @@ Top-level keys:
 - `fetched_at`
 - `transcript_source` (e.g., `"youtube-transcript-api"`)
 - `available_languages` (list if known)
-- `content_hash` (SHA-256 of the concatenated segment text, for change detection)
-- `token_count` (estimated token count using configured tokenizer, if enabled; `null` if disabled)
+- `content_hash` (SHA-256 of the concatenated segment text, for change detection) **(Planned - Phase M)**
+- `token_count` (estimated token count using configured tokenizer, if enabled; `null` if disabled) **(Planned - Phase M)**
 - `errors` (optional list; empty when ok)
 
-#### `transcript.txt` (LLM-ready)
-Plain text transcript optimized for LLM ingestion. Configurable formatting:
-- **Default mode**: concatenation of segment text with paragraph breaks at natural silence gaps (configurable gap threshold, default 2.0 seconds)
-- **Timestamped mode** (`--txt-timestamps`): include `[MM:SS]` markers at paragraph boundaries for citation support
-- **Raw mode** (`--txt-raw`): bare concatenation with no formatting (backward-compatible with current behavior)
+#### `transcript.txt` (LLM-ready) **(Enhanced in Phase M)**
+Plain text transcript optimized for LLM ingestion. Current implementation provides basic concatenation. Configurable formatting planned:
+- **Default mode** **(Planned)**: concatenation of segment text with paragraph breaks at natural silence gaps (configurable gap threshold, default 2.0 seconds)
+- **Timestamped mode** **(Planned)** (`--txt-timestamps`): include `[MM:SS]` markers at paragraph boundaries for citation support
+- **Raw mode** **(Current)**: bare concatenation with no formatting
 
-The `is_generated` status is noted at the top of the file when true, so downstream consumers can weight human vs. auto-generated transcripts differently.
+The `is_generated` status will be noted at the top of the file when true **(Planned)**, so downstream consumers can weight human vs. auto-generated transcripts differently.
 
 #### Optional: `transcript.vtt` and `transcript.srt`
 Generate from segments with correct timestamp formatting.
 
-#### Optional: `video_bundle.json`
+#### Optional: `video_bundle.json` **(Planned - Phase M)**
 A single unified envelope combining metadata + transcript + error info per video. Enabled with `--bundle`. Contains:
 - `video_id`
 - `metadata` (full metadata object)
@@ -260,16 +262,19 @@ See `error_handling_features.md` for the full error code reference and exception
   - details/error
 
 ### 8) CLI interface
-Provide a CLI named `yt_fetch` (or similar) with subcommands:
+Provide a CLI named `tubefetch` with a default command and specialized subcommands:
 
-- `yt_fetch fetch --id <id> [--id <id2> ...]`
-- `yt_fetch fetch --file ids.txt`
-- `yt_fetch fetch --jsonl input.jsonl --id-field video_id`
-- `yt_fetch fetch --playlist <playlist_url>` (resolve playlist to IDs, then fetch)
-- `yt_fetch fetch --channel <channel_url>` (resolve channel to IDs, then fetch)
-- `yt_fetch transcript --id <id>` (transcript only)
-- `yt_fetch metadata --id <id>` (metadata only)
-- `yt_fetch media --id <id>` (download only)
+**Default command** (no subcommand needed - fetches metadata + transcript + optional media):
+- `tubefetch <id> [<id2> ...]`
+- `tubefetch --file ids.txt`
+- `tubefetch --jsonl input.jsonl --id-field video_id`
+- `tubefetch --playlist <playlist_url>` **(Planned - Phase M)** (resolve playlist to IDs, then fetch)
+- `tubefetch --channel <channel_url>` **(Planned - Phase M)** (resolve channel to IDs, then fetch)
+
+**Specialized commands** (for exceptional cases when you only need specific data):
+- `tubefetch transcript <id>` (transcript only)
+- `tubefetch metadata <id>` (metadata only)
+- `tubefetch media <id>` (download only)
 
 Common flags:
 - `--out <dir>`
@@ -284,12 +289,13 @@ Common flags:
 - `--retries N`
 - `--rate-limit RPS`
 - `--fail-fast`
+- `--strict` (exit code 2 on partial failure)
 - `--verbose`
-- `--max-videos N` (limit videos resolved from playlist/channel)
-- `--txt-timestamps` (include `[MM:SS]` markers in transcript.txt)
-- `--txt-raw` (bare concatenation, no paragraph formatting)
-- `--bundle` (emit `video_bundle.json` per video)
-- `--tokenizer <name>` (enable token count estimation; default disabled)
+- `--max-videos N` **(Planned - Phase M)** (limit videos resolved from playlist/channel)
+- `--txt-timestamps` **(Planned - Phase M)** (include `[MM:SS]` markers in transcript.txt)
+- `--txt-raw` **(Planned - Phase M)** (bare concatenation, no paragraph formatting)
+- `--bundle` **(Planned - Phase M)** (emit `video_bundle.json` per video)
+- `--tokenizer <name>` **(Planned - Phase M)** (enable token count estimation; default disabled)
 
 Exit codes:
 - `0` success (even if some videos failed, if not fail-fast) — but print a summary
@@ -302,8 +308,8 @@ Expose a Python API so other code can do:
 
 - `fetch_video(video_id, options) -> FetchResult`
 - `fetch_batch(video_ids, options) -> BatchResult`
-- `resolve_playlist(url, max_videos=None) -> list[str]`
-- `resolve_channel(url, max_videos=None) -> list[str]`
+- `resolve_playlist(url, max_videos=None) -> list[str]` **(Planned - Phase M)**
+- `resolve_channel(url, max_videos=None) -> list[str]` **(Planned - Phase M)**
 
 Where results include:
 - paths written
@@ -325,19 +331,19 @@ The library API must behave identically to the CLI for the same inputs. In parti
 ### Config precedence
 1. CLI flags
 2. Environment variables
-3. Config file (`yt_fetch.yaml`)
+3. Config file (`tubefetch.yaml`)
 4. Defaults
 
 Suggested env vars:
-- `YT_FETCH_OUT`
-- `YT_FETCH_LANGUAGES`
-- `YT_FETCH_YT_API_KEY`
-- `YT_FETCH_RATE_LIMIT`
-- `YT_FETCH_RETRIES`
+- `TUBEFETCH_OUT`
+- `TUBEFETCH_LANGUAGES`
+- `TUBEFETCH_YT_API_KEY`
+- `TUBEFETCH_RATE_LIMIT`
+- `TUBEFETCH_RETRIES`
 
-Config file fields should mirror CLI flags.
+Config file (`tubefetch.yaml`) fields should mirror CLI flags.
 
-### 10) Playlist and channel resolution
+### 10) Playlist and channel resolution **(Planned - Phase M)**
 Accept playlist URLs and channel URLs as input sources. Resolve them to video ID lists using `yt-dlp`'s extraction capabilities.
 
 - `resolve_playlist(url)` returns an ordered list of video IDs from a playlist
@@ -346,15 +352,17 @@ Accept playlist URLs and channel URLs as input sources. Resolve them to video ID
 - The resolved ID list is written to `<out>/resolved_ids.json` for reproducibility and auditing
 - Resolved IDs feed into the standard pipeline (deduplication, caching, batch processing all apply)
 
-### 11) LLM-ready transcript formatting
-The `transcript.txt` output is optimized for LLM consumption:
+### 11) LLM-ready transcript formatting **(Planned - Phase M)**
+The `transcript.txt` output will be optimized for LLM consumption:
 
 - **Paragraph chunking**: insert paragraph breaks at natural silence gaps between segments (configurable gap threshold, default 2.0 seconds). This produces readable, semantically coherent paragraphs rather than a wall of text.
 - **Timestamp markers** (optional, `--txt-timestamps`): insert `[MM:SS]` markers at paragraph boundaries. Useful for citation and reference back to the original video.
 - **Raw mode** (optional, `--txt-raw`): bare concatenation with no formatting, for backward compatibility.
 - **Auto-generated notice**: when `is_generated` is true, prepend a notice line (e.g., `[Auto-generated transcript]`) so downstream consumers can adjust confidence weighting.
 
-### 12) Token count estimation
+**Current implementation (v0.9.6):** Basic concatenation of segment text with spaces.
+
+### 12) Token count estimation **(Planned - Phase M)**
 Optionally estimate the token count of transcript text using a configurable tokenizer.
 
 - Enabled via `--tokenizer <name>` (CLI) or `FetchOptions(tokenizer="cl100k_base")` (library)
@@ -366,7 +374,7 @@ Optionally estimate the token count of transcript text using a configurable toke
 
 This lets AI pipelines know upfront whether a transcript fits in a context window without importing `tiktoken` themselves.
 
-### 13) Content hash / change detection
+### 13) Content hash / change detection **(Planned - Phase M)**
 Compute SHA-256 content hashes for metadata and transcript outputs.
 
 - `metadata.json` includes `content_hash`: SHA-256 of canonical metadata fields (title, description, tags, upload_date, duration_seconds)
@@ -375,7 +383,7 @@ Compute SHA-256 content hashes for metadata and transcript outputs.
 - Hashes enable downstream pipelines to detect when a re-fetch actually changed content (e.g., auto-captions improved, description updated) without diffing full files
 - Hashes are deterministic: same content always produces the same hash
 
-### 14) Video bundle output
+### 14) Video bundle output **(Planned - Phase M)**
 Optionally emit a single `video_bundle.json` per video that combines all structured data into one file.
 
 - Enabled via `--bundle` (CLI) or `FetchOptions(bundle=True)` (library)
@@ -439,12 +447,17 @@ Prefer tests that do not require network:
 ---
 
 ## Acceptance Criteria (Definition of Done)
-- `yt_fetch fetch --id dQw4w9WgXcQ` creates the output folder with metadata + transcript (if available).
+
+**v0.9.6 (Current):**
+- `tubefetch dQw4w9WgXcQ` creates the output folder with metadata + transcript (if available).
 - Batch mode processes multiple IDs, producing a clear summary and preserving per-video isolation.
 - Re-running without `--force` skips completed work.
 - Transcripts can be exported to `.txt` and `.json` reliably; optional `.vtt`/`.srt` formatting is correct.
+- Errors are structured (FetchError model), logged, and do not crash the whole run unless configured.
+- Specialized commands (`metadata`, `transcript`, `media`) work correctly.
+
+**Phase M (Planned):**
 - `transcript.txt` uses paragraph chunking by default, producing readable LLM-ready text.
-- Errors are structured, logged, and do not crash the whole run unless configured.
 - Playlist and channel URLs resolve to video IDs and feed into the standard pipeline.
 - Content hashes are present in `metadata.json` and `transcript.json`.
 - Token counts are present when a tokenizer is configured.

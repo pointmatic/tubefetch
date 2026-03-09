@@ -240,6 +240,18 @@ tubefetch dQw4w9WgXcQ --retries 0
 | 2 | Partial failure with `--strict` |
 | 3 | All videos failed |
 
+## Roadmap
+
+TubeFetch v0.9.6 provides production-ready metadata and transcript extraction. The following AI-ready features are planned for v1.x releases (Phase M):
+
+- **LLM-ready transcript formatting** — intelligent paragraph chunking with configurable silence gap detection, optional timestamp markers for citation support, and auto-generated transcript notices
+- **Content hashing** — SHA-256 hashes for metadata and transcripts to enable change detection in incremental pipelines
+- **Token count estimation** — optional token counting via tiktoken for context window planning (GPT-4, GPT-4o, etc.)
+- **Playlist/channel resolution** — accept playlist and channel URLs as batch input sources with automatic video ID extraction
+- **Video bundles** — unified `video_bundle.json` output combining metadata + transcript + errors in a single file
+
+See [Phase M stories](https://github.com/pointmatic/tubefetch/blob/main/docs/specs/stories.md#phase-m-ai-ready-content-extraction) for detailed implementation plans.
+
 ## Development
 
 ```bash
@@ -258,4 +270,4 @@ RUN_INTEGRATION=1 python -m pytest tests/integration/
 
 ## License
 
-MPL-2.0
+Apache-2.0

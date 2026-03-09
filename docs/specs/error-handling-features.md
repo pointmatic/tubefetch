@@ -4,6 +4,109 @@ This document specifies the structured error handling API that yt-factify needs 
 
 ---
 
+## ✅ IMPLEMENTATION STATUS (2026-03-09)
+
+**This feature request has been fully implemented in tubefetch v0.6.0-v0.7.0** (formerly yt-fetch).
+
+### Implementation Timeline
+
+- **v0.6.0** (Story G.a) - Core error models and exception hierarchy
+  - ✅ `FetchErrorCode` enum with all proposed codes
+  - ✅ `FetchPhase` enum (METADATA, TRANSCRIPT, MEDIA)
+  - ✅ `FetchError` Pydantic model with all proposed fields
+  - ✅ Complete exception hierarchy (`FetchException`, `TranscriptError`, `MetadataError`, `MediaError`, etc.)
+  - ✅ `FetchResult.errors` changed from `list[str]` to `list[FetchError]`
+
+- **v0.7.0** (Story H.d) - Service error classification
+  - ✅ `_classify_exception()` helper in `core/errors.py`
+  - ✅ Exception classification by type → HTTP status → message string
+  - ✅ Services migrated to use centralized exception hierarchy
+  - ✅ Comprehensive unit tests for all known upstream exception types
+
+### Current Documentation
+
+For implementation guidance, see:
+
+1. **API Reference** - `tubefetch/core/errors.py`
+   - Complete `FetchErrorCode` enum (14 error codes)
+   - `FetchPhase` enum
+   - `FetchError` model definition
+   - Full exception hierarchy
+   - `_classify_exception()` implementation
+
+2. **Technical Specification** - `docs/specs/tech-spec.md` (lines 335-415)
+   - Error handling design
+   - Exception hierarchy documentation
+   - `_classify_exception()` priority rules
+   - Error code reference table
+
+3. **Feature Specification** - `docs/specs/features.md` (lines 238-251)
+   - Structured error classification requirements
+   - Retryability hints
+   - Error code and phase enums
+
+4. **Usage Examples** - `README.md`
+   - Library API error handling patterns
+   - Structured error inspection
+
+### Key Implementation Differences from Original Proposal
+
+**✅ Implemented as specified:**
+- All 14 error codes from the proposal
+- `FetchError` model with all proposed fields (`code`, `message`, `phase`, `retryable`, `video_id`, `details`)
+- Exception hierarchy with `retryable` attribute
+- `_classify_exception()` with type → status → message priority
+- Unit tests for all known upstream exception types
+
+**🔄 Enhancements beyond proposal:**
+- Integrated with gentlify for intelligent retry management (v0.6.7-v0.6.9)
+- Retry logic respects `FetchException.retryable` attribute
+- `retries=0` option for external retry management
+- `rate_limit=0` option for external throttling management
+
+**📝 Package renamed:**
+- `yt-fetch` → `tubefetch` (v0.9.0)
+- `yt_fetch` → `tubefetch` in all imports
+- `YT_FETCH_` → `TUBEFETCH_` environment variable prefix
+
+### Example: Using Structured Errors (v0.9.6)
+
+```python
+from tubefetch import fetch_video, FetchOptions, FetchErrorCode, FetchPhase
+
+result = fetch_video("VIDEO_ID", FetchOptions(languages=["en"]))
+
+if result.transcript is None:
+    # Inspect structured errors
+    transcript_errors = [e for e in result.errors if e.phase == FetchPhase.TRANSCRIPT]
+    
+    for error in transcript_errors:
+        if error.code == FetchErrorCode.TRANSCRIPTS_DISABLED:
+            print(f"Captions disabled by owner: {error.message}")
+        elif error.code == FetchErrorCode.TRANSCRIPT_NOT_FOUND:
+            print(f"No transcript in requested language")
+            if error.details and "available_languages" in error.details:
+                print(f"Available: {error.details['available_languages']}")
+        elif error.retryable:
+            print(f"Transient error (retry recommended): {error.message}")
+        else:
+            print(f"Permanent error: {error.message}")
+```
+
+### Migration Notes for Consumers
+
+If you're upgrading from yt-fetch v0.5.x:
+
+1. **Update imports**: `from yt_fetch import ...` → `from tubefetch import ...`
+2. **Update error handling**: `result.errors` is now `list[FetchError]` instead of `list[str]`
+3. **Use structured codes**: Access `error.code`, `error.phase`, `error.retryable` instead of string parsing
+4. **Environment variables**: `YT_FETCH_*` → `TUBEFETCH_*`
+5. **Config file**: `yt_fetch.yaml` → `tubefetch.yaml`
+
+**This document is now archived for historical reference. See current documentation in `tubefetch/core/errors.py` and `docs/specs/tech-spec.md`.**
+
+---
+
 ## Motivation
 
 ### The problem today (v0.5.2)

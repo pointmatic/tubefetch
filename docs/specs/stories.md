@@ -1152,15 +1152,82 @@ Add final touches, SEO optimization, and cross-references.
 - Provides clear version history and upgrade guidance
 - Professional appearance with social links and copyright notice
 
+### Story L.c: Update Core Documentation to Reflect Current Implementation [Done]
+
+Bring `README.md`, `features.md`, and `tech-spec.md` up to date with the v0.9.x implementation.
+
+**Documentation Gaps Identified:**
+
+1. **README.md** - Missing Phase M planned features documentation
+2. **features.md** - Outdated package name (`yt-fetch` → `tubefetch`)
+3. **tech-spec.md** - Outdated package name, structure, CLI commands, env vars, config file name
+4. **All specs** - Missing v0.9.x CLI UX changes (default command, positional args, removed commands)
+
+**Tasks:**
+
+- [x] Update `README.md`:
+  - [x] Add note about Phase M features (planned for v1.x releases)
+  - [x] Document that LLM-ready formatting, content hashing, token counting, playlist resolution, and video bundles are planned features
+  - [x] Add "Roadmap" or "Upcoming Features" section referencing Phase M in stories.md
+  - [x] Ensure all current features (v0.9.6) are accurately documented
+  - [x] Verify CLI examples use current syntax (default command with positional args)
+  - [x] Fix license from MPL-2.0 to Apache-2.0
+
+- [x] Update `docs/specs/features.md`:
+  - [x] Change title from "yt-fetch" to "tubefetch" (line 1)
+  - [x] Update all references to package name from `yt-fetch`/`yt_fetch` to `tubefetch`
+  - [x] Update CLI command examples from `yt_fetch fetch` to `tubefetch` (default command)
+  - [x] Update environment variable prefix from `YT_FETCH_` to `TUBEFETCH_`
+  - [x] Update config file name from `yt_fetch.yaml` to `tubefetch.yaml`
+  - [x] Add note distinguishing implemented features (v0.9.6) from planned features (Phase M)
+  - [x] Update CLI interface section (line 263-299) to reflect current command structure:
+    - [x] Default command: `tubefetch VIDEO_ID [VIDEO_ID...]` (no subcommand)
+    - [x] Specialized commands: `metadata`, `transcript`, `media`
+    - [x] Positional arguments for video IDs/URLs
+    - [x] Remove references to removed `fetch` and `all` commands
+  - [x] Mark Phase M features as "Planned" where applicable (LLM text formatting, content hashing, token counting, playlist resolution, video bundles)
+
+- [x] Update `docs/specs/tech-spec.md`:
+  - [x] Change title from "yt-fetch" to "tubefetch" (line 1)
+  - [x] Update package structure section (lines 59-108):
+    - [x] Change `yt_fetch/` to `tubefetch/` throughout
+    - [x] Mark Phase M modules as "Planned" (resolver.py, txt_formatter.py, hashing.py, token_counter.py)
+    - [x] Update test file references
+  - [x] Update CLI design section (lines 460-488):
+    - [x] Document default command pattern (no subcommand for common case)
+    - [x] Update command table to show current structure
+    - [x] Remove references to removed `fetch` and `all` commands
+    - [x] Document positional argument support
+  - [x] Update configuration section (lines 418-456):
+    - [x] Change environment variable prefix from `YT_FETCH_` to `TUBEFETCH_`
+    - [x] Change config file name from `yt_fetch.yaml` to `tubefetch.yaml`
+    - [x] Update `FetchOptions` field list to match current implementation
+  - [x] Update library API section (lines 490-502):
+    - [x] Change imports from `yt_fetch` to `tubefetch`
+    - [x] Mark `resolve_playlist` and `resolve_channel` as "Planned" (Phase M)
+  - [x] Add note at top of document indicating which features are implemented (v0.9.6) vs planned (Phase M)
+
+- [x] Verify consistency:
+  - [x] Cross-check all three documents for consistent terminology
+  - [x] Ensure version numbers align with stories.md
+  - [x] Verify all code examples are syntactically correct
+  - [x] Check that planned features are clearly marked as such
+
+**Rationale:**
+- Eliminates confusion between current implementation and planned features
+- Ensures developers and users have accurate reference documentation
+- Maintains consistency across all specification documents
+- Provides clear roadmap for future development (Phase M)
+
 ---
 
 ## Phase M: AI-Ready Content Extraction
 
-### Story M.a: v0.9.0 LLM-Ready Transcript Text Formatting [Planned]
+### Story M.a: v1.0.0 LLM-Ready Transcript Text Formatting [Planned]
 
 Replace bare concatenation in `transcript.txt` with intelligent paragraph chunking and optional features.
 
-- [ ] Create `yt_fetch/utils/txt_formatter.py`:
+- [ ] Create `tubefetch/utils/txt_formatter.py`:
   - [ ] `format_transcript_txt(segments, is_generated, gap_threshold, timestamps, raw) -> str`
   - [ ] **Default mode**: join segment text with spaces; insert `\n\n` paragraph breaks when the gap between consecutive segments exceeds `gap_threshold` (default 2.0 seconds)
   - [ ] **Timestamped mode** (`timestamps=True`): prepend `[MM:SS]` at each paragraph boundary
@@ -1182,13 +1249,13 @@ Replace bare concatenation in `transcript.txt` with intelligent paragraph chunki
   - [ ] Test auto-generated notice is absent when `is_generated=False` or `None`
 - [ ] Update existing `test_writer.py` to verify new formatting is used
 - [ ] Verify: `transcript.txt` output is readable, paragraph-chunked text by default
-- [ ] Bump version to `0.9.0`
+- [ ] Bump version to `1.0.0`
 
-### Story M.b: v0.9.1 Content Hashing [Planned]
+### Story M.b: v1.1.0 Content Hashing [Planned]
 
 Add SHA-256 content hashes to metadata and transcript outputs for change detection.
 
-- [ ] Create `yt_fetch/utils/hashing.py`:
+- [ ] Create `tubefetch/utils/hashing.py`:
   - [ ] `hash_metadata(metadata: Metadata) -> str` — SHA-256 of canonical fields (title, description, tags, upload_date, duration_seconds)
   - [ ] `hash_transcript(transcript: Transcript) -> str` — SHA-256 of concatenated segment text
   - [ ] `hash_bundle(metadata, transcript) -> str` — SHA-256 of combined content
@@ -1206,13 +1273,13 @@ Add SHA-256 content hashes to metadata and transcript outputs for change detecti
   - [ ] Test `hash_transcript` produces different hash when segment text changes
   - [ ] Test `hash_bundle` combines metadata and transcript hashes
 - [ ] Verify: `metadata.json` and `transcript.json` contain `content_hash` field
-- [ ] Bump version to `0.9.1`
+- [ ] Bump version to `1.1.0`
 
-### Story M.c: v0.9.2 Token Count Estimation [Planned]
+### Story M.c: v1.2.0 Token Count Estimation [Planned]
 
 Optionally estimate token counts for transcript text using `tiktoken`.
 
-- [ ] Create `yt_fetch/utils/token_counter.py`:
+- [ ] Create `tubefetch/utils/token_counter.py`:
   - [ ] `count_tokens(text: str, tokenizer: str = "cl100k_base") -> int`
   - [ ] `is_tokenizer_available() -> bool` — check if `tiktoken` is installed
   - [ ] Graceful degradation: if `tiktoken` not installed and tokenizer requested, log warning and return `None`
@@ -1229,13 +1296,13 @@ Optionally estimate token counts for transcript text using `tiktoken`.
   - [ ] Test `token_count` is `None` when `tokenizer` option is not set
   - [ ] Test `token_count` is populated when `tokenizer` option is set and `tiktoken` available
 - [ ] Verify: `transcript.json` contains `token_count` when tokenizer configured
-- [ ] Bump version to `0.9.2`
+- [ ] Bump version to `1.2.0`
 
-### Story M.d: v0.9.3 Playlist and Channel Resolution [Planned]
+### Story M.d: v1.3.0 Playlist and Channel Resolution [Planned]
 
 Accept playlist and channel URLs as batch input sources.
 
-- [ ] Create `yt_fetch/services/resolver.py`:
+- [ ] Create `tubefetch/services/resolver.py`:
   - [ ] `resolve_playlist(url: str, max_videos: int | None = None) -> list[str]`
   - [ ] `resolve_channel(url: str, max_videos: int | None = None) -> list[str]`
   - [ ] `resolve_input(input_str: str, max_videos: int | None = None) -> list[str]` — auto-detect input type
@@ -1245,7 +1312,7 @@ Accept playlist and channel URLs as batch input sources.
 - [ ] Add `max_videos: int | None = None` field to `FetchOptions` in `core/options.py`
 - [ ] Add `--playlist`, `--channel`, `--max-videos` CLI flags in `cli.py`
 - [ ] Update `core/pipeline.py` `process_batch()`: accept playlist/channel URLs, resolve to IDs, then process
-- [ ] Export `resolve_playlist` and `resolve_channel` from `yt_fetch/__init__.py`
+- [ ] Export `resolve_playlist` and `resolve_channel` from `tubefetch/__init__.py`
 - [ ] Write `tests/test_resolver.py`:
   - [ ] Test `resolve_playlist` with mocked `yt-dlp` returns ordered video IDs
   - [ ] Test `resolve_channel` with mocked `yt-dlp` returns video IDs
@@ -1256,9 +1323,9 @@ Accept playlist and channel URLs as batch input sources.
 - [ ] Add integration tests (guarded by `RUN_INTEGRATION=1`):
   - [ ] Resolve a known public playlist
   - [ ] Resolve a known public channel (with `max_videos=5`)
-- [ ] Bump version to `0.9.3`
+- [ ] Bump version to `1.3.0`
 
-### Story M.e: v0.9.4 Video Bundle Output [Planned]
+### Story M.e: v1.4.0 Video Bundle Output [Planned]
 
 Optionally emit a unified `video_bundle.json` per video.
 
@@ -1279,9 +1346,9 @@ Optionally emit a unified `video_bundle.json` per video.
   - [ ] Test bundle IS written when `bundle=True`
   - [ ] Test bundle JSON round-trip (write + read back)
 - [ ] Verify: `video_bundle.json` appears in output when `--bundle` is set
-- [ ] Bump version to `0.9.4`
+- [ ] Bump version to `1.4.0`
 
-### Story M.f: v0.9.5 README and Documentation Update [Planned]
+### Story M.f: v1.4.1 README and Documentation Update [Planned]
 
 Update README and documentation to reflect the AI-ready positioning.
 
@@ -1294,4 +1361,4 @@ Update README and documentation to reflect the AI-ready positioning.
   - [ ] Add `[tokens]` optional dependency to installation section
 - [ ] Update `pyproject.toml` description to "AI-ready YouTube content extraction — metadata, transcripts, and media in structured formats"
 - [ ] Verify: README renders correctly on GitHub
-- [ ] Bump version to `0.9.5`
+- [ ] Bump version to `1.4.1`
