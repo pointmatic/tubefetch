@@ -83,23 +83,23 @@ def write_transcript_json(transcript: Transcript, out_dir: Path) -> Path:
 
 def write_transcript_txt(transcript: Transcript, out_dir: Path, options: FetchOptions | None = None) -> Path:
     """Write transcript as LLM-ready plain text. Returns the written file path.
-    
+
     Args:
         transcript: Transcript model with segments.
         out_dir: Output directory.
         options: FetchOptions with txt formatting preferences. If None, uses defaults.
-    
+
     Returns:
         Path to written transcript.txt file.
     """
     video_dir = out_dir / transcript.video_id
     video_dir.mkdir(parents=True, exist_ok=True)
     dest = video_dir / "transcript.txt"
-    
+
     # Use formatter with options
     if options is None:
         options = FetchOptions()
-    
+
     text = format_transcript_txt(
         segments=transcript.segments,
         is_generated=transcript.is_generated,
@@ -107,7 +107,7 @@ def write_transcript_txt(transcript: Transcript, out_dir: Path, options: FetchOp
         timestamps=options.txt_timestamps,
         raw=options.txt_raw,
     )
-    
+
     _atomic_write_text(dest, text)
     return dest
 

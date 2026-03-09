@@ -87,7 +87,9 @@ def _common_options(fn: Any) -> Any:
         click.option("--verbose", is_flag=True, default=None, help="Verbose console output."),
         click.option("--txt-timestamps", is_flag=True, default=None, help="Include [MM:SS] markers in transcript.txt."),
         click.option("--txt-raw", is_flag=True, default=None, help="Bare concatenation (no paragraph formatting)."),
-        click.option("--txt-gap-threshold", type=float, default=None, help="Silence gap (seconds) for paragraph breaks."),
+        click.option(
+            "--txt-gap-threshold", type=float, default=None, help="Silence gap (seconds) for paragraph breaks."
+        ),
     ]
     for decorator in reversed(decorators):
         fn = decorator(fn)

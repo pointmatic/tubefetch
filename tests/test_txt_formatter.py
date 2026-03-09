@@ -51,7 +51,7 @@ def test_default_mode_small_gaps_same_paragraph():
     segments = [
         TranscriptSegment(start=0.0, duration=1.5, text="First"),
         TranscriptSegment(start=1.5, duration=1.5, text="second"),  # gap = 0.0
-        TranscriptSegment(start=3.5, duration=1.5, text="third"),   # gap = 0.5
+        TranscriptSegment(start=3.5, duration=1.5, text="third"),  # gap = 0.5
     ]
     result = format_transcript_txt(segments, gap_threshold=2.0)
     assert result == "First second third"
@@ -63,7 +63,7 @@ def test_default_mode_large_gaps_new_paragraph():
     segments = [
         TranscriptSegment(start=0.0, duration=1.0, text="First paragraph."),
         TranscriptSegment(start=4.0, duration=1.0, text="Second paragraph."),  # gap = 3.0 > 2.0
-        TranscriptSegment(start=8.0, duration=1.0, text="Third paragraph."),   # gap = 3.0 > 2.0
+        TranscriptSegment(start=8.0, duration=1.0, text="Third paragraph."),  # gap = 3.0 > 2.0
     ]
     result = format_transcript_txt(segments, gap_threshold=2.0)
     assert result == "First paragraph.\n\nSecond paragraph.\n\nThird paragraph."
@@ -75,11 +75,11 @@ def test_custom_gap_threshold():
         TranscriptSegment(start=0.0, duration=1.0, text="First"),
         TranscriptSegment(start=2.5, duration=1.0, text="Second"),  # gap = 1.5
     ]
-    
+
     # With threshold 2.0, gap 1.5 < 2.0 -> same paragraph
     result = format_transcript_txt(segments, gap_threshold=2.0)
     assert result == "First Second"
-    
+
     # With threshold 1.0, gap 1.5 > 1.0 -> new paragraph
     result = format_transcript_txt(segments, gap_threshold=1.0)
     assert result == "First\n\nSecond"
@@ -93,7 +93,7 @@ def test_timestamped_mode_adds_markers():
         TranscriptSegment(start=130.0, duration=1.0, text="Third paragraph."),  # 2:10, gap > 2.0
     ]
     result = format_transcript_txt(segments, gap_threshold=2.0, timestamps=True)
-    
+
     # First paragraph has no timestamp
     assert result.startswith("First paragraph.")
     # Second paragraph has [01:05] marker
@@ -170,17 +170,15 @@ def test_complex_paragraph_chunking():
         # Paragraph 1
         TranscriptSegment(start=0.0, duration=2.0, text="Welcome to this video."),
         TranscriptSegment(start=2.5, duration=2.0, text="Today we'll discuss AI."),  # gap 0.5
-        
         # Paragraph 2 (gap 3.0 > 2.0)
         TranscriptSegment(start=7.5, duration=2.0, text="First, let's define terms."),
         TranscriptSegment(start=10.0, duration=2.0, text="AI stands for artificial intelligence."),  # gap 0.5
-        
         # Paragraph 3 (gap 5.0 > 2.0)
         TranscriptSegment(start=17.0, duration=2.0, text="Thanks for watching."),
     ]
-    
+
     result = format_transcript_txt(segments, gap_threshold=2.0)
-    
+
     paragraphs = result.split("\n\n")
     assert len(paragraphs) == 3
     assert paragraphs[0] == "Welcome to this video. Today we'll discuss AI."
@@ -192,12 +190,12 @@ def test_timestamp_formatting():
     """Verify timestamp formatting is correct."""
     segments = [
         TranscriptSegment(start=0.0, duration=1.0, text="Zero seconds"),
-        TranscriptSegment(start=65.0, duration=1.0, text="One minute five"),     # 1:05
+        TranscriptSegment(start=65.0, duration=1.0, text="One minute five"),  # 1:05
         TranscriptSegment(start=3661.0, duration=1.0, text="One hour one min"),  # 61:01
     ]
-    
+
     result = format_transcript_txt(segments, timestamps=True, gap_threshold=1.0)
-    
+
     # First has no timestamp
     assert result.startswith("Zero seconds")
     # Second has [01:05]
