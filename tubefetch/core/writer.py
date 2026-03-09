@@ -24,7 +24,9 @@ from pathlib import Path
 from typing import Any
 
 from tubefetch.core.models import BatchResult, Metadata, Transcript
+from tubefetch.core.options import FetchOptions
 from tubefetch.utils.time_fmt import seconds_to_srt, seconds_to_vtt
+from tubefetch.utils.txt_formatter import format_transcript_txt
 
 logger = logging.getLogger("tubefetch")
 
@@ -79,13 +81,34 @@ def write_transcript_json(transcript: Transcript, out_dir: Path) -> Path:
     return dest
 
 
-def write_transcript_txt(transcript: Transcript, out_dir: Path) -> Path:
-    """Write transcript as plain text (no timestamps). Returns the written file path."""
+def write_transcript_txt(transcript: Transcript, out_dir: Path, options: FetchOptions | None = None) -> Path:
+    """Write transcript as LLM-ready plain text. Returns the written file path.
+    
+    Args:
+        transcript: Transcript model with segments.
+        out_dir: Output directory.
+        options: FetchOptions with txt formatting preferences. If None, uses defaults.
+    
+    Returns:
+        Path to written transcript.txt file.
+    """
     video_dir = out_dir / transcript.video_id
     video_dir.mkdir(parents=True, exist_ok=True)
     dest = video_dir / "transcript.txt"
-    lines = [seg.text for seg in transcript.segments]
-    _atomic_write_text(dest, "\n".join(lines) + "\n")
+    
+    # Use formatter with options
+    if options is None:
+        options = FetchOptions()
+    
+    text = format_transcript_txt(
+        segments=transcript.segments,
+        is_generated=transcript.is_generated,
+        gap_threshold=options.txt_gap_threshold,
+        timestamps=options.txt_timestamps,
+        raw=options.txt_raw,
+    )
+    
+    _atomic_write_text(dest, text)
     return dest
 
 

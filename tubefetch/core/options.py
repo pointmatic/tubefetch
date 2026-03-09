@@ -69,3 +69,6 @@ class FetchOptions(BaseSettings):
     verbose: bool = False
     yt_api_key: str | None = None
     ffmpeg_fallback: Literal["error", "skip"] = "error"
+    txt_timestamps: bool = False
+    txt_raw: bool = False
+    txt_gap_threshold: float = 2.0

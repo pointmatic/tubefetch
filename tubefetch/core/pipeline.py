@@ -109,7 +109,7 @@ def process_video(
             # Use gentlify for retry logic
             transcript = execute_with_retry(get_transcript, throttle, video_id, options)
             transcript_path = write_transcript_json(transcript, out_dir)
-            write_transcript_txt(transcript, out_dir)
+            write_transcript_txt(transcript, out_dir, options)
             write_transcript_vtt(transcript, out_dir)
             write_transcript_srt(transcript, out_dir)
             logger.info("Wrote transcript for %s", video_id)

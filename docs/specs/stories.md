@@ -1223,33 +1223,33 @@ Bring `README.md`, `features.md`, and `tech-spec.md` up to date with the v0.9.x 
 
 ## Phase M: AI-Ready Content Extraction
 
-### Story M.a: v1.0.0 LLM-Ready Transcript Text Formatting [Planned]
+### Story M.a: v1.0.0 LLM-Ready Transcript Text Formatting [Done]
 
 Replace bare concatenation in `transcript.txt` with intelligent paragraph chunking and optional features.
 
-- [ ] Create `tubefetch/utils/txt_formatter.py`:
-  - [ ] `format_transcript_txt(segments, is_generated, gap_threshold, timestamps, raw) -> str`
-  - [ ] **Default mode**: join segment text with spaces; insert `\n\n` paragraph breaks when the gap between consecutive segments exceeds `gap_threshold` (default 2.0 seconds)
-  - [ ] **Timestamped mode** (`timestamps=True`): prepend `[MM:SS]` at each paragraph boundary
-  - [ ] **Raw mode** (`raw=True`): bare concatenation with spaces, no paragraph formatting (backward-compatible)
-  - [ ] **Auto-generated notice**: when `is_generated` is true, prepend `[Auto-generated transcript]\n\n`
-  - [ ] `raw=True` overrides `timestamps`
-- [ ] Add copyright/license header
-- [ ] Update `core/writer.py`:
-  - [ ] `write_transcript_txt()` calls `format_transcript_txt()` with options from `FetchOptions`
-- [ ] Add `txt_timestamps`, `txt_raw`, `txt_gap_threshold` fields to `FetchOptions` in `core/options.py`
-- [ ] Add `--txt-timestamps`, `--txt-raw`, `--txt-gap-threshold` CLI flags in `cli.py`
-- [ ] Write `tests/test_txt_formatter.py`:
-  - [ ] Test default paragraph chunking: segments with >2s gap produce paragraph breaks
-  - [ ] Test segments with <2s gap are joined in same paragraph
-  - [ ] Test custom gap threshold
-  - [ ] Test timestamped mode produces `[MM:SS]` markers
-  - [ ] Test raw mode produces bare concatenation
-  - [ ] Test auto-generated notice is prepended when `is_generated=True`
-  - [ ] Test auto-generated notice is absent when `is_generated=False` or `None`
-- [ ] Update existing `test_writer.py` to verify new formatting is used
-- [ ] Verify: `transcript.txt` output is readable, paragraph-chunked text by default
-- [ ] Bump version to `1.0.0`
+- [x] Create `tubefetch/utils/txt_formatter.py`:
+  - [x] `format_transcript_txt(segments, is_generated, gap_threshold, timestamps, raw) -> str`
+  - [x] **Default mode**: join segment text with spaces; insert `\n\n` paragraph breaks when the gap between consecutive segments exceeds `gap_threshold` (default 2.0 seconds)
+  - [x] **Timestamped mode** (`timestamps=True`): prepend `[MM:SS]` at each paragraph boundary
+  - [x] **Raw mode** (`raw=True`): bare concatenation with spaces, no paragraph formatting (backward-compatible)
+  - [x] **Auto-generated notice**: when `is_generated` is true, prepend `[Auto-generated transcript]\n\n`
+  - [x] `raw=True` overrides `timestamps`
+- [x] Add copyright/license header
+- [x] Update `core/writer.py`:
+  - [x] `write_transcript_txt()` calls `format_transcript_txt()` with options from `FetchOptions`
+- [x] Add `txt_timestamps`, `txt_raw`, `txt_gap_threshold` fields to `FetchOptions` in `core/options.py`
+- [x] Add `--txt-timestamps`, `--txt-raw`, `--txt-gap-threshold` CLI flags in `cli.py`
+- [x] Write `tests/test_txt_formatter.py`:
+  - [x] Test default paragraph chunking: segments with >2s gap produce paragraph breaks
+  - [x] Test segments with <2s gap are joined in same paragraph
+  - [x] Test custom gap threshold
+  - [x] Test timestamped mode produces `[MM:SS]` markers
+  - [x] Test raw mode produces bare concatenation
+  - [x] Test auto-generated notice is prepended when `is_generated=True`
+  - [x] Test auto-generated notice is absent when `is_generated=False` or `None`
+- [x] Update existing `test_writer.py` to verify new formatting is used
+- [x] Verify: `transcript.txt` output is readable, paragraph-chunked text by default
+- [x] Bump version to `1.0.0`
 
 ### Story M.b: v1.1.0 Content Hashing [Planned]
 

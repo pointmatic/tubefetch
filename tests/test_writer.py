@@ -197,8 +197,10 @@ class TestWriteTranscriptTxt:
     def test_plain_text_content(self, tmp_path):
         t = _make_transcript()
         path = write_transcript_txt(t, tmp_path)
-        lines = path.read_text().strip().split("\n")
-        assert lines == ["Hello world", "This is a test", "Goodbye"]
+        content = path.read_text().strip()
+        # New formatter uses paragraph chunking with space-separated segments
+        # Segments are close together (0.0, 1.0, 2.0) so they stay in one paragraph
+        assert content == "Hello world This is a test Goodbye"
 
 
 # --- write_transcript_vtt ---
