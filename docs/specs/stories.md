@@ -1325,28 +1325,28 @@ Accept playlist and channel URLs as batch input sources.
   - [x] Resolve a known public channel (with `max_videos=5`)
 - [x] Bump version to `1.3.0`
 
-### Story M.e: v1.4.0 Video Bundle Output [Planned]
+### Story M.e: v1.4.0 Video Bundle Output [Done]
 
 Optionally emit a unified `video_bundle.json` per video.
 
-- [ ] Add `VideoBundle` model to `core/models.py`:
-  - [ ] Fields: `video_id`, `metadata`, `transcript`, `errors`, `content_hash`, `token_count`, `fetched_at`
-- [ ] Add `write_bundle(result: FetchResult, out_dir: Path) -> Path` to `core/writer.py`
-- [ ] Add `bundle: bool = False` field to `FetchOptions` in `core/options.py`
-- [ ] Add `--bundle` CLI flag in `cli.py`
-- [ ] Update `core/pipeline.py` `process_video()`:
-  - [ ] After all other outputs are written, if `options.bundle` is `True`, call `write_bundle()`
-  - [ ] Bundle `content_hash` uses `hash_bundle()` from `utils/hashing.py`
-  - [ ] Bundle `token_count` comes from `transcript.token_count`
-- [ ] Write `tests/test_bundle.py`:
-  - [ ] Test bundle contains correct `video_id`, `metadata`, `transcript`, `errors`
-  - [ ] Test bundle `content_hash` matches `hash_bundle()` output
-  - [ ] Test bundle `token_count` matches transcript `token_count`
-  - [ ] Test bundle is NOT written when `bundle=False`
-  - [ ] Test bundle IS written when `bundle=True`
-  - [ ] Test bundle JSON round-trip (write + read back)
-- [ ] Verify: `video_bundle.json` appears in output when `--bundle` is set
-- [ ] Bump version to `1.4.0`
+- [x] Add `VideoBundle` model to `core/models.py`:
+  - [x] Fields: `video_id`, `metadata`, `transcript`, `errors`, `content_hash`, `token_count`, `fetched_at`
+- [x] Add `write_bundle(result: FetchResult, out_dir: Path) -> Path` to `core/writer.py`
+- [x] Add `bundle: bool = False` field to `FetchOptions` in `core/options.py`
+- [x] Add `--bundle` CLI flag in `cli.py`
+- [x] Update `core/pipeline.py` `process_video()`:
+  - [x] After all other outputs are written, if `options.bundle` is `True`, call `write_bundle()`
+  - [x] Bundle `content_hash` uses `hash_bundle()` from `utils/hashing.py`
+  - [x] Bundle `token_count` comes from `transcript.token_count`
+- [x] Write `tests/test_bundle.py`:
+  - [x] Test bundle contains correct `video_id`, `metadata`, `transcript`, `errors`
+  - [x] Test bundle `content_hash` matches `hash_bundle()` output
+  - [x] Test bundle `token_count` matches transcript `token_count`
+  - [x] Test bundle is NOT written when `bundle=False`
+  - [x] Test bundle IS written when `bundle=True`
+  - [x] Test bundle JSON round-trip (write + read back)
+- [x] Verify: `video_bundle.json` appears in output when `--bundle` is set
+- [x] Bump version to `1.4.0`
 
 ### Story M.f: v1.4.1 README and Documentation Update [Planned]
 

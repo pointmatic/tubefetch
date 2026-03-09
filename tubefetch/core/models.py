@@ -73,6 +73,18 @@ class FetchResult(BaseModel):
     errors: list[FetchError] = []
 
 
+class VideoBundle(BaseModel):
+    """Unified bundle containing all video data."""
+
+    video_id: str
+    metadata: Metadata | None = None
+    transcript: Transcript | None = None
+    errors: list[FetchError] = []
+    content_hash: str | None = None
+    token_count: int | None = None
+    fetched_at: datetime
+
+
 class BatchResult(BaseModel):
     total: int
     succeeded: int

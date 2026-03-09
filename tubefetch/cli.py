@@ -94,6 +94,7 @@ def _common_options(fn: Any) -> Any:
         ),
         click.option("--tokenizer", type=str, default=None, help="Tokenizer for token counting (e.g., cl100k_base)."),
         click.option("--max-videos", type=int, default=None, help="Max videos from playlist/channel."),
+        click.option("--bundle", is_flag=True, default=None, help="Write unified video_bundle.json per video."),
     ]
     for decorator in reversed(decorators):
         fn = decorator(fn)
