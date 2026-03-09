@@ -1298,32 +1298,32 @@ Optionally estimate token counts for transcript text using `tiktoken`.
 - [x] Verify: `transcript.json` contains `token_count` when tokenizer configured
 - [x] Bump version to `1.2.0`
 
-### Story M.d: v1.3.0 Playlist and Channel Resolution [Planned]
+### Story M.d: v1.3.0 Playlist and Channel Resolution [Done]
 
 Accept playlist and channel URLs as batch input sources.
 
-- [ ] Create `tubefetch/services/resolver.py`:
-  - [ ] `resolve_playlist(url: str, max_videos: int | None = None) -> list[str]`
-  - [ ] `resolve_channel(url: str, max_videos: int | None = None) -> list[str]`
-  - [ ] `resolve_input(input_str: str, max_videos: int | None = None) -> list[str]` — auto-detect input type
-  - [ ] Use `yt-dlp`'s `extract_info(url, download=False)` with `extract_flat=True` for efficient ID-only extraction
-  - [ ] `max_videos` limits the number of IDs returned
-  - [ ] Write resolved IDs to `<out>/resolved_ids.json` for reproducibility
-- [ ] Add `max_videos: int | None = None` field to `FetchOptions` in `core/options.py`
-- [ ] Add `--playlist`, `--channel`, `--max-videos` CLI flags in `cli.py`
-- [ ] Update `core/pipeline.py` `process_batch()`: accept playlist/channel URLs, resolve to IDs, then process
-- [ ] Export `resolve_playlist` and `resolve_channel` from `tubefetch/__init__.py`
-- [ ] Write `tests/test_resolver.py`:
-  - [ ] Test `resolve_playlist` with mocked `yt-dlp` returns ordered video IDs
-  - [ ] Test `resolve_channel` with mocked `yt-dlp` returns video IDs
-  - [ ] Test `max_videos` limits the returned list
-  - [ ] Test `resolve_input` auto-detects playlist vs channel vs video URL
-  - [ ] Test `resolved_ids.json` is written to output directory
-  - [ ] Test invalid URL raises appropriate error
-- [ ] Add integration tests (guarded by `RUN_INTEGRATION=1`):
-  - [ ] Resolve a known public playlist
-  - [ ] Resolve a known public channel (with `max_videos=5`)
-- [ ] Bump version to `1.3.0`
+- [x] Create `tubefetch/services/resolver.py`:
+  - [x] `resolve_playlist(url: str, max_videos: int | None = None) -> list[str]`
+  - [x] `resolve_channel(url: str, max_videos: int | None = None) -> list[str]`
+  - [x] `resolve_input(input_str: str, max_videos: int | None = None) -> list[str]` — auto-detect input type
+  - [x] Use `yt-dlp`'s `extract_info(url, download=False)` with `extract_flat=True` for efficient ID-only extraction
+  - [x] `max_videos` limits the number of IDs returned
+  - [x] Write resolved IDs to `<out>/resolved_ids.json` for reproducibility
+- [x] Add `max_videos: int | None = None` field to `FetchOptions` in `core/options.py`
+- [x] Add `--playlist`, `--channel`, `--max-videos` CLI flags in `cli.py`
+- [x] Update `core/pipeline.py` `process_batch()`: accept playlist/channel URLs, resolve to IDs, then process
+- [x] Export `resolve_playlist` and `resolve_channel` from `tubefetch/__init__.py`
+- [x] Write `tests/test_resolver.py`:
+  - [x] Test `resolve_playlist` with mocked `yt-dlp` returns ordered video IDs
+  - [x] Test `resolve_channel` with mocked `yt-dlp` returns video IDs
+  - [x] Test `max_videos` limits the returned list
+  - [x] Test `resolve_input` auto-detects playlist vs channel vs video URL
+  - [x] Test `resolved_ids.json` is written to output directory
+  - [x] Test invalid URL raises appropriate error
+- [x] Add integration tests (guarded by `RUN_INTEGRATION=1`):
+  - [x] Resolve a known public playlist
+  - [x] Resolve a known public channel (with `max_videos=5`)
+- [x] Bump version to `1.3.0`
 
 ### Story M.e: v1.4.0 Video Bundle Output [Planned]
 

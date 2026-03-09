@@ -73,3 +73,4 @@ class FetchOptions(BaseSettings):
     txt_raw: bool = False
     txt_gap_threshold: float = 2.0
     tokenizer: str | None = None
+    max_videos: int | None = None

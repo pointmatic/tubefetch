@@ -80,21 +80,29 @@ class TestExitCode:
 
 class TestCollectIds:
     def test_from_ids(self):
-        result = _collect_ids(("dQw4w9WgXcQ", "abc12345678"), None, None, "id")
+        from tubefetch.core.options import FetchOptions
+
+        result = _collect_ids(("dQw4w9WgXcQ", "abc12345678"), None, None, "id", None, None, FetchOptions())
         assert result == ["dQw4w9WgXcQ", "abc12345678"]
 
     def test_from_file(self, tmp_path):
+        from tubefetch.core.options import FetchOptions
+
         f = tmp_path / "ids.txt"
         f.write_text("dQw4w9WgXcQ\nabc12345678\n")
-        result = _collect_ids((), f, None, "id")
+        result = _collect_ids((), f, None, "id", None, None, FetchOptions())
         assert result == ["dQw4w9WgXcQ", "abc12345678"]
 
     def test_deduplication(self):
-        result = _collect_ids(("dQw4w9WgXcQ", "dQw4w9WgXcQ"), None, None, "id")
+        from tubefetch.core.options import FetchOptions
+
+        result = _collect_ids(("dQw4w9WgXcQ", "dQw4w9WgXcQ"), None, None, "id", None, None, FetchOptions())
         assert result == ["dQw4w9WgXcQ"]
 
     def test_empty(self):
-        result = _collect_ids((), None, None, "id")
+        from tubefetch.core.options import FetchOptions
+
+        result = _collect_ids((), None, None, "id", None, None, FetchOptions())
         assert result == []
 
 
@@ -343,7 +351,9 @@ class TestBuildOptions:
 
 class TestCollectIdsJsonl:
     def test_from_jsonl(self, tmp_path):
+        from tubefetch.core.options import FetchOptions
+
         f = tmp_path / "data.jsonl"
         f.write_text('{"video_id": "dQw4w9WgXcQ"}\n{"video_id": "abc12345678"}\n')
-        result = _collect_ids((), None, f, "video_id")
+        result = _collect_ids((), None, f, "video_id", None, None, FetchOptions())
         assert result == ["dQw4w9WgXcQ", "abc12345678"]
