@@ -12,6 +12,53 @@ This guide provides concise instructions for the branch-based workflow used in p
 
 ---
 
+## GitHub Repository Setup
+
+Before using this workflow, configure your repository settings on GitHub. These settings enforce production-mode practices.
+
+### Manual Tasks (GitHub Web UI)
+
+Navigate to your repository's **Settings** tab and configure the following:
+
+#### 1. Branch Protection Rules
+
+**Settings → Branches → Branch protection rules → Add rule**
+
+Target branch: `default` (typically `main` or `master`)
+
+- [ ] **Do not add any bypass list items** (no one should bypass protection)
+- [ ] **Restrict deletions** — Prevent branch deletion
+- [ ] **Require pull request before merging**
+  - [ ] Require 1 approval
+  - [ ] Require conversation resolution before merging
+- [ ] **Require status checks to pass before merging**
+  - [ ] Require branches to be up to date before merging
+  - [ ] Status checks required: `unit-tests`, `integration-tests` (or your CI job names)
+- [ ] **Block force pushes** — Prevent force pushes to main
+
+Click **Create** or **Save changes**
+
+#### 2. Security Settings
+
+**Settings → Security → Code security and analysis**
+
+- [ ] **Dependency graph** — Enable (shows dependencies)
+- [ ] **Dependabot alerts** — Enable (security vulnerability alerts)
+- [ ] **Dependabot security updates** — Enable (automatic security PRs)
+- [ ] **Grouped security updates** — Enable (reduces PR noise by grouping updates)
+
+#### 3. GitHub Actions Permissions
+
+**Settings → Actions → General → Workflow permissions**
+
+- [ ] Set to **Read repository contents and packages permissions**
+  - This prevents workflows from accidentally pushing to protected branches
+  - Workflows that need write access must use explicit tokens
+
+**Note:** If you need workflows to create releases or push tags, use repository secrets with fine-grained permissions instead of the default `GITHUB_TOKEN`.
+
+---
+
 ## Workflow Overview
 
 ```
@@ -32,7 +79,7 @@ This guide provides concise instructions for the branch-based workflow used in p
 ### 1. Ensure You're on Latest Main
 
 ```bash
-git checkout main
+git switch main
 git pull origin main
 ```
 
@@ -46,13 +93,13 @@ git pull origin main
 
 ```bash
 # Example: Story J.d implementation
-git checkout -b story/j.d-release-workflow
+git switch -c story/j.d-release-workflow
 
 # Example: Bug fix
-git checkout -b fix/codecov-upload-error
+git switch -c fix/codecov-upload-error
 
 # Example: Documentation update
-git checkout -b docs/update-readme
+git switch -c docs/update-readme
 ```
 
 ### 3. Make Changes and Commit
@@ -167,13 +214,13 @@ gh pr merge --merge --delete-branch
 
 ```bash
 # Switch back to main
-git checkout main
+git switch main
 
 # Pull the merged changes
 git pull origin main
 
 # Delete local feature branch (if not auto-deleted)
-git branch -d story/j.d-release-workflow
+git branch --delete story/j.d-release-workflow
 ```
 
 ---
@@ -200,7 +247,7 @@ If `main` has been updated while you're working on your branch:
 
 ```bash
 # Ensure you're on your feature branch
-git checkout story/j.d-release-workflow
+git switch story/j.d-release-workflow
 
 # Fetch latest changes
 git fetch origin
@@ -222,112 +269,13 @@ git push --force-with-lease
 
 ```bash
 # Switch to main
-git checkout main
+git switch main
 
 # Delete local branch
-git branch -D story/j.d-release-workflow
+git branch --delete --force story/j.d-release-workflow
 
 # Delete remote branch
 git push origin --delete story/j.d-release-workflow
-```
-
----
-
-## Branch Management
-
-### List Existing Branches
-
-**List local branches:**
-```bash
-git branch
-```
-Shows all local branches. Current branch is marked with `*`.
-
-**List remote branches:**
-```bash
-git branch -r
-```
-Shows all branches on GitHub (origin).
-
-**List all branches (local + remote):**
-```bash
-git branch -a
-```
-Shows both local and remote branches.
-
-**List branches with last commit info:**
-```bash
-git branch -v
-```
-Shows branches with their last commit message and hash.
-
-**List merged branches:**
-```bash
-git branch --merged
-```
-Shows branches that have been merged into current branch.
-
-**List unmerged branches:**
-```bash
-git branch --no-merged
-```
-Shows branches that haven't been merged yet.
-
-### Clean Up Old Branches
-
-**Delete local branch (safe):**
-```bash
-git branch -d branch-name
-```
-Only deletes if branch has been merged.
-
-**Force delete local branch:**
-```bash
-git branch -D branch-name
-```
-Force delete even if not merged.
-
-**Delete remote branch:**
-```bash
-git push origin --delete branch-name
-```
-
-**Prune deleted remote branches:**
-```bash
-git fetch --prune
-```
-Removes local references to remote branches that have been deleted on GitHub.
-
-**Delete all merged local branches:**
-```bash
-git branch --merged | grep -v "main" | xargs git branch -d
-```
-Deletes all local branches that have been merged (except main).
-
-**Delete all local branches except main:**
-```bash
-git branch | grep -v "main" | xargs git branch -D
-```
-⚠️ **Use with caution** - force deletes all local branches except main.
-
-### Recommended Cleanup Workflow
-
-```bash
-# 1. See what branches exist
-git branch -a
-
-# 2. Update remote branch list (removes deleted remote branches)
-git fetch --prune
-
-# 3. Delete specific merged local branches
-git branch -d story/j.d-release-workflow
-git branch -d fix/codecov-upload-error
-
-# 4. Or delete all merged local branches at once
-git branch --merged | grep -v "main" | xargs git branch -d
-
-# 5. Verify cleanup
-git branch
 ```
 
 ---
@@ -336,9 +284,9 @@ git branch
 
 ### Create and Push Branch
 ```bash
-git checkout main
+git switch main
 git pull origin main
-git checkout -b feature/my-feature
+git switch -c feature/my-feature
 # ... make changes ...
 git add .
 git commit -m "feat: add new feature"
@@ -356,9 +304,9 @@ git push
 ### Merge and Cleanup
 ```bash
 # After PR is merged on GitHub
-git checkout main
+git switch main
 git pull origin main
-git branch -d feature/my-feature
+git branch --delete feature/my-feature
 ```
 
 ---
@@ -406,10 +354,10 @@ git branch -d feature/my-feature
 
 ```bash
 # If you accidentally committed to main
-git checkout -b feature/my-changes  # Create branch from current state
-git checkout main
+git switch -c feature/my-changes  # Create branch from current state
+git switch main
 git reset --hard origin/main  # Reset main to remote state
-git checkout feature/my-changes
+git switch feature/my-changes
 git push -u origin feature/my-changes
 ```
 
@@ -483,7 +431,7 @@ gh pr merge --squash --delete-branch
 6. Keep `main` branch clean and stable
 
 **Key commands:**
-- `git checkout -b feature/name` — Create branch
+- `git switch -c feature/name` — Create branch
 - `git push -u origin feature/name` — Push branch
 - `gh pr create` — Create PR
-- `git checkout main && git pull` — Update main
+- `git switch main && git pull` — Update main
